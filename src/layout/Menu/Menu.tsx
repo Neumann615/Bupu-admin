@@ -4,7 +4,7 @@ import { createStyles } from "antd-style"
 import { Icon } from "@/components"
 import { useAppStore, useMenuStore } from "@/store"
 import { Resizable } from "re-resizable"
-import { useControlPage } from "@/hooks"
+import { useControlTab } from "@/hooks"
 
 const useStyles = createStyles(({ token, css }) => ({
     asideMenu: {
@@ -37,7 +37,7 @@ export function Menu() {
     const { styles, theme } = useStyles()
     let { menuData, subMenuCollapse, mainNavData, menuType, menuCurrentKeys } = useMenuStore()
     let { name } = useAppStore()
-    let { openPage } = useControlPage()
+    let { openTab } = useControlTab()
 
     let renderMenuData = useMemo(() => {
         let a = JSON.parse(JSON.stringify(menuType === "simple" ? mainNavData : menuData))
@@ -61,7 +61,7 @@ export function Menu() {
             {!subMenuCollapse ? <p className={styles.asideMenuTitle}>{name}</p> : null}
             <div className={styles.asideMenuContent}>
                 <AntdMenu
-                    onClick={openPage}
+                    onClick={openTab}
                     defaultSelectedKeys={menuCurrentKeys}
                     selectedKeys={menuCurrentKeys}
                     inlineCollapsed={subMenuCollapse}

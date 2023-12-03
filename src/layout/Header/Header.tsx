@@ -3,8 +3,9 @@ import {Col, Dropdown, Row, Breadcrumb, Space} from "antd"
 import type {MenuProps} from 'antd'
 import {createStyles} from "antd-style"
 import {TransitionGroup, CSSTransition} from "react-transition-group"
+import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd"
 import {Icon} from "@/components"
-import {useControlPage} from "@/hooks"
+import {useControlTab} from "@/hooks"
 import {useMenuStore, useTabBarStore, useBreadcrumbStore} from "@/store"
 import {preventDefaultEvents} from "@/utils"
 import Toolbar from "../Toolbar/Toolbar"
@@ -100,15 +101,42 @@ const useStyles = createStyles(({token, css}) => ({
 }))
 
 export function Header() {
-    const {openPage, closePage} = useControlPage()
+    const {openTab, closeTab, swapTab, fixedTab} = useControlTab()
     const {styles, theme} = useStyles()
-    const {tabs, nowTab, setTabs, setFixedTab} = useTabBarStore()
+    const {tabs, nowTab} = useTabBarStore()
     const {changeSubMenuCollapse, subMenuCollapse, menuType} = useMenuStore()
     const {breadcrumbList} = useBreadcrumbStore()
-    const [nowOpenTab, setNowOpenTab] = useState("")
+    const [nowOpenTab, setNowOpenTab] = useState({tabId: "", isFixed: false})
     const [isOpenTab, setIsOpenTab] = useState(false)
+    const nowOpenTabIndex = useMemo(() => {
+        let _nowOpenTabIndex = -1
+        tabs.forEach((tabItem: any, index: number) => {
+            if (tabItem.tabId === nowOpenTab.tabId) {
+                _nowOpenTabIndex = index
+            }
+        })
+        return _nowOpenTabIndex
+    }, [nowOpenTab, tabs])
 
     const tabItems = useMemo<MenuProps['items']>(() => {
+        let nowOpenTabIndex = -1
+        tabs.forEach((tabItem: any, index: number) => {
+            if (tabItem.tabId === nowOpenTab.tabId) {
+                nowOpenTabIndex = index
+            }
+        })
+        let leftCount: number = 0
+        let rightCount: number = 0
+        for (let i = 0; i < tabs.length; i++) {
+            if (tabs[i].tabId !== nowOpenTab.tabId && !tabs[i].isFixed) {
+                if (i < nowOpenTabIndex) {
+                    leftCount += 1
+                } else if (i > nowOpenTabIndex) {
+                    rightCount += 1
+                }
+            }
+        }
+        console.log(leftCount,rightCount)
         return [
             {
                 label: '重新加载',
@@ -128,7 +156,7 @@ export function Header() {
                     <Icon name={nowOpenTab.isFixed ? "Pin" : "Pushpin"}></Icon>
                 </div>,
                 onClick: () => {
-                    setFixedTab(nowOpenTab.tabId)
+                    fixedTab(nowOpenTab.tabId)
                 }
             },
             {
@@ -143,89 +171,114 @@ export function Header() {
                 key: '2',
                 icon: <div className={styles["contextMenuIcon"]}>
                     <Icon name={"Close"}></Icon>
-                </div>
+                </div>,
+                onClick: () => {
+                    closeTab(nowOpenTab.tabId)
+                }
             },
             {
                 label: '关闭其他标签页',
                 key: '5',
                 icon: <div className={styles["contextMenuIcon"]}>
                     <Icon name={"Other"}></Icon>
-                </div>
+                </div>,
+                onClick: () => {
+                    closeTab(nowOpenTab.tabId, "other")
+                }
             },
             {
                 label: '关闭左侧标签页',
                 key: '6',
                 icon: <div className={styles["contextMenuIcon"]}>
                     <Icon name={"HandLeft"}></Icon>
-                </div>
+                </div>,
+                onClick: () => {
+                    closeTab(nowOpenTab.tabId, "left")
+                },
+                disabled: !Boolean(leftCount)
             },
             {
                 label: '关闭右侧标签页',
                 key: '7',
                 icon: <div className={styles["contextMenuIcon"]}>
                     <Icon name={"HandRight"}></Icon>
-                </div>
+                </div>,
+                onClick: () => {
+                    closeTab(nowOpenTab.tabId, "right")
+                },
+                disabled: !Boolean(rightCount)
             }
         ]
     }, [nowTab, nowOpenTab, isOpenTab])
 
     return <div className={styles.header}>
         <div className={styles.headerTabs}>
-            <TransitionGroup className={styles.headerTabsContent}>
-                {tabs.map((tabItem: any) => {
-                    return <CSSTransition
-                        key={tabItem.tabId}
-                        timeout={500}
-                        classNames={
-                            {
-                                appear: "animate__animated",
-                                appearActive: "animate__slideInUp",
-                                enter: "animate__animated",
-                                enterActive: "animate__slideInUp",
-                                exit: "animate__animated",
-                                exitActive: "animate__slideOutDown"
-                            }
-                        }>
-                        <Dropdown
-                            key={tabItem.tabId}
-                            placement={"bottomLeft"}
-                            trigger={["contextMenu"]}
-                            onOpenChange={(v) => {
-                                setIsOpenTab(v)
-                                if (v) {
-                                    setNowOpenTab(tabItem)
-                                }
-                            }}
-                            menu={{items: tabItems}}>
-                            <div
-                                onClick={() => {
-                                    openPage(tabItem.menuData)
-                                }}
-                                className={nowTab.tabId === tabItem.tabId ? styles.nowTabItem : styles.headerTabItem}
-                                key={tabItem.tabId}>
-                                <div className={"flex-sb"} style={{width: "100%", height: "100%"}}>
-                                    <div className={"flex-start"}>
-                                        {tabItem.icon ? <Icon size={16} style={{marginRight: theme.marginXS}}
+            <DragDropContext onDragEnd={(result: any) => {
+                if (!result.destination) return // 判断是否有结束参数
+                console.log("初始索引", result.source.index)
+                console.log("结束索引", result.destination.index)
+                swapTab(result.source.index, result.destination.index)
+            }}>
+                <Droppable droppableId='droppable' direction={"horizontal"}>
+                    {(droppableProvided: any) => <div className={styles.headerTabsContent}
+                                                      ref={droppableProvided.innerRef}>
+                        {tabs.map((tabItem: any, index: number) => {
+                            return <Draggable key={tabItem.tabId} draggableId={tabItem.tabId} index={index}>
+                                {(provided: any, snapshot: any) => <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    style={{
+                                        ...provided.draggableProps.style,
+                                        opacity: snapshot.isDragging ? 0.8 : 1,
+                                    }}
+                                >
+                                    <Dropdown
+                                        key={tabItem.tabId}
+                                        placement={"bottomLeft"}
+                                        trigger={["contextMenu"]}
+                                        onOpenChange={(v) => {
+                                            setIsOpenTab(v)
+                                            if (v) {
+                                                setNowOpenTab(tabItem)
+                                            }
+                                        }}
+                                        menu={{items: tabItems}}>
+                                        <div
+                                            onClick={() => {
+                                                openTab(tabItem.menuData)
+                                            }}
+                                            className={nowTab.tabId === tabItem.tabId ? styles.nowTabItem : styles.headerTabItem}
+                                            key={tabItem.tabId}>
+                                            <div className={"flex-sb"} style={{width: "100%", height: "100%"}}>
+                                                <div className={"flex-start"}>
+                                                    {tabItem.icon ?
+                                                        <Icon size={16} style={{marginRight: theme.marginXS}}
                                                               name={tabItem.icon}></Icon> : null}
-                                        <div className={styles.tabTitle}>
-                                            {tabItem.title}
+                                                    <div className={styles.tabTitle}>
+                                                        {tabItem.title}
+                                                    </div>
+                                                </div>
+                                                <div className={styles.tabClose}>
+                                                    {tabItem.isFixed ? <Icon size={10} onClick={(e: Event) => {
+                                                        fixedTab(tabItem.tabId)
+                                                        preventDefaultEvents(e)
+                                                    }} name={"Pin"}></Icon> : <Icon size={10} onClick={(e: Event) => {
+                                                        closeTab(tabItem.tabId)
+                                                        preventDefaultEvents(e)
+                                                    }} name={"Close"}></Icon>}
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div className={styles.tabClose}>
-                                        {tabItem.isFixed ? <Icon size={10} onClick={(e: Event) => {
-                                            setFixedTab(tabItem.tabId)
-                                            preventDefaultEvents(e)
-                                        }} name={"Pin"}></Icon> : <Icon size={10} onClick={(e: Event) => {
-                                            closePage(tabItem)
-                                            preventDefaultEvents(e)
-                                        }} name={"Close"}></Icon>}
-                                    </div>
-                                </div>
-                            </div>
-                        </Dropdown>
-                    </CSSTransition>
-                })}
-            </TransitionGroup>
+                                    </Dropdown>
+                                </div>}
+                            </Draggable>
+                        })}
+                    </div>
+                        //</TransitionGroup>
+                    }
+                </Droppable>
+            </DragDropContext>
         </div>
         <Row align={"middle"} className={styles.headerModule}>
             <Col span={12}>
@@ -241,7 +294,7 @@ export function Header() {
                             return {
                                 title: menuItem.label,
                                 onClick: () => {
-                                    menuItem?.children?.length ? null : openPage(menuItem)
+                                    menuItem?.children?.length ? null : openTab(menuItem)
                                 }
                             }
                         })}></Breadcrumb>

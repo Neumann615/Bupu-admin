@@ -1,5 +1,5 @@
 import { Icon } from "@/components"
-import { useControlPage } from "@/hooks"
+import { useControlTab } from "@/hooks"
 import { useAppStore, useMenuStore } from "@/store"
 import { Menu } from "antd"
 import { createStyles } from "antd-style"
@@ -176,7 +176,7 @@ export function MainNav() {
     const { styles, cx } = useStyles()
     let { mainNavData, asideBarSelection, menuType, mainNavCurrentKeys } = useMenuStore()
     let { logo, name } = useAppStore()
-    let { openPage } = useControlPage()
+    let { openTab } = useControlTab()
 
 
     //递归渲染menu数组,根据是否有子节点判断类型是不是submenu,记录
@@ -192,7 +192,7 @@ export function MainNav() {
             } else {
                 return <Menu.Item key={item.key}
                     onClick={() => {
-                        openPage(item)
+                        openTab(item)
                     }}
                     icon={<Icon name={item.icon}></Icon>}
                 >
@@ -227,7 +227,7 @@ export function MainNav() {
             } else {
                 return <Menu.Item key={item.key}
                     onClick={() => {
-                        openPage(item)
+                        openTab(item)
                     }}
                     icon={<Icon name={item.icon}></Icon>}
                 >

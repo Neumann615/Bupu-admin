@@ -1,7 +1,7 @@
 import {useNavigate} from "react-router"
 import {useMenuStore, useTabBarStore, useBreadcrumbStore, useAppStore} from "@/store"
 
-export function useControlPage() {
+export function useControlTab() {
     let {mainNavData, setMenuCurrentKeys, setMainNavCurrentKeys, menuType, mainNavCurrentKeys} = useMenuStore()
     let {tabs, setTabs, setNowTab, nowTab} = useTabBarStore()
     let {setBreadcrumbList} = useBreadcrumbStore()
@@ -29,7 +29,7 @@ export function useControlPage() {
     }
 
     //打开页面
-    function openPage(v: any) {
+    function openTab(v: any) {
         let pathList = getPathByKey(v.key, mainNavData)
         if (pathList?.length) {
             //设置面包屑导航
@@ -64,18 +64,26 @@ export function useControlPage() {
         }
     }
 
+
+    type closeTabAction = "left" | "right" | "other" | "default"
+
     //关闭页面
-    function closePage(v: any) {
+    function closeTab(tabId: string, action: closeTabAction = "default") {
         let delIndex: number = -1
-        let openIndex: number = 0
+        let nowTabIndex: number = -1
         tabs.forEach((tabItem: any, index: number) => {
-            if (tabItem.tabId === v.tabId) {
+            if (tabItem.tabId === tabId) {
                 delIndex = index
             }
+            if (tabItem.tabId === nowTab.tabId) {
+                nowTabIndex = index
+            }
         })
-        if (delIndex !== -1) {
-            //打开新页面,移动tab1
-            if (nowTab.tabId === v.tabId) {
+        if (delIndex === -1) return
+        if (action === "default") {
+            let openIndex: number = 0
+            //打开新页面,移动tab
+            if (nowTab.tabId === tabId) {
                 //最左边
                 if (delIndex === 0) {
                     openIndex = 1
@@ -88,16 +96,64 @@ export function useControlPage() {
                 else if (delIndex > 0 && delIndex < tabs.length - 1) {
                     openIndex = delIndex + 1
                 }
-                openPage(tabs[openIndex].menuData)
+                openTab(tabs[openIndex].menuData)
             }
-            //删除tab
-            setTabs(tabs.filter((item: any) => item.tabId !== v.tabId))
+            setTabs(tabs.filter((item: any) => item.tabId !== tabId))
+        } else if (action === "left") {
+            //直接删除左侧的tab
+            if (nowTab.tabId !== tabId) {
+                if (nowTabIndex < delIndex) {
+                    openTab(tabs[delIndex].menuData)
+                }
+            }
+            setTabs(tabs.filter((item: any, index: number) => index >= delIndex))
+        } else if (action === "right") {
+            if (nowTab.tabId !== tabId) {
+                if (nowTabIndex > delIndex) {
+                    openTab(tabs[delIndex].menuData)
+                }
+            }
+            setTabs(tabs.filter((item: any, index: number) => index <= delIndex))
+        } else if (action === "other") {
+            if (nowTab.tabId !== tabId) {
+                openTab(tabs[delIndex].menuData)
+            }
+            setTabs(tabs.filter((item: any) => item.tabId === tabId))
         }
+
+    }
+
+    //切换页面顺序
+    function swapTab(index1: number, index2: number) {
+        let arr = JSON.parse(JSON.stringify(tabs))
+        let temp = arr[index1]
+        arr[index1] = arr[index2]
+        arr[index2] = temp
+        setTabs(arr)
+    }
+
+    //固定tab页面
+    function fixedTab(tabId: string) {
+        let _tabs = JSON.parse(JSON.stringify(tabs))
+        _tabs.forEach((tabItem: any) => {
+            if (tabItem.tabId === tabId) {
+                tabItem.isFixed = !tabItem.isFixed
+            }
+        })
+        _tabs.sort((a: any, b: any) => {
+            if (a.isFixed === b.isFixed) {
+                return 0
+            }
+            return a.isFixed ? -1 : 1
+        })
+        setTabs(_tabs)
     }
 
     return {
-        openPage,
-        closePage
+        openTab,
+        closeTab,
+        swapTab,
+        fixedTab
     }
 }
 
