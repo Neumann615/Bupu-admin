@@ -175,7 +175,7 @@ export function Header() {
                 {tabs.map((tabItem: any) => {
                     return <CSSTransition
                         key={tabItem.tabId}
-                        timeout={300}
+                        timeout={500}
                         classNames={
                             {
                                 appear: "animate__animated",

@@ -1,10 +1,10 @@
-import { useNavigate } from "react-router"
-import { useMenuStore, useTabBarStore, useBreadcrumbStore, useAppStore } from "@/store"
+import {useNavigate} from "react-router"
+import {useMenuStore, useTabBarStore, useBreadcrumbStore, useAppStore} from "@/store"
 
 export function useControlPage() {
-    let { mainNavData, setMenuCurrentKeys, setMainNavCurrentKeys, menuType, mainNavCurrentKeys } = useMenuStore()
-    let { tabs, setTabs, setNowTab, nowTab } = useTabBarStore()
-    let { setBreadcrumbList } = useBreadcrumbStore()
+    let {mainNavData, setMenuCurrentKeys, setMainNavCurrentKeys, menuType, mainNavCurrentKeys} = useMenuStore()
+    let {tabs, setTabs, setNowTab, nowTab} = useTabBarStore()
+    let {setBreadcrumbList} = useBreadcrumbStore()
     const navigate = useNavigate()
 
     function getPathByKey(curKey: string, data: any) {
@@ -66,18 +66,31 @@ export function useControlPage() {
 
     //关闭页面
     function closePage(v: any) {
-        console.log("关闭页面", v)
-        let delIndex = -1
+        let delIndex: number = -1
+        let openIndex: number = 0
         tabs.forEach((tabItem: any, index: number) => {
             if (tabItem.tabId === v.tabId) {
                 delIndex = index
             }
         })
         if (delIndex !== -1) {
-            //切换一下
+            //打开新页面,移动tab1
             if (nowTab.tabId === v.tabId) {
-                openPage(tabs[delIndex + 1].menuData)
+                //最左边
+                if (delIndex === 0) {
+                    openIndex = 1
+                }
+                //最右边
+                else if (delIndex === tabs.length - 1) {
+                    openIndex = delIndex - 1
+                }
+                //中间
+                else if (delIndex > 0 && delIndex < tabs.length - 1) {
+                    openIndex = delIndex + 1
+                }
+                openPage(tabs[openIndex].menuData)
             }
+            //删除tab
             setTabs(tabs.filter((item: any) => item.tabId !== v.tabId))
         }
     }

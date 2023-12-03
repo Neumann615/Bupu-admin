@@ -27,6 +27,7 @@
     "create-puzzle": "^2.0.0",
     "form-render": "^2.2.16",
     "fr-generator": "^2.8.9",
+    "lodash-es": "^4.17.21",
     "rc-slider-captcha": "^1.2.2",
     "re-resizable": "^6.9.11",
     "react": "^18.2.0",
