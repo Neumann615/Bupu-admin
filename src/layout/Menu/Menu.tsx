@@ -1,0 +1,74 @@
+import { Menu as AntdMenu, ConfigProvider } from "antd"
+import React, { useMemo } from 'react'
+import { createStyles } from "antd-style"
+import { Icon } from "@/components"
+import { useAppStore, useMenuStore } from "@/store"
+import { Resizable } from "re-resizable"
+import { useControlPage } from "@/hooks"
+
+const useStyles = createStyles(({ token, css }) => ({
+    asideMenu: {
+        width: "100%",
+        height: "100%",
+        boxSizing: "border-box",
+        display: "flex",
+        flexDirection: "column",
+        backgroundColor: token.colorBgBase
+    },
+    asideMenuTitle: {
+        textAlign: "center",
+        boxSizing: "border-box",
+        margin: 0,
+        letterSpacing: "2px",
+        height: "54px",
+        lineHeight: "54px",
+        fontWeight: "550",
+        color: token.colorText
+    },
+    asideMenuContent: {
+        flex: 1,
+        height: "1px",
+        width: "100%",
+        overflow: 'auto'
+    }
+}))
+
+export function Menu() {
+    const { styles, theme } = useStyles()
+    let { menuData, subMenuCollapse, mainNavData, menuType, menuCurrentKeys } = useMenuStore()
+    let { name } = useAppStore()
+    let { openPage } = useControlPage()
+
+    let renderMenuData = useMemo(() => {
+        let a = JSON.parse(JSON.stringify(menuType === "simple" ? mainNavData : menuData))
+        generatorMenuData(a)
+        return a
+    }, [menuData, mainNavData, menuType])
+
+
+    function generatorMenuData(v: any) {
+        for (let i = 0; i < v.length; i++) {
+            v[i].icon = v[i].icon ? <Icon size={18} name={v[i].icon}></Icon> : null
+            if (v[i].children?.length) {
+                generatorMenuData(v[i].children)
+            }
+        }
+    }
+
+    return <Resizable
+        enable={{ top: false, right: true, bottom: false, left: false, topRight: false, bottomRight: false, bottomLeft: false, topLeft: false }}
+        minWidth={subMenuCollapse ? 64 : 220} maxWidth={280}><div className={styles.asideMenu}>
+            {!subMenuCollapse ? <p className={styles.asideMenuTitle}>{name}</p> : null}
+            <div className={styles.asideMenuContent}>
+                <AntdMenu
+                    onClick={openPage}
+                    defaultSelectedKeys={menuCurrentKeys}
+                    selectedKeys={menuCurrentKeys}
+                    inlineCollapsed={subMenuCollapse}
+                    mode="inline"
+                    items={renderMenuData}
+                />
+            </div>
+        </div>
+    </Resizable>
+}
