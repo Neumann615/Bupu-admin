@@ -1,12 +1,11 @@
 import React, {useMemo, useState} from "react"
-import {Col, Dropdown, Row, Breadcrumb, Space} from "antd"
 import type {MenuProps} from 'antd'
+import {Breadcrumb, Col, Dropdown, Row, Space} from "antd"
 import {createStyles} from "antd-style"
-import {TransitionGroup, CSSTransition} from "react-transition-group"
 import {DragDropContext, Draggable, Droppable} from "react-beautiful-dnd"
 import {Icon} from "@/components"
 import {useControlTab} from "@/hooks"
-import {useMenuStore, useTabBarStore, useBreadcrumbStore} from "@/store"
+import {useBreadcrumbStore, useMenuStore, useTabBarStore} from "@/store"
 import {preventDefaultEvents} from "@/utils"
 import Toolbar from "../Toolbar/Toolbar"
 
@@ -108,15 +107,6 @@ export function Header() {
     const {breadcrumbList} = useBreadcrumbStore()
     const [nowOpenTab, setNowOpenTab] = useState({tabId: "", isFixed: false})
     const [isOpenTab, setIsOpenTab] = useState(false)
-    const nowOpenTabIndex = useMemo(() => {
-        let _nowOpenTabIndex = -1
-        tabs.forEach((tabItem: any, index: number) => {
-            if (tabItem.tabId === nowOpenTab.tabId) {
-                _nowOpenTabIndex = index
-            }
-        })
-        return _nowOpenTabIndex
-    }, [nowOpenTab, tabs])
 
     const tabItems = useMemo<MenuProps['items']>(() => {
         let nowOpenTabIndex = -1
@@ -136,7 +126,7 @@ export function Header() {
                 }
             }
         }
-        console.log(leftCount,rightCount)
+        console.log(leftCount, rightCount)
         return [
             {
                 label: '重新加载',

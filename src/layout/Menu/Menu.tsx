@@ -1,19 +1,18 @@
-import { Menu as AntdMenu, ConfigProvider } from "antd"
-import React, { useMemo } from 'react'
-import { createStyles } from "antd-style"
-import { Icon } from "@/components"
-import { useAppStore, useMenuStore } from "@/store"
-import { Resizable } from "re-resizable"
-import { useControlTab } from "@/hooks"
+import {Menu as AntdMenu} from "antd"
+import React, {useMemo} from 'react'
+import {createStyles} from "antd-style"
+import {Icon} from "@/components"
+import {useAppStore, useMenuStore} from "@/store"
+import {Resizable} from "re-resizable"
+import {useControlTab} from "@/hooks"
 
-const useStyles = createStyles(({ token, css }) => ({
+const useStyles = createStyles(({token}) => ({
     asideMenu: {
         width: "100%",
         height: "100%",
         boxSizing: "border-box",
         display: "flex",
-        flexDirection: "column",
-        backgroundColor: token.colorBgBase
+        flexDirection: "column"
     },
     asideMenuTitle: {
         textAlign: "center",
@@ -23,7 +22,10 @@ const useStyles = createStyles(({ token, css }) => ({
         height: "54px",
         lineHeight: "54px",
         fontWeight: "550",
-        color: token.colorText
+        fontSize: token.fontSizeHeading4,
+        color: token.colorTextBase,
+        width: "220px",
+        padding: "0px 12px"
     },
     asideMenuContent: {
         flex: 1,
@@ -34,10 +36,10 @@ const useStyles = createStyles(({ token, css }) => ({
 }))
 
 export function Menu() {
-    const { styles, theme } = useStyles()
-    let { menuData, subMenuCollapse, mainNavData, menuType, menuCurrentKeys } = useMenuStore()
-    let { name } = useAppStore()
-    let { openTab } = useControlTab()
+    const {styles, theme} = useStyles()
+    let {menuData, subMenuCollapse, mainNavData, menuType, menuCurrentKeys} = useMenuStore()
+    let {name} = useAppStore()
+    let {openTab} = useControlTab()
 
     let renderMenuData = useMemo(() => {
         let a = JSON.parse(JSON.stringify(menuType === "simple" ? mainNavData : menuData))
@@ -56,9 +58,23 @@ export function Menu() {
     }
 
     return <Resizable
-        enable={{ top: false, right: true, bottom: false, left: false, topRight: false, bottomRight: false, bottomLeft: false, topLeft: false }}
-        minWidth={subMenuCollapse ? 64 : 220} maxWidth={280}><div className={styles.asideMenu}>
-            {!subMenuCollapse ? <p className={styles.asideMenuTitle}>{name}</p> : null}
+        enable={{
+            top: false,
+            right: true,
+            bottom: false,
+            left: false,
+            topRight: false,
+            bottomRight: false,
+            bottomLeft: false,
+            topLeft: false
+        }}
+        style={{
+            backgroundColor: theme.colorBgContainer
+        }}
+        minWidth={subMenuCollapse ? 64 : 220}
+        maxWidth={280}>
+        <div className={styles.asideMenu}>
+            {!subMenuCollapse ? <p className={styles.asideMenuTitle + " text-ellipsis"}>{name}</p> : null}
             <div className={styles.asideMenuContent}>
                 <AntdMenu
                     onClick={openTab}

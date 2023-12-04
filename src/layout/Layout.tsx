@@ -1,19 +1,19 @@
-import { Content } from "@/layout/Content/Content"
-import { Footer } from "@/layout/Footer/Footer"
-import { GlobalProgress } from "@/layout/GlobalProgress/GlobalProgress"
-import { Header } from "@/layout/Header/Header"
-import { MainNav } from "@/layout/MainNav/MainNav"
-import { Menu } from "@/layout/Menu/Menu"
-import { Setting } from "@/layout/Setting/Setting"
-import { useAppStore, useMenuStore } from "@/store"
-import { ConfigProvider } from "antd"
-import { createStyles } from "antd-style"
+import {Content} from "@/layout/Content/Content"
+import {Footer} from "@/layout/Footer/Footer"
+import {GlobalProgress} from "@/layout/GlobalProgress/GlobalProgress"
+import {Header} from "@/layout/Header/Header"
+import {MainNav} from "@/layout/MainNav/MainNav"
+import {Menu} from "@/layout/Menu/Menu"
+import {Setting} from "@/layout/Setting/Setting"
+import {useAppStore, useMenuStore} from "@/store"
+import {ConfigProvider} from "antd"
+import {createStyles} from "antd-style"
 import React from 'react'
-import { useLocation } from "react-router-dom"
-import { ThemeSetting } from "./ThemeSetting/ThemeSetting"
+import {useLocation} from "react-router-dom"
+import {ThemeSetting} from "./ThemeSetting/ThemeSetting"
 
 
-const useStyles = createStyles(({ token, css }) => ({
+const useStyles = createStyles(({token, css}) => ({
     //侧边栏模式布局
     layoutContainerStyle: {
         display: "flex",
@@ -50,7 +50,8 @@ const useStyles = createStyles(({ token, css }) => ({
     },
     headContentMenu: {
         width: "auto",
-        height: "100%"
+        height: "100%",
+        backgroundColor: token.colorBgContainer
     },
     headContentMain: {
         height: "100%",
@@ -76,6 +77,7 @@ const useStyles = createStyles(({ token, css }) => ({
     singleMainLeft: {
         width: 'auto',
         height: "100%",
+        backgroundColor: token.colorBgContainer
     },
     singleMainContent: {
         flex: 1,
@@ -89,9 +91,9 @@ const useStyles = createStyles(({ token, css }) => ({
 
 export function Layout() {
 
-    const { styles, theme } = useStyles()
-    const { menuType } = useMenuStore()
-    const { globalProgressLoading } = useAppStore()
+    const {styles, theme} = useStyles()
+    const {menuType} = useMenuStore()
+    const {globalProgressLoading} = useAppStore()
     const location = useLocation()
 
     function renderLayout() {
@@ -159,7 +161,8 @@ export function Layout() {
     return <ConfigProvider theme={{
         components: {
             Menu: {
-                itemBg: theme.colorBgBase,
+                itemBg: theme.colorBgContainer,
+                subMenuItemBg:theme.colorBgContainer,
                 subMenuItemBorderRadius: theme.borderRadiusLG,
                 itemHeight: 48,
                 collapsedWidth: 64,
