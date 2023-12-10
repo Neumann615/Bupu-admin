@@ -1,43 +1,87 @@
-import { get,post } from "./axios";
-import {OrganizationalDepartList} from '@/types/index'
+import { get, post } from "./axios";
+import { OrganizationalDepartList } from '@/types/index'
+
+interface T {
+    status: number;
+    statusText: string;
+}
+
+interface PartTree {
+    status: number;
+    statusText: string;
+    data: {
+        data: PartDataSource[];
+        msgId: string;
+        resultMsg: string;
+        token: string;
+    }
+}
+
+export interface PartDataSource {
+    children: PartDataSource[]
+    departName: string;
+    id: number;
+}
+
+export interface BaseDepartAdd {
+    pid: number;
+    departName: string;
+}
+
+export interface BaseDepartEdit {
+    id: number;
+    pid: string;
+    departName: string;
+}
+
+export interface BaseDepartDel {
+    id: number;
+}
+
+export interface DepartEditData extends T{
+}
+
+interface T {
+    resultCode:string;
+}
 /**
  * 
- * 获取区域明细
+ * 获取部门明细
  * @param v
  */
-export function getPartTree() {
+export function getPartTree(): Promise<PartTree> {
     return get("/api/platform/api/public/depart/tree")
 }
 
 /**
  * 
- * 获取区域明细
+ * 获取部门明细
  * @param v
  */
-export function getOrganizationalDepartList(v:OrganizationalDepartList) {
+export function getOrganizationalDepartList(v: OrganizationalDepartList) {
     return get("/api/platform/api/human/organizational/depart/list", v)
 }
 
 /**
- * 添加区域明细
+ * 添加部门明细
  * @param v
  */
-export function getBaseAreaAdd(v) {
-    return post("/api/platform/api/device/base/area/add", v)
+export function getBaseDepartAdd(v: BaseDepartAdd) {
+    return post("/api/platform/api/human/organizational/depart/add", v)
 }
 
 /**
- * 修改区域明细
+ * 修改部门明细
  * @param v
  */
-export function getBaseAreaEdit(v) {
-    return post("/api/platform/api/device/base/area/edit", v)
+export function getBaseDepartEdit(v: BaseDepartEdit):Promise<DepartEditData> {
+    return post("/api/platform/api/human/organizational/depart/edit", v)
 }
 
 /**
- * 删除区域明细
+ * 删除部门明细
  * @param v
  */
-export function getBaseAreaDel(v) {
-    return post("/api/platform/api/device/base/area/del", v)
+export function getBaseDepartDel(v: BaseDepartDel) {
+    return post("/api/platform/api/human/organizational/depart/del", v)
 }

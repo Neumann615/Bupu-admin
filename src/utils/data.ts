@@ -603,10 +603,32 @@ export const menuData = [
                         ]
                     },
                     {
-                        label: "认识档案",
+                        label: "人事档案",
                         icon: "TextStyle",
                         key: "/business/personnel-management/doucment"
                     }
+                ]
+            },
+            {
+                label:'设备',
+                icon: "Puzzle",
+                key: "/business/device",
+                children:[
+                    {
+                        label: "区域资料",
+                        icon: "TextStyle",
+                        key: "/business/device/area-list"
+                    },
+                    {
+                        label: "餐厅资料",
+                        icon: "TextStyle",
+                        key: "/business/device/canteen"
+                    },
+                    {
+                        label: "设备资料",
+                        icon: "TextStyle",
+                        key: "/business/device/device-list"
+                    },
                 ]
             }
         ]

@@ -47,6 +47,7 @@ const useStyles = createStyles(({ token, css }) => {
           border-radius: ${token.borderRadius};
           cursor: pointer;
           border-radius: 8px 0 0 8px;
+          z-index:99999;
         `,
         configContainer: css`
           width: 100%;

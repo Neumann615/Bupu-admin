@@ -91,7 +91,7 @@ export function getDefaultKey(treeData: DataNode[]) {
 
 export function getSearchResultTree(treeData: DataNode[], value: string) {
   const loop = (node: DataNode) => {
-    if (node.title!.indexOf(value) > -1) {
+    if (node.originTitle!.indexOf(value) > -1) {
       return node;
     }
     if (node.children) {

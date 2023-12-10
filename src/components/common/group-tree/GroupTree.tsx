@@ -1,27 +1,40 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { getDefaultKey, getSearchResultTree, loadGroup } from './helper';
 import { Input, Tree, Spin, message } from 'antd';
-import { BasicDataNode, EventDataNode } from 'antd/lib/tree';
+import { cloneDeep } from 'lodash-es';
+import { EventDataNode } from 'antd/lib/tree';
 import { createStyles } from 'antd-style';
+import { TreeList } from '@/pages/index/business/personnel-management/organization/department-document';
 
 const useStyles = createStyles(({ token, css }) => ({
   main: {
-      width: "100%",
-      height: "100%",
+    width: "100%",
+    height: "100%",
   },
+  search: {
+    marginBottom: token.paddingMD
+  },
+  treeItem: {
+    display: 'flex',
+    justifyContent: 'space-between'
+  },
+  treeItemIcon: {
+    marginRight: '5px'
+  }
 }))
 
 const { Search } = Input;
 
 export interface DataNode {
   key: string;
+  originTitle: string;
   title: string;
   children?: DataNode[];
 }
 
 interface GroupTreeProps {
-  data:DataNode[];
-  onSelect?: (selectedKeys: string, node: EventDataNode<DataNode>) => void;
+  data: TreeList[];
+  onSelect?: (selectedKeys: number, node: EventDataNode<DataNode>) => void;
 }
 interface GroupTreeState {
   loadingTree: boolean;
@@ -43,6 +56,7 @@ interface SelectInfo {
   nativeEvent: MouseEvent;
 }
 
+
 export default (props: GroupTreeProps) => {
   const [loadingTree, setLoadingTree] = useState<Boolean>(true);
   const [treeData, setTreeData] = useState<DataNode[]>([]);
@@ -52,7 +66,7 @@ export default (props: GroupTreeProps) => {
 
   useEffect(() => {
     initData()
-  })
+  }, [props.data])
 
   const initData = async () => {
     // const { code, msg, data } = (await loadGroup()) as TreeResult;
@@ -60,8 +74,8 @@ export default (props: GroupTreeProps) => {
     //   message.warning(msg);
     //   return;
     // }
-    const {data} = props
-    if(data?.length){
+    const { data } = props
+    if (data?.length) {
       setTreeData(data)
       const { defaultExpandedKeys } = getDefaultKey(data!);
       defaultExpandedKeys.current = defaultExpandedKeys;
@@ -85,10 +99,22 @@ export default (props: GroupTreeProps) => {
   const renderTree = () => {
     return treeData?.length ? (
       <Tree
+        blockNode={true}
         defaultExpandedKeys={defaultExpandedKeys.current}
         onSelect={handleSelect}
         treeData={treeData}
         selectedKeys={selectKeys}
+      // titleRender={(treeItem) => {
+      //   return <div className={styles.treeItem}>
+      //     <div>{treeItem.title}</div>
+      //     <div>
+      //       <FolderAddOutlined className={styles.treeItemIcon} title='添加' />
+      //       <EditOutlined className={styles.treeItemIcon} title='修改' />
+      //       <DeleteOutlined title='删除' />
+      //     </div>
+      //   </div>
+      // }}
+
       />
     ) : (
       <div>暂无数据</div>
@@ -99,13 +125,13 @@ export default (props: GroupTreeProps) => {
     if (!value) {
       setTreeData(originTreeData.current)
     }
-    const treeData = getSearchResultTree(JSON.parse(JSON.stringify(originTreeData.current)), value);
+    const treeData = getSearchResultTree(cloneDeep(originTreeData.current), value);
     setTreeData(treeData)
   };
   const { styles } = useStyles();
   return (
     <div className={styles.main}>
-      <Search placeholder={'请输入搜索内容...'} onSearch={handleSearch} />
+      <Search placeholder={'请输入搜索内容...'} onSearch={handleSearch} className={styles.search} />
       <div>
         {loadingTree ? (
           <div>

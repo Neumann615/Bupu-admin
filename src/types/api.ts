@@ -1,5 +1,5 @@
 export interface OrganizationalDepartList {
-    areaName:string;
+    departName:string;
     pageSize:number;
     pageNum:number;
 }

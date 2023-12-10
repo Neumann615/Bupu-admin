@@ -3,7 +3,7 @@ import axios from 'axios';
 var instance = axios.create({
     headers: {
         'Content-Type': 'application/json',
-        "appId":'123456'
+        "appId": '123456'
     },
     timeout: 30000,
     baseURL: "",   //接口请求地址
@@ -63,7 +63,7 @@ export default instance;
  * @param data
  * @returns {Promise}
  */
-export function post(url, data = {}) {
+export function post(url, data = {}): Promise<any> {
     return new Promise((resolve, reject) => {
         instance.post(url, data).then(response => {
             //对接口错误码做处理
@@ -80,7 +80,7 @@ export function post(url, data = {}) {
  * @param data
  * @returns {Promise}
  */
-export function get(url, data = {}) {
+export function get(url, data = {}): Promise<any> {
     return new Promise((resolve, reject) => {
         instance.get(url, {
             params: data
@@ -109,7 +109,7 @@ export function request(methed, url, data = {}, headers) {
             url: url,
             params: methed === 'get' ? data : '',
             data: methed !== 'get' ? data : '',
-            headers: headers || {'Content-Type': 'application/json'},
+            headers: headers || { 'Content-Type': 'application/json' },
         })
             .then(response => {
                 //对接口错误码做处理
