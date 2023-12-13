@@ -103,8 +103,8 @@ export function Header() {
     const {openTab, closeTab, swapTab, fixedTab} = useControlTab()
     const {styles, theme} = useStyles()
     const {tabs, nowTab} = useTabBarStore()
-    const {changeSubMenuCollapse, subMenuCollapse, menuType} = useMenuStore()
-    const {breadcrumbList} = useBreadcrumbStore()
+    const {changeSubMenuCollapse, subMenuCollapse, menuType, isEnableSubMenuCollapse} = useMenuStore()
+    const {breadcrumbList, isEnable} = useBreadcrumbStore()
     const [nowOpenTab, setNowOpenTab] = useState({tabId: "", isFixed: false})
     const [isOpenTab, setIsOpenTab] = useState(false)
 
@@ -273,13 +273,13 @@ export function Header() {
         <Row align={"middle"} className={styles.headerModule}>
             <Col span={12}>
                 <Space>
-                    {["side", "head", "simple"].includes(menuType) ? <Icon
+                    {["side", "head", "simple"].includes(menuType) && isEnableSubMenuCollapse ? <Icon
                             onClick={changeSubMenuCollapse}
                             fill={theme.colorText}
                             size={25}
                             name={subMenuCollapse ? "MenuFoldOne" : "MenuUnfoldOne"}></Icon>
                         : null}
-                    <Breadcrumb
+                    {isEnable ? <Breadcrumb
                         items={breadcrumbList.map((menuItem: any) => {
                             return {
                                 title: menuItem.label,
@@ -287,7 +287,7 @@ export function Header() {
                                     menuItem?.children?.length ? null : openTab(menuItem)
                                 }
                             }
-                        })}></Breadcrumb>
+                        })}></Breadcrumb> : null}
                 </Space>
             </Col>
             <Col span={12} align={"right"}>

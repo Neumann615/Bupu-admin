@@ -1,6 +1,6 @@
-import { createStyles } from "antd-style"
-import { Icon } from "@/components"
-import { Alert, Checkbox, Col, Divider, Drawer, Input, Radio, Row, Select, Switch, Button, Tooltip } from "antd"
+import {createStyles} from "antd-style"
+import {Icon} from "@/components"
+import {Alert, Checkbox, Col, Divider, Drawer, Input, Radio, Row, Select, Switch, Button, Tooltip} from "antd"
 import {
     breadcrumbStyleList,
     defaultSetting as _defaultSetting,
@@ -25,12 +25,12 @@ import {
     useToolbarStore,
     useTopBarStore
 } from "@/store";
-import { useEffect, useState } from "react"
-import { CSSTransition } from "react-transition-group"
-import { useInterval, useUnmount } from "ahooks"
+import {useEffect, useState} from "react"
+import {CSSTransition} from "react-transition-group"
+import {useInterval, useUnmount} from "ahooks"
 import React from "react";
 
-const useStyles = createStyles(({ token, css }) => {
+const useStyles = createStyles(({token, css}) => {
     //console.log(token)
     return {
         setting: css`
@@ -47,7 +47,7 @@ const useStyles = createStyles(({ token, css }) => {
           border-radius: ${token.borderRadius};
           cursor: pointer;
           border-radius: 8px 0 0 8px;
-          z-index:99999;
+          z-index: 99999;
         `,
         configContainer: css`
           width: 100%;
@@ -135,7 +135,7 @@ export function Setting() {
     const themeSettingStore = useThemeSettingStore()
     const toolbarStore = useToolbarStore()
     const topBarStore = useTopBarStore()
-    const { styles, cx, theme } = useStyles()
+    const {styles, cx, theme} = useStyles()
     const [open, setOpen] = useState(false)
     const [defaultSetting, setDefaultSetting] = useState({
         app: mergeAttribute(_defaultSetting.app, appStore),
@@ -171,9 +171,25 @@ export function Setting() {
         useTabBarStore.setState(defaultSetting.tabBar)
     }, [defaultSetting])
 
+    useEffect(() => {
+        setDefaultSetting({
+            app: mergeAttribute(_defaultSetting.app, appStore),
+            theme: mergeAttribute(_defaultSetting.theme, themeStore),
+            themeSetting: mergeAttribute(_defaultSetting.themeSetting, themeSettingStore),
+            homePage: mergeAttribute(_defaultSetting.homePage, homePageStore),
+            menu: mergeAttribute(_defaultSetting.menu, menuStore),
+            mainPage: mergeAttribute(_defaultSetting.mainPage, mainPageStore),
+            copyright: mergeAttribute(_defaultSetting.copyright, copyrightStore),
+            topBar: mergeAttribute(_defaultSetting.topBar, topBarStore),
+            toolbar: mergeAttribute(_defaultSetting.toolbar, toolbarStore),
+            breadcrumb: mergeAttribute(_defaultSetting.breadcrumb, breadcrumbStore),
+            tabBar: mergeAttribute(_defaultSetting.tabBar, tabBarStore)
+        })
+    }, [open])
+
     const clearInterval = useInterval(() => {
         setIsTransition(!isTransition)
-    }, 3000, { immediate: true })
+    }, 3000, {immediate: true})
 
     useUnmount(() => {
         clearInterval()
@@ -200,12 +216,12 @@ export function Setting() {
                         </Col>
                         <Col>
                             <Switch defaultChecked={defaultSetting.app.isEnableProductionAppSetting}
-                                onChange={(v: boolean) => {
-                                    setDefaultSetting({
-                                        ...defaultSetting,
-                                        app: { ...defaultSetting.app, isEnableProductionAppSetting: v }
-                                    })
-                                }}></Switch>
+                                    onChange={(v: boolean) => {
+                                        setDefaultSetting({
+                                            ...defaultSetting,
+                                            app: {...defaultSetting.app, isEnableProductionAppSetting: v}
+                                        })
+                                    }}></Switch>
                         </Col>
                     </Row>
                     <Row align={"middle"} className={styles.configItem}>
@@ -214,7 +230,7 @@ export function Setting() {
                         </Col>
                         <Col>
                             <Switch defaultChecked={defaultSetting.app.isEnableMemory} onChange={(v: boolean) => {
-                                setDefaultSetting({ ...defaultSetting, app: { ...defaultSetting.app, isEnableMemory: v } })
+                                setDefaultSetting({...defaultSetting, app: {...defaultSetting.app, isEnableMemory: v}})
                             }}></Switch>
                         </Col>
                     </Row>
@@ -224,15 +240,15 @@ export function Setting() {
                         </Col>
                         <Col>
                             <Switch defaultChecked={defaultSetting.app.isEnablePageLoadProgress}
-                                onChange={(v: boolean) => {
-                                    setDefaultSetting({
-                                        ...defaultSetting,
-                                        app: {
-                                            ...defaultSetting.app,
-                                            isEnablePageLoadProgress: v
-                                        }
-                                    })
-                                }}></Switch>
+                                    onChange={(v: boolean) => {
+                                        setDefaultSetting({
+                                            ...defaultSetting,
+                                            app: {
+                                                ...defaultSetting.app,
+                                                isEnablePageLoadProgress: v
+                                            }
+                                        })
+                                    }}></Switch>
                         </Col>
                     </Row>
                     <Row align={"middle"} className={styles.configItem}>
@@ -243,7 +259,7 @@ export function Setting() {
                             <Switch defaultChecked={defaultSetting.app.isEnableFavorite} onChange={(v: boolean) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    app: { ...defaultSetting.app, isEnableFavorite: v }
+                                    app: {...defaultSetting.app, isEnableFavorite: v}
                                 })
                             }}></Switch>
                         </Col>
@@ -256,14 +272,14 @@ export function Setting() {
                                 onClick={() => {
                                     setDefaultSetting({
                                         ...defaultSetting,
-                                        theme: { ...defaultSetting.theme, themeColor: color }
+                                        theme: {...defaultSetting.theme, themeColor: color}
                                     })
                                 }}
-                                className={styles.themeItem} style={{ backgroundColor: color }}>
+                                className={styles.themeItem} style={{backgroundColor: color}}>
                                 {defaultSetting.theme.themeColor === color ?
                                     <Icon className={styles.checkedIcon} name={"CheckOne"}
-                                        fill={"#fff"}
-                                        size={23}></Icon> : null}
+                                          fill={"#fff"}
+                                          size={23}></Icon> : null}
                             </Col>
                         })}
                     </Row>
@@ -281,19 +297,19 @@ export function Setting() {
                                         }
                                     })
                                 }} options={[
-                                    {
-                                        label: "暗黑模式",
-                                        value: "dark"
-                                    },
-                                    {
-                                        label: "紧凑模式",
-                                        value: "compact"
-                                    },
-                                    {
-                                        label: "快乐特效",
-                                        value: "happy"
-                                    }
-                                ]}></Checkbox.Group>
+                                {
+                                    label: "暗黑模式",
+                                    value: "dark"
+                                },
+                                {
+                                    label: "紧凑模式",
+                                    value: "compact"
+                                },
+                                {
+                                    label: "快乐特效",
+                                    value: "happy"
+                                }
+                            ]}></Checkbox.Group>
                         </Col>
                     </Row>
                     <Divider>主题编辑器</Divider>
@@ -305,7 +321,7 @@ export function Setting() {
                             <Switch defaultChecked={defaultSetting.themeSetting.isEnable} onChange={(v: boolean) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    themeSetting: { ...defaultSetting.themeSetting, isEnable: v }
+                                    themeSetting: {...defaultSetting.themeSetting, isEnable: v}
                                 })
                             }}></Switch>
                         </Col>
@@ -316,12 +332,12 @@ export function Setting() {
                         </Col>
                         <Col>
                             <Switch defaultChecked={defaultSetting.themeSetting.isEnableThemeColor}
-                                onChange={(v: boolean) => {
-                                    setDefaultSetting({
-                                        ...defaultSetting,
-                                        themeSetting: { ...defaultSetting.themeSetting, isEnableThemeColor: v }
-                                    })
-                                }}></Switch>
+                                    onChange={(v: boolean) => {
+                                        setDefaultSetting({
+                                            ...defaultSetting,
+                                            themeSetting: {...defaultSetting.themeSetting, isEnableThemeColor: v}
+                                        })
+                                    }}></Switch>
                         </Col>
                     </Row>
                     <Row align={"middle"} className={styles.configItem}>
@@ -330,12 +346,12 @@ export function Setting() {
                         </Col>
                         <Col>
                             <Switch defaultChecked={defaultSetting.themeSetting.isEnableDarkMode}
-                                onChange={(v: boolean) => {
-                                    setDefaultSetting({
-                                        ...defaultSetting,
-                                        themeSetting: { ...defaultSetting.themeSetting, isEnableDarkMode: v }
-                                    })
-                                }}></Switch>
+                                    onChange={(v: boolean) => {
+                                        setDefaultSetting({
+                                            ...defaultSetting,
+                                            themeSetting: {...defaultSetting.themeSetting, isEnableDarkMode: v}
+                                        })
+                                    }}></Switch>
                         </Col>
                     </Row>
                     <Row align={"middle"} className={styles.configItem}>
@@ -344,12 +360,12 @@ export function Setting() {
                         </Col>
                         <Col>
                             <Switch defaultChecked={defaultSetting.themeSetting.isEnableCompactMode}
-                                onChange={(v: boolean) => {
-                                    setDefaultSetting({
-                                        ...defaultSetting,
-                                        themeSetting: { ...defaultSetting.themeSetting, isEnableCompactMode: v }
-                                    })
-                                }}></Switch>
+                                    onChange={(v: boolean) => {
+                                        setDefaultSetting({
+                                            ...defaultSetting,
+                                            themeSetting: {...defaultSetting.themeSetting, isEnableCompactMode: v}
+                                        })
+                                    }}></Switch>
                         </Col>
                     </Row>
                     <Row align={"middle"} className={styles.configItem}>
@@ -358,23 +374,23 @@ export function Setting() {
                         </Col>
                         <Col>
                             <Switch defaultChecked={defaultSetting.themeSetting.isEnableHappyEffect}
-                                onChange={(v: boolean) => {
-                                    setDefaultSetting({
-                                        ...defaultSetting,
-                                        themeSetting: { ...defaultSetting.themeSetting, isEnableHappyEffect: v }
-                                    })
-                                }}></Switch>
+                                    onChange={(v: boolean) => {
+                                        setDefaultSetting({
+                                            ...defaultSetting,
+                                            themeSetting: {...defaultSetting.themeSetting, isEnableHappyEffect: v}
+                                        })
+                                    }}></Switch>
                         </Col>
                     </Row>
                     <Divider>页面过渡动画</Divider>
-                    <Row align={"middle"} className={styles.configItem} style={{ height: "auto" }}
-                        gutter={[16, 16]}>
+                    <Row align={"middle"} className={styles.configItem} style={{height: "auto"}}
+                         gutter={[16, 16]}>
                         {transitionTypeList.map((transition: any, index: number) => {
                             return <Tooltip title={transition.label} key={index}>
                                 <Col span={4} key={index} onClick={() => {
                                     setDefaultSetting({
                                         ...defaultSetting,
-                                        mainPage: { ...defaultSetting.mainPage, transitionType: transition.value }
+                                        mainPage: {...defaultSetting.mainPage, transitionType: transition.value}
                                     })
                                 }}>
                                     <div className={styles.transitionContainer}>
@@ -388,8 +404,8 @@ export function Setting() {
                                         </CSSTransition>
                                         {defaultSetting.mainPage.transitionType === transition.value ?
                                             <Icon className={styles.checkedIcon} name={"CheckOne"}
-                                                fill={theme.blue}
-                                                size={23}></Icon> : null}
+                                                  fill={theme.blue}
+                                                  size={23}></Icon> : null}
                                     </div>
                                 </Col>
                             </Tooltip>
@@ -397,22 +413,22 @@ export function Setting() {
                     </Row>
                     <Divider>导航模式</Divider>
                     <Row align={"middle"}
-                        wrap={false}
-                        className={styles.configItem} style={{ height: "auto" }}
-                        gutter={[24, 24]}>
+                         wrap={false}
+                         className={styles.configItem} style={{height: "auto"}}
+                         gutter={[24, 24]}>
                         {menuTypeList.map((item: any, index: number) => {
-                            return <Tooltip title={item.label} key={index} >
+                            return <Tooltip title={item.label} key={index}>
                                 <Col span={5} key={index} onClick={() => {
                                     setDefaultSetting({
                                         ...defaultSetting,
-                                        menu: { ...defaultSetting.menu, menuType: item.value }
+                                        menu: {...defaultSetting.menu, menuType: item.value}
                                     })
                                 }}>
                                     <div className={styles.transitionContainer}>
                                         {defaultSetting.menu.menuType === item.value ?
                                             <Icon className={styles.checkedIcon} name={"CheckOne"}
-                                                fill={theme.blue}
-                                                size={23}></Icon> : null}
+                                                  fill={theme.blue}
+                                                  size={23}></Icon> : null}
                                         <div className={styles.transitionContent}></div>
                                     </div>
                                 </Col>
@@ -428,7 +444,7 @@ export function Setting() {
                             <Switch defaultChecked={defaultSetting.menu.subMenuUniqueOpened} onChange={(v: boolean) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    menu: { ...defaultSetting.menu, subMenuUniqueOpened: v }
+                                    menu: {...defaultSetting.menu, subMenuUniqueOpened: v}
                                 })
                             }}></Switch>
                         </Col>
@@ -439,12 +455,12 @@ export function Setting() {
                         </Col>
                         <Col>
                             <Switch defaultChecked={defaultSetting.menu.isEnableSubMenuCollapse}
-                                onChange={(v: boolean) => {
-                                    setDefaultSetting({
-                                        ...defaultSetting,
-                                        menu: { ...defaultSetting.menu, isEnableSubMenuCollapse: v }
-                                    })
-                                }}></Switch>
+                                    onChange={(v: boolean) => {
+                                        setDefaultSetting({
+                                            ...defaultSetting,
+                                            menu: {...defaultSetting.menu, isEnableSubMenuCollapse: v}
+                                        })
+                                    }}></Switch>
                         </Col>
                     </Row>
                     <Row align={"middle"} className={styles.configItem}>
@@ -455,7 +471,7 @@ export function Setting() {
                             <Switch defaultChecked={defaultSetting.menu.subMenuCollapse} onChange={(v: boolean) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    menu: { ...defaultSetting.menu, subMenuCollapse: v }
+                                    menu: {...defaultSetting.menu, subMenuCollapse: v}
                                 })
                             }}></Switch>
                         </Col>
@@ -469,7 +485,7 @@ export function Setting() {
                             <Switch defaultChecked={defaultSetting.breadcrumb.isEnable} onChange={(v: boolean) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    breadcrumb: { ...defaultSetting.breadcrumb, isEnable: v }
+                                    breadcrumb: {...defaultSetting.breadcrumb, isEnable: v}
                                 })
                             }}></Switch>
                         </Col>
@@ -480,12 +496,12 @@ export function Setting() {
                         </Col>
                         <Col>
                             <Switch defaultChecked={defaultSetting.breadcrumb.isEnableMainNav}
-                                onChange={(v: boolean) => {
-                                    setDefaultSetting({
-                                        ...defaultSetting,
-                                        breadcrumb: { ...defaultSetting.breadcrumb, isEnableMainNav: v }
-                                    })
-                                }}></Switch>
+                                    onChange={(v: boolean) => {
+                                        setDefaultSetting({
+                                            ...defaultSetting,
+                                            breadcrumb: {...defaultSetting.breadcrumb, isEnableMainNav: v}
+                                        })
+                                    }}></Switch>
                         </Col>
                     </Row>
                     <Row align={"middle"} className={styles.configItem}>
@@ -496,7 +512,7 @@ export function Setting() {
                             <Radio.Group value={defaultSetting.breadcrumb.style} onChange={(v: any) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    breadcrumb: { ...defaultSetting.breadcrumb, style: v.target.value }
+                                    breadcrumb: {...defaultSetting.breadcrumb, style: v.target.value}
                                 })
                             }}>
                                 {breadcrumbStyleList.map((item, index: number) => {
@@ -514,7 +530,7 @@ export function Setting() {
                             <Switch defaultChecked={defaultSetting.topBar.isEnable} onChange={(v: boolean) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    topBar: { ...defaultSetting.topBar, isEnable: v }
+                                    topBar: {...defaultSetting.topBar, isEnable: v}
                                 })
                             }}></Switch>
                         </Col>
@@ -527,7 +543,7 @@ export function Setting() {
                             <Radio.Group value={defaultSetting.topBar.position} onChange={(v: any) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    topBar: { ...defaultSetting.topBar, position: v.target.value }
+                                    topBar: {...defaultSetting.topBar, position: v.target.value}
                                 })
                             }}>
                                 {topBarPositionList.map((item) => {
@@ -545,7 +561,7 @@ export function Setting() {
                             <Switch defaultChecked={defaultSetting.toolbar.isEnable} onChange={(v: boolean) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    toolbar: { ...defaultSetting.toolbar, isEnable: v }
+                                    toolbar: {...defaultSetting.toolbar, isEnable: v}
                                 })
                             }}></Switch>
                         </Col>
@@ -558,7 +574,7 @@ export function Setting() {
                             <Switch defaultChecked={defaultSetting.toolbar.isEnableSearch} onChange={(v: boolean) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    toolbar: { ...defaultSetting.toolbar, isEnableSearch: v }
+                                    toolbar: {...defaultSetting.toolbar, isEnableSearch: v}
                                 })
                             }}></Switch>
                         </Col>
@@ -571,7 +587,7 @@ export function Setting() {
                             <Switch defaultChecked={defaultSetting.toolbar.isEnableI18n} onChange={(v: boolean) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    toolbar: { ...defaultSetting.toolbar, isEnableI18n: v }
+                                    toolbar: {...defaultSetting.toolbar, isEnableI18n: v}
                                 })
                             }}></Switch>
                         </Col>
@@ -582,12 +598,12 @@ export function Setting() {
                         </Col>
                         <Col>
                             <Switch defaultChecked={defaultSetting.toolbar.isEnablePageReload}
-                                onChange={(v: boolean) => {
-                                    setDefaultSetting({
-                                        ...defaultSetting,
-                                        toolbar: { ...defaultSetting.toolbar, isEnablePageReload: v }
-                                    })
-                                }}></Switch>
+                                    onChange={(v: boolean) => {
+                                        setDefaultSetting({
+                                            ...defaultSetting,
+                                            toolbar: {...defaultSetting.toolbar, isEnablePageReload: v}
+                                        })
+                                    }}></Switch>
                         </Col>
                     </Row>
                     <Divider>标签栏</Divider>
@@ -599,7 +615,7 @@ export function Setting() {
                             <Switch defaultChecked={defaultSetting.tabBar.isEnable} onChange={(v: boolean) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    tabBar: { ...defaultSetting.tabBar, isEnable: v }
+                                    tabBar: {...defaultSetting.tabBar, isEnable: v}
                                 })
                             }}></Switch>
                         </Col>
@@ -612,7 +628,7 @@ export function Setting() {
                             <Switch defaultChecked={defaultSetting.tabBar.showIcon} onChange={(v: boolean) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    tabBar: { ...defaultSetting.tabBar, showIcon: v }
+                                    tabBar: {...defaultSetting.tabBar, showIcon: v}
                                 })
                             }}></Switch>
                         </Col>
@@ -625,7 +641,7 @@ export function Setting() {
                             <Radio.Group value={defaultSetting.tabBar.style} onChange={(v: any) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    tabBar: { ...defaultSetting.tabBar, style: v.target.value }
+                                    tabBar: {...defaultSetting.tabBar, style: v.target.value}
                                 })
                             }}>
                                 {tabBarStyleList.map((item) => {
@@ -642,7 +658,7 @@ export function Setting() {
                             <Radio.Group value={defaultSetting.tabBar.position} onChange={(v: any) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    tabBar: { ...defaultSetting.tabBar, position: v.target.value }
+                                    tabBar: {...defaultSetting.tabBar, position: v.target.value}
                                 })
                             }}>
                                 {tabBarPositionList.map((item) => {
@@ -660,7 +676,7 @@ export function Setting() {
                             <Switch defaultChecked={defaultSetting.homePage.isEnable} onChange={(v: boolean) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    homePage: { ...defaultSetting.homePage, isEnable: v }
+                                    homePage: {...defaultSetting.homePage, isEnable: v}
                                 })
                             }}></Switch>
                         </Col>
@@ -673,7 +689,7 @@ export function Setting() {
                             <Input defaultValue={defaultSetting.homePage.title} onChange={(v: any) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    homePage: { ...defaultSetting.homePage, title: v.target.value }
+                                    homePage: {...defaultSetting.homePage, title: v.target.value}
                                 })
                             }}></Input>
                         </Col>
@@ -687,7 +703,7 @@ export function Setting() {
                             <Switch defaultChecked={defaultSetting.copyright.isEnable} onChange={(v: boolean) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    copyright: { ...defaultSetting.copyright, isEnable: v }
+                                    copyright: {...defaultSetting.copyright, isEnable: v}
                                 })
                             }}></Switch>
                         </Col>
@@ -700,7 +716,7 @@ export function Setting() {
                             <Input defaultValue={defaultSetting.copyright.date} onChange={(v: any) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    copyright: { ...defaultSetting.copyright, date: v.target.value }
+                                    copyright: {...defaultSetting.copyright, date: v.target.value}
                                 })
                             }}></Input>
                         </Col>
@@ -713,7 +729,7 @@ export function Setting() {
                             <Input defaultValue={defaultSetting.copyright.company} onChange={(v: any) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    copyright: { ...defaultSetting.copyright, company: v.target.value }
+                                    copyright: {...defaultSetting.copyright, company: v.target.value}
                                 })
                             }}></Input>
                         </Col>
@@ -726,7 +742,7 @@ export function Setting() {
                             <Input defaultValue={defaultSetting.copyright.website} onChange={(v: any) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    copyright: { ...defaultSetting.copyright, website: v.target.value }
+                                    copyright: {...defaultSetting.copyright, website: v.target.value}
                                 })
                             }}></Input>
                         </Col>
@@ -740,7 +756,7 @@ export function Setting() {
                             <Input defaultValue={defaultSetting.app.name} onChange={(v: any) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    app: { ...defaultSetting.app, name: v.target.value }
+                                    app: {...defaultSetting.app, name: v.target.value}
                                 })
                             }}></Input>
                         </Col>
@@ -753,7 +769,7 @@ export function Setting() {
                             <Input defaultValue={defaultSetting.app.logo} onChange={(v: any) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    app: { ...defaultSetting.app, logo: v.target.value }
+                                    app: {...defaultSetting.app, logo: v.target.value}
                                 })
                             }}></Input>
                         </Col>
@@ -766,9 +782,9 @@ export function Setting() {
                             <Select defaultValue={defaultSetting.app.storageType} onChange={(v: string) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    app: { ...defaultSetting.app, storageType: v }
+                                    app: {...defaultSetting.app, storageType: v}
                                 })
-                            }} style={{ width: 110 }} options={storageTypeList}></Select>
+                            }} style={{width: 110}} options={storageTypeList}></Select>
                         </Col>
                     </Row>
                     <Row align={"middle"} className={styles.configItem}>
@@ -779,7 +795,7 @@ export function Setting() {
                             <Input defaultValue={defaultSetting.app.storagePrefix} onChange={(v: any) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    app: { ...defaultSetting.app, storagePrefix: v.target.value }
+                                    app: {...defaultSetting.app, storagePrefix: v.target.value}
                                 })
                             }}></Input>
                         </Col>
@@ -792,14 +808,14 @@ export function Setting() {
                             <Input defaultValue={defaultSetting.app.styleClassNamePrefix} onChange={(v: any) => {
                                 setDefaultSetting({
                                     ...defaultSetting,
-                                    app: { ...defaultSetting.app, styleClassNamePrefix: v.target.value }
+                                    app: {...defaultSetting.app, styleClassNamePrefix: v.target.value}
                                 })
                             }}></Input>
                         </Col>
                     </Row>
                 </div>
                 <div className={styles.configButton}>
-                    <Button size={"large"} style={{ width: "100%" }} type={"primary"}>复制配置</Button>
+                    <Button size={"large"} style={{width: "100%"}} type={"primary"}>复制配置</Button>
                 </div>
             </div>
         </Drawer>

@@ -1,6 +1,7 @@
 import React from 'react'
 import {withNProgress} from '@tanem/react-nprogress'
-import {createStyles} from "antd-style";
+import {createStyles} from "antd-style"
+import {useAppStore} from "@/store";
 
 const useStyles = createStyles(({token, css}) => ({}))
 
@@ -83,10 +84,13 @@ const _GlobalProgress: React.FC<{
     animationDuration: number
     isFinished: boolean
     progress: number
-}> = ({isFinished, progress, animationDuration}) => <Container animationDuration={animationDuration}
-                                                               isFinished={isFinished}>
-    <Bar animationDuration={animationDuration} progress={progress}/>
-    <Spinner/>
-</Container>
+}> = ({isFinished, progress, animationDuration}) => {
+    const {isEnablePageLoadProgress} = useAppStore()
+    return isEnablePageLoadProgress ? <Container animationDuration={animationDuration}
+                                              isFinished={isFinished}>
+        <Bar animationDuration={animationDuration} progress={progress}/>
+        <Spinner/>
+    </Container> : null
+}
 
 export const GlobalProgress = withNProgress(_GlobalProgress)

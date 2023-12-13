@@ -2,7 +2,7 @@ import { ActionType, ParamsType, ProColumns, ProForm, ProFormText } from '@ant-d
 import { Button, Modal, Popconfirm } from 'antd';
 import { createStyles } from "antd-style"
 import { ProTable } from '@ant-design/pro-components';
-import { getJobList, getBasJobAdd, getBaseJobEdit, getBaseJobDel } from '@/api/job';
+import { getOrganizationalEmployeeList, getBaseEmployeeAdd, getBaseEmployeeEdit, getBaseEmployeeDel } from '@/api/employee';
 import React, { useState, useRef } from 'react';
 import { message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
@@ -24,7 +24,53 @@ type GithubIssueItem = {
     id: number;
     number: number;
     title: string;
+    sex: string;
+    updatetime: string;
+    timeBalance: string;
+    pushMsg: string;
+    birthDate: string;
+    longLat: string;
+    nickName: string;
+    personPwd: string;
+    sequId: string;
+    personName: string;
+    personId: string;
+    doorRule: string;
+    departName: string;
+    jobId: string;
+    previousWalletBalance: string;
+    updateBy: string;
+    isDel: string;
+    beginTime: string;
+    idCard: string;
+    lastTime: string;
+    departId: string;
+    entryTime: string;
+    cashBalance: string;
+    cardSn: string;
+    previousSubsidyBalance: string;
+    leaveType: string;
+    leaveTime: string;
+    wxStatus: string;
+    createTime: string;
+    personAddress: string;
+    leaveReason: string;
+    subsidyBalance: string;
+    previousCashBalance: string;
+    accountId: string;
+    payOpenId: string;
+    loginPwd: string;
+    endTime: string;
+    openId: string;
+    levelId: string;
+    consumeRule: string;
     jobName: string;
+    personMobile: string;
+    createBy: string;
+    headImg: string;
+    appId: string;
+    attendanceRule: string;
+    askLeaveTime: string;
     pid: string;
     labels: {
         name: string;
@@ -37,17 +83,6 @@ type GithubIssueItem = {
     closed_at?: string;
 };
 
-interface IAttributes {
-    code: string;
-    ecode: string;
-    info: string;
-    level: string;
-    memo: string | null;
-    orderby: string;
-    type: string;
-    visible: string | boolean | null;
-}
-
 interface OriginData {
     children: OriginData[];
     departName: string;
@@ -59,7 +94,7 @@ const useStyles = createStyles(({ token }) => ({
         width: "100%",
         height: "100%",
         padding: "12px",
-        display: "flex",
+        //display: "flex",
     },
 }))
 
@@ -71,9 +106,168 @@ export default () => {
     const [title, setTitle] = useState('增加');
     const columns: ProColumns<GithubIssueItem>[] = [
         {
-            title: '岗位名称',
-            dataIndex: 'jobName',
+            title: '出生日期',
+            dataIndex: 'birthDate',
             ellipsis: true,
+            width: 150,
+            search: false,
+            fixed:"left",
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                        message: '此项为必填项',
+                    },
+                ],
+            },
+        },
+        {
+            title: '姓名',
+            dataIndex: 'personName',
+            ellipsis: true,
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                        message: '此项为必填项',
+                    },
+                ],
+            },
+        },
+        {
+            title: '人员编号',
+            dataIndex: 'personId',
+            ellipsis: true,
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                        message: '此项为必填项',
+                    },
+                ],
+            },
+        },
+        {
+            title: '岗位id',
+            dataIndex: 'jobId',
+            ellipsis: true,
+            width: 150,
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                        message: '此项为必填项',
+                    },
+                ],
+            },
+        },
+        {
+            title: '有效开始时间',
+            dataIndex: 'beginTime',
+            ellipsis: true,
+            width: 150,
+            search: false,
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                        message: '此项为必填项',
+                    },
+                ],
+            },
+        },
+        {
+            title: '身份证号',
+            dataIndex: 'idCard',
+            ellipsis: true,
+            width: 150,
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                        message: '此项为必填项',
+                    },
+                ],
+            },
+        },
+        {
+            title: '部门ID',
+            dataIndex: 'departId',
+            ellipsis: true,
+            width: 150,
+            search: false,
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                        message: '此项为必填项',
+                    },
+                ],
+            },
+        },
+        {
+            title: '卡序列号',
+            dataIndex: 'cardSn',
+            ellipsis: true,
+            width: 150,
+            search: false,
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                        message: '此项为必填项',
+                    },
+                ],
+            },
+        },
+        {
+            title: '有效结束时间',
+            dataIndex: 'endTime',
+            ellipsis: true,
+            width: 150,
+            search: false,
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                        message: '此项为必填项',
+                    },
+                ],
+            },
+        },
+        {
+            title: '级别',
+            dataIndex: 'levelId',
+            ellipsis: true,
+            width: 150,
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                        message: '此项为必填项',
+                    },
+                ],
+            },
+        },
+        {
+            title: '手机号',
+            dataIndex: 'personMobile',
+            ellipsis: true,
+            //width: 150,
+            formItemProps: {
+                rules: [
+                    {
+                        required: true,
+                        message: '此项为必填项',
+                    },
+                ],
+            },
+        },
+        {
+            title: '联系地址',
+            dataIndex: 'personAddress',
+            ellipsis: true,
+            //width: 150,
             formItemProps: {
                 rules: [
                     {
@@ -86,6 +280,7 @@ export default () => {
         {
             title: '更新时间',
             dataIndex: 'updateTime',
+           // width: 150,
             ellipsis: true,
             search: false,
             editable: false,
@@ -93,6 +288,7 @@ export default () => {
         {
             title: '创建时间',
             dataIndex: 'createTime',
+           // width: 150,
             ellipsis: true,
             search: false,
             editable: false,
@@ -100,12 +296,14 @@ export default () => {
         {
             title: '操作',
             valueType: 'option',
+            width: 150,
             key: 'option',
+            fixed:'right',
             render: (text, record, _, action) => [
                 <a
                     key="editable"
                     onClick={() => {
-                        action?.startEditable?.(record.id);
+                        action?.startEditable?.(record.personId);
                     }}
                 >
                     编辑
@@ -123,13 +321,14 @@ export default () => {
     ];
 
     const handleRequest = async (params: ParamsType) => {
+        console.log(params, 'params')
         const params1 = {
-            jobName: params.jobName,
+            ...params,
             pageNum: params.current,
             pageSize: params.pageSize,
         }
         try {
-            const result = await getJobList(params1);
+            const result = await getOrganizationalEmployeeList(params1);
             if (result.status === 200) {
                 return {
                     data: result.data.data.list,
@@ -153,7 +352,7 @@ export default () => {
             const params = {
                 id: data.id
             }
-            await getBaseJobDel(params);
+            await getBaseEmployeeDel(params);
             actionRef.current?.reload();
             message.success('删除成功')
         }
@@ -173,7 +372,7 @@ export default () => {
         const params = {
             jobName,
         }
-        const result = await getBasJobAdd(params);
+        const result = await getBaseEmployeeAdd(params);
         if (result.resultCode === '0') {
             message.success('添加成功');
             actionRef.current?.reload();
@@ -191,7 +390,7 @@ export default () => {
             pid,
             jobName,
         }
-        const result = await getBaseJobEdit(params);
+        const result = await getBaseEmployeeEdit(params);
         if (result.resultCode === '0') {
             message.success('修改成功')
             actionRef.current?.reload();
@@ -208,8 +407,9 @@ export default () => {
         <div className={styles.main}>
             <ProTable<GithubIssueItem>
                 columns={columns}
+                scroll={{x:1300}}
                 actionRef={actionRef}
-                cardBordered
+                //cardBordered
                 request={handleRequest}
                 editable={{
                     type: 'multiple',
@@ -217,20 +417,21 @@ export default () => {
                         handleSave(data)
                     },
                 }}
-                style={{ height: '100%' }}
                 columnsState={{
                     persistenceKey: 'pro-table-singe-demos',
                     persistenceType: 'localStorage',
                 }}
-                rowKey="id"
+                rowKey="personId"
                 search={{
                     labelWidth: 'auto',
                 }}
-                options={{
-                    setting: {
-                        listsHeight: 400,
-                    },
-                }}
+                options={false}
+                search={false}
+                // options={{
+                //     setting: {
+                //         listsHeight: 400,
+                //     },
+                // }}
                 form={{
                     // 由于配置了 transform，提交的参与与定义的不同这里需要转化一下
                     syncToUrl: (values, type) => {

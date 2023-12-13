@@ -605,7 +605,17 @@ export const menuData = [
                     {
                         label: "人事档案",
                         icon: "TextStyle",
-                        key: "/business/personnel-management/doucment"
+                        key: "/business/personnel-management/employee"
+                    },
+                    {
+                        label: "离职档案",
+                        icon: "TextStyle",
+                        key: "/business/personnel-management/employeeLeave"
+                    },
+                    {
+                        label:"测试",
+                        icon:"TextStyle",
+                        key:"/business/personnel-management/test"
                     }
                 ]
             },
