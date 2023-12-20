@@ -86,8 +86,9 @@ const _GlobalProgress: React.FC<{
     progress: number
 }> = ({isFinished, progress, animationDuration}) => {
     const {isEnablePageLoadProgress} = useAppStore()
-    return isEnablePageLoadProgress ? <Container animationDuration={animationDuration}
-                                              isFinished={isFinished}>
+    return isEnablePageLoadProgress ? <Container
+        animationDuration={animationDuration}
+        isFinished={isFinished}>
         <Bar animationDuration={animationDuration} progress={progress}/>
         <Spinner/>
     </Container> : null
