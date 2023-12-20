@@ -89,6 +89,7 @@ const _GlobalProgress: React.FC<{
     return isEnablePageLoadProgress ? <Container
         animationDuration={animationDuration}
         isFinished={isFinished}>
+
         <Bar animationDuration={animationDuration} progress={progress}/>
         <Spinner/>
     </Container> : null
