@@ -88,6 +88,7 @@ const _GlobalProgress: React.FC<{
     const {isEnablePageLoadProgress} = useAppStore()
     return isEnablePageLoadProgress ? <Container
         animationDuration={animationDuration}
+
         isFinished={isFinished}>
         <Bar animationDuration={animationDuration} progress={progress}/>
         <Spinner/>
