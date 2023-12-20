@@ -1,11 +1,12 @@
-import { Icon } from "@/components"
-import { useControlTab } from "@/hooks"
-import { useAppStore, useMenuStore } from "@/store"
-import { Menu } from "antd"
-import { createStyles } from "antd-style"
+import {Menu} from "antd"
+import {createStyles} from "antd-style"
 import React from 'react'
+import {Icon} from "@/components"
+import {useControlTab} from "@/hooks"
+import {useAppStore, useHomePageStore, useMenuStore} from "@/store"
 
-const useStyles = createStyles(({ token, css }) => ({
+//@ts-ignore
+const useStyles = createStyles(({token, css}) => ({
     asideBar: {
         width: "84px",
         height: "100%",
@@ -173,10 +174,16 @@ const useStyles = createStyles(({ token, css }) => ({
 }))
 
 export function MainNav() {
-    const { styles, cx } = useStyles()
-    let { mainNavData, asideBarSelection, menuType, mainNavCurrentKeys } = useMenuStore()
-    let { logo, name } = useAppStore()
-    let { openTab } = useControlTab()
+    const {styles, cx} = useStyles()
+    let {mainNavData, asideBarSelection, menuType, mainNavCurrentKeys} = useMenuStore()
+    let {logo, name} = useAppStore()
+    let {isEnableHomePage, homePageTitle} = useHomePageStore((state) => {
+        return {
+            isEnableHomePage: state.isEnable,
+            homePageTitle: state.title
+        }
+    })
+    let {openTab} = useControlTab()
 
 
     //递归渲染menu数组,根据是否有子节点判断类型是不是submenu,记录
@@ -184,17 +191,17 @@ export function MainNav() {
         return menuData.map((item: any, index: number) => {
             if (item.children?.length) {
                 return <Menu.SubMenu key={item.key}
-                    title={item.label}
-                    icon={item.icon ? <Icon name={item.icon}></Icon> : null}
+                                     title={item.label}
+                                     icon={item.icon ? <Icon name={item.icon}></Icon> : null}
                 >
                     {_generatorMenuItem(item.children)}
                 </Menu.SubMenu>
             } else {
                 return <Menu.Item key={item.key}
-                    onClick={() => {
-                        openTab(item)
-                    }}
-                    icon={<Icon name={item.icon}></Icon>}
+                                  onClick={() => {
+                                      openTab(item)
+                                  }}
+                                  icon={<Icon name={item.icon}></Icon>}
                 >
                     {item.label}
                 </Menu.Item>
@@ -206,30 +213,30 @@ export function MainNav() {
         return menuData.map((item: any, index: number) => {
             if (item.children?.length) {
                 return <Menu.SubMenu key={item.key}
-                    onTitleClick={(v) => {
-                        if (menuType === "side" || menuType === "head") {
-                            console.log(v)
-                            useMenuStore.setState((store: any) => ({
-                                menuData: mainNavData[index].children,
-                                mainNavCurrentKeys: [item.key]
-                            }))
-                        }
-                    }}
-                    popupOffset={menuType === "only-head" ? [-70, 74] : [0, 0]}
-                    className={styles.onlySubMenu}
-                    title={<>
-                        <Icon size={24} name={item.icon}></Icon>
-                        <div className={styles.onlyModuleTitle}>{item.label}</div>
-                    </>}
+                                     onTitleClick={(v) => {
+                                         if (menuType === "side" || menuType === "head") {
+                                             console.log(v)
+                                             useMenuStore.setState((store: any) => ({
+                                                 menuData: mainNavData[index].children,
+                                                 mainNavCurrentKeys: [item.key]
+                                             }))
+                                         }
+                                     }}
+                                     popupOffset={menuType === "only-head" ? [-70, 74] : [0, 0]}
+                                     className={styles.onlySubMenu}
+                                     title={<>
+                                         <Icon size={24} name={item.icon}></Icon>
+                                         <div className={styles.onlyModuleTitle}>{item.label}</div>
+                                     </>}
                 >
                     {isRenderChildren ? _generatorMenuItem(item.children) : null}
                 </Menu.SubMenu>
             } else {
                 return <Menu.Item key={item.key}
-                    onClick={() => {
-                        openTab(item)
-                    }}
-                    icon={<Icon name={item.icon}></Icon>}
+                                  onClick={() => {
+                                      openTab(item)
+                                  }}
+                                  icon={<Icon name={item.icon}></Icon>}
                 >
                     {item.label}
                 </Menu.Item>
@@ -239,19 +246,27 @@ export function MainNav() {
 
     return <>
         {menuType === "side" ? <div className={styles.asideBar}>
-            <img className={styles.logoContainer} src={logo} />
-            <Menu
-                selectedKeys={mainNavCurrentKeys}
-                style={{
-                    backgroundColor: "transparent"
-                }}>
-                {generatorMenuItem(mainNavData, false)}
-            </Menu>
-        </div>
+                <img className={styles.logoContainer} onClick={() => {
+                    if (isEnableHomePage) {
+                        openTab({key: "/"})
+                    }
+                }} src={logo}/>
+                <Menu
+                    selectedKeys={mainNavCurrentKeys}
+                    style={{
+                        backgroundColor: "transparent"
+                    }}>
+                    {generatorMenuItem(mainNavData, false)}
+                </Menu>
+            </div>
             : null}
         {
             menuType === 'only-side' ? <div className={styles.asideBar}>
-                <img className={styles.logoContainer} src={logo} />
+                <img className={styles.logoContainer} onClick={() => {
+                    if (isEnableHomePage) {
+                        openTab({key: "/"})
+                    }
+                }} src={logo}/>
                 <Menu
                     selectedKeys={mainNavCurrentKeys}
                     style={{
@@ -262,7 +277,11 @@ export function MainNav() {
             </div> : null
         }
         {menuType === 'head' ? <div className={styles.TopAsideBar}>
-            <img className={styles.TopLogoContainer} src={logo} />
+            <img className={styles.TopLogoContainer} onClick={() => {
+                if (isEnableHomePage) {
+                    openTab({key: "/"})
+                }
+            }} src={logo}/>
             <div className={styles.TopAsideMenuTitle}>{name}</div>
             <Menu
                 selectedKeys={mainNavCurrentKeys}
@@ -276,8 +295,12 @@ export function MainNav() {
         }
         {
             menuType === 'only-head' ? <div className={styles.TopAsideBar}>
-                <img className={styles.TopLogoContainer} src={logo} />
-                <p className={styles.TopAsideMenuTitle}>{name}</p>
+                <img className={styles.TopLogoContainer} onClick={() => {
+                    if (isEnableHomePage) {
+                        openTab({key: "/"})
+                    }
+                }} src={logo}/>
+                <div className={styles.TopAsideMenuTitle}>{name}</div>
                 <Menu
                     selectedKeys={mainNavCurrentKeys}
                     style={{

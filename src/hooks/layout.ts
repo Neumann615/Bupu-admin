@@ -1,8 +1,14 @@
 import {useNavigate} from "react-router"
-import {useMenuStore, useTabBarStore, useBreadcrumbStore, useAppStore} from "@/store"
+import {useMenuStore, useTabBarStore, useBreadcrumbStore, useAppStore, useHomePageStore} from "@/store"
 
 export function useControlTab() {
     let {mainNavData, setMenuCurrentKeys, setMainNavCurrentKeys, menuType, mainNavCurrentKeys} = useMenuStore()
+    let {isEnableHomePage, homePageTitle} = useHomePageStore((state) => {
+        return {
+            isEnableHomePage: state.isEnable,
+            homePageTitle: state.title
+        }
+    })
     let {tabs, setTabs, setNowTab, nowTab} = useTabBarStore()
     let {setBreadcrumbList} = useBreadcrumbStore()
     const navigate = useNavigate()
@@ -31,6 +37,23 @@ export function useControlTab() {
     //打开页面
     function openTab(v: any) {
         let pathList = getPathByKey(v.key, mainNavData)
+        if (v.key === "/") {
+            pathList = [{
+                icon: "Home",
+                id: "home_xxxx",
+                key: "/",
+                label: homePageTitle
+            }]
+        } else {
+            if (isEnableHomePage) {
+                pathList.unshift({
+                    icon: "Home",
+                    id: "home_xxxx",
+                    key: "/",
+                    label: homePageTitle
+                })
+            }
+        }
         if (pathList?.length) {
             //设置面包屑导航
             setBreadcrumbList(pathList)

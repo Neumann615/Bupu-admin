@@ -6,6 +6,7 @@ import {useAppStore, useMenuStore} from "@/store"
 import {Resizable} from "re-resizable"
 import {useControlTab} from "@/hooks"
 
+//@ts-ignore
 const useStyles = createStyles(({token, css}) => ({
     asideMenu: css`
       width: 100%;
@@ -16,18 +17,26 @@ const useStyles = createStyles(({token, css}) => ({
       background-color: ${token.colorBgContainer};
       transition: width .3s;
     `,
+    asideMenuHeader: css`
+      display: flex;
+      align-items: center;
+      boxSizing: border-box;
+      padding: 0px 12px;
+      height: 54px;
+    `,
+    asideMenuLogo: {
+        width: "38px",
+        height: "38px",
+        display: "block",
+        border: "none",
+    },
     asideMenuTitle: {
         textAlign: "center",
-        boxSizing: "border-box",
-        margin: 0,
         letterSpacing: "2px",
-        height: "54px",
-        lineHeight: "54px",
         fontWeight: "550",
         fontSize: token.fontSizeHeading4,
         color: token.colorTextBase,
-        width: "100%",
-        padding: "0px 12px"
+        flex: 1
     },
     asideMenuContent: {
         flex: 1,
@@ -50,8 +59,15 @@ const useStyles = createStyles(({token, css}) => ({
 export function Menu() {
     let {styles, theme} = useStyles()
     let [openKeys, setOpenKeys] = useState([]);
-    let {menuData, subMenuCollapse, mainNavData, menuType, menuCurrentKeys, subMenuUniqueOpened} = useMenuStore()
-    let {name} = useAppStore()
+    let {
+        menuData,
+        subMenuCollapse,
+        mainNavData,
+        menuType,
+        menuCurrentKeys,
+        subMenuUniqueOpened
+    } = useMenuStore()
+    let {name, logo} = useAppStore()
     let {openTab} = useControlTab()
     let rootSubmenuKeys = useMemo(() => {
         return menuData.filter((item: any) => {
@@ -83,8 +99,12 @@ export function Menu() {
         }
     }
 
-    return  <div className={styles.asideMenu} style={{width: subMenuCollapse ? 64 : 230}}>
-        {!subMenuCollapse ? <p className={styles.asideMenuTitle + " text-ellipsis"}>{name}</p> : null}
+    return <div className={styles.asideMenu} style={{width: subMenuCollapse ? 64 : 230}}>
+        {!subMenuCollapse ? <div className={styles.asideMenuHeader}>
+                {menuType === "single" ? <img className={styles.asideMenuLogo} src={logo}/> : null}
+                <div className={styles.asideMenuTitle + " text-ellipsis"}>{name}</div>
+            </div>
+            : null}
         <div className={styles.asideMenuContent}>
             <AntdMenu
                 openKeys={openKeys}

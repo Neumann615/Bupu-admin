@@ -163,6 +163,7 @@ export function Setting() {
         useThemeStore.setState(defaultSetting.theme)
         useThemeSettingStore.setState(defaultSetting.themeSetting)
         useMenuStore.setState(defaultSetting.menu)
+        useHomePageStore.setState(defaultSetting.homePage)
         useMainPageStore.setState(defaultSetting.mainPage)
         useCopyrightStore.setState(defaultSetting.copyright)
         useTopBarStore.setState(defaultSetting.topBar)
@@ -172,6 +173,7 @@ export function Setting() {
     }, [defaultSetting])
 
     useEffect(() => {
+        console.log(homePageStore)
         setDefaultSetting({
             app: mergeAttribute(_defaultSetting.app, appStore),
             theme: mergeAttribute(_defaultSetting.theme, themeStore),
