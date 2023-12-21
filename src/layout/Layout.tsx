@@ -1,3 +1,7 @@
+import {ConfigProvider} from "antd"
+import {createStyles} from "antd-style"
+import React from 'react'
+import {useLocation} from "react-router-dom"
 import {Content} from "@/layout/Content/Content"
 import {Footer} from "@/layout/Footer/Footer"
 import {GlobalProgress} from "@/layout/GlobalProgress/GlobalProgress"
@@ -6,10 +10,6 @@ import {MainNav} from "@/layout/MainNav/MainNav"
 import {Menu} from "@/layout/Menu/Menu"
 import {Setting} from "@/layout/Setting/Setting"
 import {useAppStore, useMenuStore} from "@/store"
-import {ConfigProvider} from "antd"
-import {createStyles} from "antd-style"
-import React from 'react'
-import {useLocation} from "react-router-dom"
 import {ThemeSetting} from "./ThemeSetting/ThemeSetting"
 
 
@@ -162,7 +162,7 @@ export function Layout() {
         components: {
             Menu: {
                 itemBg: theme.colorBgContainer,
-                subMenuItemBg:theme.colorBgContainer,
+                subMenuItemBg: theme.colorBgContainer,
                 subMenuItemBorderRadius: theme.borderRadiusLG,
                 itemHeight: 48,
                 collapsedWidth: 64,

@@ -1,6 +1,7 @@
-import { create } from 'zustand'
+import {create} from 'zustand'
 import defaultSetting from "@/defaultSetting"
-import { persist, createJSONStorage } from 'zustand/middleware'
+import {persist, createJSONStorage} from 'zustand/middleware'
+
 export const useMenuStore: any = create(
     persist((set: any) => (
         {
@@ -9,9 +10,11 @@ export const useMenuStore: any = create(
             menuData: [],
             mainNavData: [],
             mainNavCurrentKeys: [],
-            changeSubMenuCollapse: () => set((state: any) => ({ subMenuCollapse: !state.subMenuCollapse })),
-            setMenuCurrentKeys: (keyPath: string[]) => set((state: any) => ({ menuCurrentKeys: keyPath })),
-            setMainNavCurrentKeys: (keyPath: string[]) => set((state: any) => ({ mainNavCurrentKeys: keyPath }))
+            openKeys: [],
+            changeSubMenuCollapse: () => set((state: any) => ({subMenuCollapse: !state.subMenuCollapse})),
+            setMenuCurrentKeys: (keyPath: string[]) => set((state: any) => ({menuCurrentKeys: keyPath})),
+            setMainNavCurrentKeys: (keyPath: string[]) => set((state: any) => ({mainNavCurrentKeys: keyPath})),
+            setOpenKeys: (keyPath: string[]) => set((state: any) => ({openKeys: keyPath})),
         }
     ), {
         name: defaultSetting.app.storagePrefix + "menu",

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { message, Button, Checkbox, Dropdown, Form, Input, MenuProps, Tabs, Typography } from 'antd'
+import React, {useEffect, useState} from 'react'
+import {message, Button, Checkbox, Dropdown, Form, Input, MenuProps, Tabs, Typography} from 'antd'
 import {
     EyeInvisibleOutlined,
     EyeTwoTone,
@@ -8,12 +8,14 @@ import {
     PhoneOutlined,
     UserOutlined
 } from '@ant-design/icons'
-import { CheckboxChangeEvent } from 'antd/es/checkbox'
-import { useNavigate } from "react-router"
+import {CheckboxChangeEvent} from 'antd/es/checkbox'
+import {useNavigate} from "react-router"
 import SliderCaptch from 'rc-slider-captcha';
-import { login } from '@/api/index'
+import {login} from '@/api/index'
+import {useMenuStore} from "@/store";
+import {menuData} from "@/utils";
 
-const { Link } = Typography
+const {Link} = Typography
 const MainStyle: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
@@ -105,30 +107,30 @@ export default function Login() {
                 size="large"
                 name="basic"
                 form={form}
-                wrapperCol={{ span: 24 }}
-                style={{ maxWidth: 600 }}
+                wrapperCol={{span: 24}}
+                style={{maxWidth: 600}}
                 initialValues={initData}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 autoComplete="off">
                 <Form.Item
                     name="userName"
-                    rules={[{ required: true, message: '请输入用户名!' }]}>
+                    rules={[{required: true, message: '请输入用户名!'}]}>
                     <Input
                         size="large"
                         placeholder="请输入用户名"
                         allowClear
-                        prefix={<UserOutlined />}
+                        prefix={<UserOutlined/>}
                     />
                 </Form.Item>
                 <Form.Item
                     name="userId"
-                    rules={[{ required: true, message: '请输入密码!' }]}>
+                    rules={[{required: true, message: '请输入密码!'}]}>
                     <Input.Password
                         size="large"
                         placeholder="请输入密码"
-                        prefix={<LockOutlined />}
-                        iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
+                        prefix={<LockOutlined/>}
+                        iconRender={(visible) => (visible ? <EyeTwoTone/> : <EyeInvisibleOutlined/>)}
                     />
                 </Form.Item>
                 <SliderCaptch
@@ -141,7 +143,7 @@ export default function Login() {
                     }}
                     errorHoldDuration={1000}
                     onVerify={(data) => {
-                        console.log(data,'data');
+                        console.log(data, 'data');
                         // 默认背景图宽度 320 减去默认拼图宽度 60 所以滑轨宽度是 260
                         if (data.x === 260) {
                             return Promise.resolve();
@@ -166,14 +168,14 @@ export default function Login() {
                 </Link>
             </div>
             <Form.Item>
-                <Button htmlType="submit" style={{ width: "100%" }}
+                <Button htmlType="submit" style={{width: "100%"}}
                     // onClick={() => {
                     //     window.localStorage.setItem("token", "zym-LOGIN-HAHHA")
                     //     setTimeout(() => {
                     //         navigate("/")
                     //     }, 300)
                     // }} 
-                    type='primary' size="large">登录</Button>
+                        type='primary' size="large">登录</Button>
             </Form.Item>
         </>
     }
@@ -182,6 +184,12 @@ export default function Login() {
     }
     const onFinish = async () => {
         window.localStorage.setItem("token", "zym-LOGIN-HAHHA")
+        useMenuStore.setState({
+            mainNavData: menuData,
+            // asideBarSelection: menuData[0].id,
+            menuData: menuData[0].children,
+            // menuDataSelection: "/"
+        })
         setTimeout(() => {
             navigate("/")
         }, 300)
@@ -220,33 +228,33 @@ export default function Login() {
             <Form
                 size="large"
                 name="basic"
-                wrapperCol={{ span: 24 }}
-                style={{ maxWidth: 600 }}
+                wrapperCol={{span: 24}}
+                style={{maxWidth: 600}}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"
             >
                 <Form.Item
                     name="username"
-                    rules={[{ required: true, message: '请输入手机号!' }]}
+                    rules={[{required: true, message: '请输入手机号!'}]}
                 >
                     <Input
                         size="large"
                         placeholder="请输入手机号"
                         allowClear
-                        prefix={<PhoneOutlined />}
+                        prefix={<PhoneOutlined/>}
                     />
                 </Form.Item>
 
                 <Form.Item
                     name="password"
-                    rules={[{ required: true, message: '请输入验证码!' }]}
+                    rules={[{required: true, message: '请输入验证码!'}]}
                 >
                     <div style={PassWordStyle}>
                         <Input
                             size="large"
                             placeholder="请输入验证码"
-                            prefix={<LockOutlined />}
+                            prefix={<LockOutlined/>}
                             style={PassWordValidStyle}
                         />
                         <Button size="large">
@@ -282,13 +290,13 @@ export default function Login() {
     }
     return <div style={MainStyle}>
         <div style={LanguageStyle}>
-            <Dropdown menu={{ items, selectedKeys, onClick }} placement="bottomLeft" arrow>
-                <FontColorsOutlined />
+            <Dropdown menu={{items, selectedKeys, onClick}} placement="bottomLeft" arrow>
+                <FontColorsOutlined/>
             </Dropdown>
         </div>
         <div>
             <div style={TitleStyle}>
-                <img src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" style={TitleImgStyle} />
+                <img src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" style={TitleImgStyle}/>
                 <div style={TitleTextStyle}>Ant Design</div>
             </div>
             <div style={TitleContentStyle}>

@@ -58,14 +58,15 @@ const useStyles = createStyles(({token, css}) => ({
 
 export function Menu() {
     let {styles, theme} = useStyles()
-    let [openKeys, setOpenKeys] = useState([]);
     let {
         menuData,
         subMenuCollapse,
         mainNavData,
         menuType,
         menuCurrentKeys,
-        subMenuUniqueOpened
+        subMenuUniqueOpened,
+        openKeys,
+        setOpenKeys
     } = useMenuStore()
     let {name, logo} = useAppStore()
     let {openTab} = useControlTab()
