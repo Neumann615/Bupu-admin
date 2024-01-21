@@ -267,7 +267,7 @@ export const defaultSetting = {
         //客户端存储方式
         storageType: "local",
         //样式类名前缀
-        styleClassNamePrefix: "I LOVE NEUMANN"
+        styleClassNamePrefix: "xiaonuoxiaonuo"
     },
     //主题
     theme: {

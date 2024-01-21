@@ -27,7 +27,7 @@ export default defineConfig({
         port: 3000,
         proxy: {
             "^/api": {
-                target: "http://47.98.235.103:6060", // 真实接口地址, 后端给的基地址
+                target: "http://47.98.235.103:6066", // 真实接口地址, 后端给的基地址
                 changeOrigin: true, // 允许跨域
                 secure: false,  //关键参数，不懂的自己去查
                 rewrite: (path) => path.replace(/^\/api/, '')

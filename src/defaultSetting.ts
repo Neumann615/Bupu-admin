@@ -17,7 +17,7 @@ export default {
         //客户端存储方式
         storageType: "local",
         //样式类名前缀
-        styleClassNamePrefix: "i-love-neumann"
+        styleClassNamePrefix: "xiaonuoxiaonuo"
     },
     //主题
     theme: {
