@@ -1,8 +1,8 @@
-export interface EmployeeTree{
+export interface EmployeeLeaveTree{
     status: number;
     statusText: string;
     data: {
-        data: EmployeeDataSource[];
+        data: EmployeeLeaveDataSource[];
         msgId: string;
         resultMsg: string;
         token: string;
@@ -10,19 +10,19 @@ export interface EmployeeTree{
 }
 
 
-export interface EmployeeDataSource {
-    children: EmployeeDataSource[]
-    employeeName: string;
+export interface EmployeeLeaveDataSource {
+    children: EmployeeLeaveDataSource[]
+    EmployeeLeaveName: string;
     id: number;
 }
 
-export interface OrganizationalEmployeeList{
-    employeeName:string;
+export interface OrganizationalEmployeeLeaveList{
+    EmployeeLeaveName:string;
     pageSize:number;
     pageNum:number;
 }
 
-export interface BaseEmployeeAdd{
+export interface BaseEmployeeLeaveAdd{
     birthDate: string;
     personPwd: string;
     personName: string;
@@ -38,16 +38,16 @@ export interface BaseEmployeeAdd{
     endTime:string;
 }
 
-export interface BaseEmployeeEdit{
+export interface BaseEmployeeLeaveEdit{
     id: number;
     pid: string;
-    employeeName: string;
+    EmployeeLeaveName: string;
 }
 
-export interface EmployeeEditData extends T{
+export interface EmployeeLeaveEditData extends T{
 }
 
-export interface BaseEmployeeDel{
+export interface BaseEmployeeLeaveDel{
     id: number;
 }
 

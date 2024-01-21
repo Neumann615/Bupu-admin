@@ -1,4 +1,4 @@
-import { ActionType, ParamsType, ProColumns, ProForm, ProFormText } from '@ant-design/pro-components';
+import { ActionType, ParamsType, ProColumns, ProForm, ProFormText, ProFormDateTimeRangePicker, ProFormDatePicker } from '@ant-design/pro-components';
 import { Button, Modal, Popconfirm } from 'antd';
 import { createStyles } from "antd-style"
 import { ProTable } from '@ant-design/pro-components';
@@ -83,6 +83,21 @@ type GithubIssueItem = {
     closed_at?: string;
 };
 
+export interface FormValues {
+    birthDate: string;
+    personPwd: string;
+    personName: string;
+    personId: string;
+    jobId: string;
+    idCard: string;
+    departId: string;
+    cardSn: string;
+    levelId: string;
+    personMobile: string;
+    personAddress: string;
+    rangeTime:string;
+}
+
 interface OriginData {
     children: OriginData[];
     departName: string;
@@ -111,7 +126,7 @@ export default () => {
             ellipsis: true,
             width: 150,
             search: false,
-            fixed:"left",
+            fixed: "left",
             formItemProps: {
                 rules: [
                     {
@@ -152,6 +167,7 @@ export default () => {
             dataIndex: 'jobId',
             ellipsis: true,
             width: 150,
+            search: false,
             formItemProps: {
                 rules: [
                     {
@@ -195,7 +211,6 @@ export default () => {
             dataIndex: 'departId',
             ellipsis: true,
             width: 150,
-            search: false,
             formItemProps: {
                 rules: [
                     {
@@ -210,7 +225,6 @@ export default () => {
             dataIndex: 'cardSn',
             ellipsis: true,
             width: 150,
-            search: false,
             formItemProps: {
                 rules: [
                     {
@@ -240,6 +254,7 @@ export default () => {
             dataIndex: 'levelId',
             ellipsis: true,
             width: 150,
+            search: false,
             formItemProps: {
                 rules: [
                     {
@@ -253,7 +268,6 @@ export default () => {
             title: '手机号',
             dataIndex: 'personMobile',
             ellipsis: true,
-            //width: 150,
             formItemProps: {
                 rules: [
                     {
@@ -267,7 +281,7 @@ export default () => {
             title: '联系地址',
             dataIndex: 'personAddress',
             ellipsis: true,
-            //width: 150,
+            search: false,
             formItemProps: {
                 rules: [
                     {
@@ -280,7 +294,6 @@ export default () => {
         {
             title: '更新时间',
             dataIndex: 'updateTime',
-           // width: 150,
             ellipsis: true,
             search: false,
             editable: false,
@@ -288,7 +301,6 @@ export default () => {
         {
             title: '创建时间',
             dataIndex: 'createTime',
-           // width: 150,
             ellipsis: true,
             search: false,
             editable: false,
@@ -298,7 +310,7 @@ export default () => {
             valueType: 'option',
             width: 150,
             key: 'option',
-            fixed:'right',
+            fixed: 'right',
             render: (text, record, _, action) => [
                 <a
                     key="editable"
@@ -321,7 +333,6 @@ export default () => {
     ];
 
     const handleRequest = async (params: ParamsType) => {
-        console.log(params, 'params')
         const params1 = {
             ...params,
             pageNum: params.current,
@@ -365,19 +376,26 @@ export default () => {
         setIsOpen(false);
         initialValues.current = {}
     }
-    const handleFinish = async (values: {
-        jobName: string
-    }) => {
-        const { jobName } = values
+    const handleFinish = async (values:FormValues) => {
+        const { rangeTime, ...rest } = values;
         const params = {
-            jobName,
+            beginTime: rangeTime[0],
+            endTime: rangeTime[1],
+            ...rest
         }
-        const result = await getBaseEmployeeAdd(params);
-        if (result.resultCode === '0') {
-            message.success('添加成功');
-            actionRef.current?.reload();
-            initialValues.current = {}
-            setIsOpen(false)
+        try{
+            const result = await getBaseEmployeeAdd(params);
+            if (result.resultCode === '0'){
+                message.success('添加成功');
+                actionRef.current?.reload();
+                initialValues.current = {}
+                setIsOpen(false)
+                return;
+            }
+            message.warning('添加失败！')
+        }
+        catch(e){
+            message.warning('添加失败！')
         }
     }
 
@@ -398,7 +416,6 @@ export default () => {
     }
 
     const handleAdd = () => {
-        console.log('弹出安徽')
         setIsOpen(true)
         setTitle('新建');
     }
@@ -407,13 +424,13 @@ export default () => {
         <div className={styles.main}>
             <ProTable<GithubIssueItem>
                 columns={columns}
-                scroll={{x:1300}}
+                scroll={{ x: 1300 }}
                 actionRef={actionRef}
                 //cardBordered
                 request={handleRequest}
                 editable={{
                     type: 'multiple',
-                    onSave: async (rowKey, data, row) => {
+                    onSave: async (_, data) => {
                         handleSave(data)
                     },
                 }}
@@ -426,7 +443,6 @@ export default () => {
                     labelWidth: 'auto',
                 }}
                 options={false}
-                search={false}
                 // options={{
                 //     setting: {
                 //         listsHeight: 400,
@@ -465,9 +481,10 @@ export default () => {
                     }) => {
                         handleFinish(values)
                     }}
-                    labelCol={{ span: 4 }}
-                    wrapperCol={{ span: 14 }}
+                    labelCol={{ span: 6 }}
+                    wrapperCol={{ span: 18 }}
                     layout="horizontal"
+                    grid={true}
                     submitter={{
                         // 配置按钮文本
                         searchConfig: {
@@ -484,13 +501,119 @@ export default () => {
                     }}
                     initialValues={initialValues.current}
                 >
-                    <ProFormText
-                        name="jobName"
-                        width="md"
-                        label="岗位"
-                        placeholder="请输入岗位名称"
-                        rules={[{ required: true, message: '这是必填项' }]}
-                    />
+                    <ProForm.Group>
+                        <ProFormText
+                            name="personName"
+                            width="md"
+                            label="姓名"
+                            placeholder="请输入名称"
+                            rules={[{ required: true, message: '这是必填项' }]}
+                        />
+                    </ProForm.Group>
+                    <ProForm.Group>
+                        <ProFormText
+                            name="personId"
+                            width="md"
+                            label="人员编号"
+                            placeholder="请输入人员编号"
+                            rules={[{ required: true, message: '这是必填项' }]}
+                        />
+                    </ProForm.Group>
+                    <ProForm.Group>
+                        <ProFormText
+                            name="jobId"
+                            width="md"
+                            label="岗位ID"
+                            placeholder="请输入岗位ID"
+                            rules={[{ required: true, message: '这是必填项' }]}
+                        />
+                    </ProForm.Group>
+                    <ProForm.Group>
+                        <ProFormText
+                            name="idCard"
+                            width="md"
+                            label="身份证号"
+                            placeholder="请输入身份证号"
+                            rules={[{ required: true, message: '这是必填项' }]}
+                        />
+                    </ProForm.Group>
+                    <ProForm.Group>
+                        <ProFormText
+                            name="departId"
+                            width="md"
+                            label="部门ID"
+                            placeholder="请输入部门ID"
+                            rules={[{ required: true, message: '这是必填项' }]}
+                        />
+                    </ProForm.Group>
+                    <ProForm.Group>
+                        <ProFormText
+                            name="cardSn"
+                            width="md"
+                            label="卡序列号"
+                            placeholder="请输入卡序列号"
+                            rules={[{ required: true, message: '这是必填项' }]}
+                        />
+                    </ProForm.Group>
+                    <ProForm.Group>
+                        <ProFormText
+                            name="levelId"
+                            width="md"
+                            label="级别"
+                            placeholder="请输入级别"
+                            rules={[{ required: true, message: '这是必填项' }]}
+                        />
+                    </ProForm.Group>
+                    <ProForm.Group>
+                        <ProFormText
+                            name="personMobile"
+                            width="md"
+                            label="手机号"
+                            placeholder="请输入手机号"
+                            rules={[{ required: true, message: '这是必填项' }]}
+                        />
+                    </ProForm.Group>
+                    <ProForm.Group>
+                        <ProFormText
+                            name="personAddress"
+                            width="md"
+                            label="联系地址"
+                            placeholder="请输入联系地址"
+                            rules={[{ required: true, message: '这是必填项' }]}
+                        />
+                    </ProForm.Group>
+                    <ProForm.Group>
+                        <ProFormDateTimeRangePicker
+                            width="md"
+                            name='rangeTime'
+                            rules={[{ required: true, message: '这是必填项' }]}
+                            label="合同生效时间"
+                        />
+                    </ProForm.Group>
+                    <ProForm.Group>
+                        <ProFormDatePicker
+                            width="md"
+                            name="birthDate"
+                            rules={[{ required: true, message: '这是必填项' }]}
+                            label="出生日期" />
+                    </ProForm.Group>
+                    <ProForm.Group>
+                        <ProFormText.Password
+                            name="personPwd"
+                            width="md"
+                            label="个人密码"
+                            placeholder="请输入密码"
+                            rules={[{ required: true, message: '这是必填项' },
+                            () => ({
+                                validator(_, value) {
+                                    if (value?.length <= 6) {
+                                        return Promise.resolve();
+                                    }
+                                    return Promise.reject(new Error('密码长度需小于六位!'));
+                                },
+                            }),]}
+                        />
+                    </ProForm.Group>
                 </ProForm>
             </Modal>
         </div >

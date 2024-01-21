@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined, FolderAddOutlined } from '@ant-design/icons';
-import { ActionType, ParamsType, ProColumns, ProForm, ProFormText } from '@ant-design/pro-components';
+import { ActionType, ParamsType, ProColumns, ProForm, ProFormInstance, ProFormText } from '@ant-design/pro-components';
 import { Modal, Popconfirm } from 'antd';
 import { createStyles } from "antd-style"
 import { ProTable } from '@ant-design/pro-components';
@@ -9,6 +9,7 @@ import Tree from '@/components/common/group-tree/GroupTree';
 import { message } from 'antd';
 import { cloneDeep } from 'lodash-es';
 
+const { confirm } = Modal
 export const waitTimePromise = async (time: number = 100) => {
     return new Promise((resolve) => {
         setTimeout(() => {
@@ -122,9 +123,11 @@ export default () => {
     const [title, setTitle] = useState<string>('');
     const [mode, setMode] = useState<string>('add');
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [tableParams, setTableParams] = useState({});
     const initialValues = useRef<Record<string, any>>({})
     const currentSelect = useRef<TreeDataOrigin | {}>({});
-    const treeDataOrigin = useRef<TreeDataOrigin[]>([])
+    const treeDataOrigin = useRef<TreeDataOrigin[]>([]);
+    const ref = useRef<ProFormInstance>();
     const columns: ProColumns<GithubIssueItem>[] = [
         {
             title: '部门名称',
@@ -246,7 +249,6 @@ export default () => {
     }
 
     const handleRequest = async (params: ParamsType) => {
-        console.log(params, 'params')
         const params1 = {
             departName: params.departName,
             pageNum: params.current,
@@ -405,8 +407,6 @@ export default () => {
         }
     }
 
-
-
     const handleSave = async (data: GithubIssueItem) => {
         const { id, departName, pid } = data;
         const params = {
@@ -415,7 +415,6 @@ export default () => {
             departName,
         }
         const result = await getBaseDepartEdit(params);
-        console.log(result, 'result')
         if (result.resultCode === '0') {
             message.success('修改成功')
             actionRef.current?.reload();
@@ -423,17 +422,61 @@ export default () => {
 
     }
 
-    const handleSelect = (node: number) => {
+    const handleSelect = async(node: number, info: any) => {
         const treeDataTemp = transformTreeData(treeDataOrigin.current, node)
-        console.log(node, 'node')
         setSelectKey(node)
         setTreeData(treeDataTemp)
+        if (ref.current) {
+            await ref.current.setFieldsValue({
+                departName: info.originData.departName
+            });
+        }
+        // setTableParams({
+        //     departName: info.originData.departName
+        // })
+        setTimeout(() => {
+            actionRef.current?.reload();
+        },3000)
+        
+    }
+
+    const handleDrop = async (info: any) => {
+        confirm({
+            title: "确认拖拽",
+            content: `确认将${info.dragNode.originData.departName}拖拽到${info.node.originData.departName}`,
+            okText: '确认',
+            cancelText: '取消',
+            onOk: async () => {
+                const dropKey = info.node.key;
+                const params = {
+                    ...info.dragNode.originData,
+                    pid: dropKey
+                }
+                const result = await getBaseDepartEdit(params);
+                if (result.resultCode === '0') {
+                    await init()
+                    initialValues.current = {}
+                    message.success('拖拽成功！');
+                    actionRef.current?.reload();
+                }
+            }
+        })
+
     }
 
     return (
         <div className={styles.main}>
             <div className={styles.tree}>
-                <Tree data={treeData} onSelect={handleSelect} />
+                <Tree data={treeData} onSelect={handleSelect} treeProps=
+                    {
+                        {
+                            draggable: true,
+                            onDragEnter: (info) => {
+                                console.log(info, 'onDragEnter')
+                            },
+                            onDrop: handleDrop
+                        }
+                    } />
             </div>
             <div className={styles.right}>
                 <ProTable<GithubIssueItem>
@@ -441,9 +484,11 @@ export default () => {
                     actionRef={actionRef}
                     cardBordered
                     request={handleRequest}
+                    params={tableParams}
+                    formRef={ref}
                     editable={{
                         type: 'multiple',
-                        onSave: async (rowKey, data, row) => {
+                        onSave: async (_, data) => {
                             handleSave(data)
                         },
                     }}
@@ -463,15 +508,15 @@ export default () => {
                     }}
                     form={{
                         // 由于配置了 transform，提交的参与与定义的不同这里需要转化一下
-                        syncToUrl: (values, type) => {
-                            if (type === 'get') {
-                                return {
-                                    ...values,
-                                    created_at: [values.startTime, values.endTime],
-                                };
-                            }
-                            return values;
-                        },
+                        // syncToUrl: (values, type) => {
+                        //     if (type === 'get') {
+                        //         return {
+                        //             ...values,
+                        //             created_at: [values.startTime, values.endTime],
+                        //         };
+                        //     }
+                        //     return values;
+                        // },
                     }}
                     pagination={{
                         defaultPageSize: 20,

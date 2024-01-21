@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { getDefaultKey, getSearchResultTree, loadGroup } from './helper';
-import { Input, Tree, Spin, message } from 'antd';
+import { Input, Tree, Spin, message, TreeProps } from 'antd';
 import { cloneDeep } from 'lodash-es';
 import { EventDataNode } from 'antd/lib/tree';
 import { createStyles } from 'antd-style';
@@ -31,9 +31,9 @@ export interface DataNode {
   title: string;
   children?: DataNode[];
 }
-
 interface GroupTreeProps {
   data: TreeList[];
+  treeProps?: TreeProps,
   onSelect?: (selectedKeys: number, node: EventDataNode<DataNode>) => void;
 }
 interface GroupTreeState {
@@ -69,11 +69,6 @@ export default (props: GroupTreeProps) => {
   }, [props.data])
 
   const initData = async () => {
-    // const { code, msg, data } = (await loadGroup()) as TreeResult;
-    // if (code !== 0) {
-    //   message.warning(msg);
-    //   return;
-    // }
     const { data } = props
     if (data?.length) {
       setTreeData(data)
@@ -83,12 +78,6 @@ export default (props: GroupTreeProps) => {
       setLoadingTree(false);
       setSelectKey([]);
     }
-    // const { defaultExpandedKeys } = getDefaultKey(data!);
-    // defaultExpandedKeys.current = defaultExpandedKeys;
-    // originTreeData.current = data!;
-    // setLoadingTree(false);
-    // setSelectKey([]);
-    // setTreeData(data!)
   }
   const handleSelect = (selectedKeysTemp: string[], info: SelectInfo) => {
     const keys = selectedKeysTemp.length ? selectedKeysTemp : selectKeys;
@@ -97,6 +86,10 @@ export default (props: GroupTreeProps) => {
   };
 
   const renderTree = () => {
+    const { treeProps = {} } = props;
+    const a = {
+      test: '123'
+    }
     return treeData?.length ? (
       <Tree
         blockNode={true}
@@ -104,17 +97,10 @@ export default (props: GroupTreeProps) => {
         onSelect={handleSelect}
         treeData={treeData}
         selectedKeys={selectKeys}
-      // titleRender={(treeItem) => {
-      //   return <div className={styles.treeItem}>
-      //     <div>{treeItem.title}</div>
-      //     <div>
-      //       <FolderAddOutlined className={styles.treeItemIcon} title='添加' />
-      //       <EditOutlined className={styles.treeItemIcon} title='修改' />
-      //       <DeleteOutlined title='删除' />
-      //     </div>
-      //   </div>
-      // }}
-
+        {
+          ...treeProps
+        }
+      // ...treeProps
       />
     ) : (
       <div>暂无数据</div>

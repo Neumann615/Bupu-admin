@@ -9,6 +9,7 @@ import Tree from '@/components/common/group-tree/GroupTree';
 import { message } from 'antd';
 import { cloneDeep } from 'lodash-es';
 import { CanteenDataSource } from '@/types/canteen';
+const { confirm } = Modal
 
 export const waitTimePromise = async (time: number = 100) => {
   return new Promise((resolve) => {
@@ -402,10 +403,40 @@ export default () => {
     setTreeData(treeDataTemp)
   }
 
+  const handleDrop = async (info: any) => {
+    confirm({
+      title: "确认拖拽",
+      content: `确认将${info.dragNode.originData.canteenName}拖拽到${info.node.originData.canteenName}`,
+      okText: '确认',
+      cancelText: '取消',
+      onOk: async () => {
+        const dropKey = info.node.key;
+        const params = {
+          ...info.dragNode.originData,
+          pid: dropKey
+        }
+        const result = await getBaseCanteenEdit(params);
+        if (result.resultCode === '0') {
+          await init()
+          initialValues.current = {}
+          message.success('拖拽成功！');
+          actionRef.current?.reload();
+        }
+      }
+    })
+
+  }
+
   return (
     <div className={styles.main}>
       <div className={styles.tree}>
-        <Tree data={treeData} onSelect={handleSelect} />
+        <Tree data={treeData} onSelect={handleSelect} treeProps=
+          {
+            {
+              draggable: true,
+              onDrop: handleDrop
+            }
+          } />
       </div>
       <div className={styles.right}>
         <ProTable<GithubIssueItem>
