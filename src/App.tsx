@@ -1,16 +1,10 @@
-import { useMount } from "ahooks"
-import { ConfigProvider, theme } from "antd"
-import React, { Suspense, useMemo, useState, useEffect } from "react"
-import { Navigate, useRoutes } from "react-router"
-import {
-    useAppStore,
-    useThemeStore
-} from "@/store"
-import { HappyProvider } from '@ant-design/happy-work-theme'
-import { GlobalProgress } from "@/components"
-import { TransitionGroup, CSSTransition, Transition } from "react-transition-group"
-import { useLocation } from 'react-router-dom'
-import { StyleProvider } from "antd-style"
+import {ConfigProvider, theme} from "antd"
+import React, {Suspense, useMemo} from "react"
+import {Navigate, useRoutes} from "react-router"
+import {useAppStore, useThemeStore} from "@/store"
+import {HappyProvider} from '@ant-design/happy-work-theme'
+import {useLocation} from 'react-router-dom'
+import {StyleProvider} from "antd-style"
 import routes from '~react-pages'
 import "./App.css"
 
@@ -19,7 +13,7 @@ function RouteGuard(props) {
     if (localStorage.getItem("token")) {
         return props.children
     } else {
-        return <Navigate to="/login" />
+        return <Navigate to="/login"/>
     }
 }
 
@@ -54,7 +48,7 @@ export default function App() {
     // }, [location])
 
     return <StyleProvider prefix={appStore.styleClassNamePrefix.toLocaleLowerCase()}>
-        <ConfigProvider theme={{ algorithm: globalAlgorithm, token: { colorPrimary: themeStore.themeColor } }}>
+        <ConfigProvider theme={{algorithm: globalAlgorithm, token: {colorPrimary: themeStore.themeColor}}}>
             <HappyProvider disabled={!themeStore.happyEffect}>
                 <Suspense fallback={<p>Loading...</p>}>
                     {useRoutes(routes)}
