@@ -13,34 +13,61 @@ import {javascript} from '@codemirror/lang-javascript'
 import ImageBg1 from '@/assets/img/0699.jpg';
 import ImageBg2 from '@/assets/img//0723.jpg';
 import createPuzzle, {Result} from 'create-puzzle'
-import SliderCaptcha, {ActionType} from 'rc-slider-captcha';
+import SliderCaptcha, {ActionType} from 'rc-slider-captcha'
+//react-spinners
+import {createElement} from "react";
+import {
+    BarLoader,
+    BeatLoader,
+    BounceLoader,
+    CircleLoader,
+    ClimbingBoxLoader,
+    ClipLoader,
+    ClockLoader,
+    DotLoader,
+    FadeLoader,
+    GridLoader,
+    HashLoader,
+    MoonLoader,
+    PacmanLoader,
+    PropagateLoader,
+    PulseLoader,
+    PuffLoader,
+    RingLoader,
+    RiseLoader,
+    RotateLoader,
+    ScaleLoader,
+    SkewLoader,
+    SquareLoader,
+    SyncLoader
+} from "react-spinners"
 
-type PluginName = "react-quill" | "react-codemirror" | "rc-slider-captcha" | "react-beautiful-dnd"
+type PluginName = "react-quill" | "react-codemirror" | "rc-slider-captcha" | "react-beautiful-dnd" | "react-spinners"
 
 interface PluginsDemoProps {
     pluginName: PluginName
 }
 
 const useStyles = createStyles(({token, css}) => ({
-    pluginsDemo: {
-        width: "100%",
-        height: "100%"
-    },
-    pluginsDemoHeader: {
-        width: "100%",
-        height: "auto",
-        boxSizing: "border-box",
-        padding: token.paddingMD,
-        backgroundColor: token.colorBgContainer
-    },
-    pluginsDemoHeaderTitle: {
-        fontSize: token.fontSizeHeading4,
-        color: token.colorTextBase
-    },
-    pluginsDemoBody: {
-        boxSizing: "border-box",
-        padding: token.paddingMD
-    },
+    pluginsDemo: css`
+      width: 100%;
+      height: 100%;
+    `,
+    pluginsDemoHeader: css`
+      width: 100%;
+      height: auto;
+      box-sizing: border-box;
+      padding: ${token.paddingMD}px;
+      background-color: ${token.colorBgContainer};
+    `,
+    pluginsDemoHeaderTitle: css`
+      font-size: ${token.fontSizeHeading4}px;
+      color: ${token.colorTextBase};
+    `,
+    pluginsDemoBody: css`
+      box-sizing: border-box;
+      padding: ${token.paddingMD}px;
+    `,
     pluginsDemoReactQuill: css`
       box-sizing: border-box;
       padding: ${token.paddingMD}px;
@@ -64,26 +91,47 @@ const useStyles = createStyles(({token, css}) => ({
       padding: ${token.paddingContentHorizontalSM}px;
       margin-bottom: ${token.marginMD}px;
     `,
-    pluginsDemoSliderTitle: {
-        color: token.colorTextBase,
-        marginBottom: token.marginMD
-    },
-    pluginsDemoSliderDescription: {
-        color: token.colorTextDescription,
-        marginBottom: token.marginMD,
-        fontSize: token.fontSize
-    },
+    pluginsDemoSliderTitle: css`
+      color: ${token.colorTextBase};
+      margin-bottom: ${token.marginMD}px;
+    `,
+    pluginsDemoSliderDescription: css`
+      color: ${token.colorTextDescription};
+      margin-bottom: ${token.marginMD}px;
+      font-size: ${token.fontSize}px;
+    `,
     customSliderDemo: {
-        "--rcsc-primary": token["blue-5"],
-        "--rcsc-primary-light": token['blue-2'],
-        "--rcsc-error": token["red-5"],
-        "--rcsc-error-light": token['red-2'],
-        "--rcsc-success": token["green-5"],
-        "--rcsc-success-light": token['green-2'],
+        "--rcsc-primary": token ["blue-5"],
+        "--rcsc-primary-light": token ['blue-2'],
+        "--rcsc-error": token ["red-5"],
+        "--rcsc-error-light": token ['red-2'],
+        "--rcsc-success": token ["green-5"],
+        "--rcsc-success-light": token ['green-2'],
         "--rcsc-border-color": token.colorBorderSecondary,
         "--rcsc-bg-color": token.colorBgContainer,
         "--rcsc-text-color": token.colorTextBase
-    }
+    },
+    reactSpinners: css`
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      box-sizing: border-box;
+      padding: 16px 0px 0px 16px;
+    `,
+    reactSpinnersItem: css`
+      width: 20%;
+      height: auto;
+      box-sizing: border-box;
+      padding: 0px 16px 16px 0px;
+    `,
+    reactSpinnersContent: css`
+      width: 100%;
+      height: 240px;
+      display: grid;
+      place-items: center;
+      background-color: ${token.colorBgContainer};
+    `
 }))
 
 function openDocumentPage(pluginName: PluginName) {
@@ -91,7 +139,8 @@ function openDocumentPage(pluginName: PluginName) {
         "react-quill": "https://github.com/zenoamaro/react-quill",
         "react-codemirror": "https://github.com/uiwjs/react-codemirror",
         "rc-slider-captcha": "https://www.npmjs.com/package/rc-slider-captcha",
-        "react-beautiful-dnd": "https://github.com/atlassian/react-beautiful-dnd"
+        "react-beautiful-dnd": "https://github.com/atlassian/react-beautiful-dnd",
+        "react-spinners": "https://www.davidhu.io/react-spinners/"
     }
     window.open(doucmentPageUrlSet[pluginName])
 }
@@ -301,29 +350,63 @@ function ReactSliderDemo() {
     </div>
 }
 
-
 function ReactBeautifulDnd() {
+    return "我是拖动demo"
+}
+
+function ReactSpinnersDemo() {
     const {styles, theme} = useStyles()
+    const [value, setValue] = useState('')
+    const loadingComponentList = [BarLoader,
+        BeatLoader,
+        BounceLoader,
+        CircleLoader,
+        ClimbingBoxLoader,
+        ClipLoader,
+        ClockLoader,
+        DotLoader,
+        FadeLoader,
+        GridLoader,
+        HashLoader,
+        MoonLoader,
+        PacmanLoader,
+        PropagateLoader,
+        PulseLoader,
+        PuffLoader,
+        RingLoader,
+        RiseLoader,
+        RotateLoader,
+        ScaleLoader,
+        SkewLoader,
+        SquareLoader,
+        SyncLoader]
     return <div className={styles["pluginsDemo"]}>
         <div className={styles["pluginsDemoHeader"]}>
             <Alert type={"warning"}
                    message={"说明:插件模块仅作为第三方插件的演示页面，用来梳理整合逻辑和范例，框架本身并不包含这些插件。"}></Alert>
             <Row align={"middle"} style={{marginTop: theme.marginMD}}>
                 <Col span={12}>
-                    <span className={styles["pluginsDemoHeaderTitle"]}>拖动(react-beautiful-dnd)</span>
+                    <span className={styles["pluginsDemoHeaderTitle"]}>加载动画(react-spinners)</span>
                 </Col>
                 <Col span={12} style={{textAlign: "right"}}>
                     <Button onClick={() => {
-                        openDocumentPage("react-beautiful-dnd")
+                        openDocumentPage("react-spinners")
                     }} icon={<LinkOutlined></LinkOutlined>}>项目地址</Button>
                 </Col>
             </Row>
         </div>
-        <div className={styles["pluginsDemoReactQuill"]}>
-
+        <div className={styles["reactSpinners"]}>
+            {loadingComponentList.map((loadComponent: any) => {
+                return <div className={styles["reactSpinnersItem"]}>
+                    <div className={styles["reactSpinnersContent"]}>
+                        {createElement(loadComponent, {color: theme.colorPrimaryText})}
+                    </div>
+                </div>
+            })}
         </div>
     </div>
 }
+
 
 export function PluginsDemo(props: PluginsDemoProps) {
 
@@ -338,6 +421,9 @@ export function PluginsDemo(props: PluginsDemoProps) {
     }
     if (props.pluginName === "react-beautiful-dnd") {
         return <ReactBeautifulDnd></ReactBeautifulDnd>
+    }
+    if (props.pluginName === "react-spinners") {
+        return <ReactSpinnersDemo></ReactSpinnersDemo>
     }
     return null
 }

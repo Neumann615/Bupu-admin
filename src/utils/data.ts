@@ -375,6 +375,11 @@ export const menuData = [
                         label: "拖动",
                         icon: "TextStyle",
                         key: "/demo/plugins/react-beautiful-dnd"
+                    },
+                    {
+                        label: "加载",
+                        icon: "TextStyle",
+                        key: "/demo/plugins/react-spinners"
                     }
                 ]
             },
@@ -613,17 +618,17 @@ export const menuData = [
                         key: "/business/personnel-management/employeeLeave"
                     },
                     {
-                        label:"测试",
-                        icon:"TextStyle",
-                        key:"/business/personnel-management/test"
+                        label: "测试",
+                        icon: "TextStyle",
+                        key: "/business/personnel-management/test"
                     }
                 ]
             },
             {
-                label:'设备',
+                label: '设备',
                 icon: "Puzzle",
                 key: "/business/device",
-                children:[
+                children: [
                     {
                         label: "区域资料",
                         icon: "TextStyle",
@@ -652,10 +657,10 @@ export const menuData = [
                 ]
             },
             {
-                label:'事务',
+                label: '事务',
                 icon: "Puzzle",
                 key: "/business/work",
-                children:[
+                children: [
                     {
                         label: "卡片中心",
                         icon: "TextStyle",
@@ -671,7 +676,7 @@ export const menuData = [
                         icon: "TextStyle",
                         key: "/business/work/namelist"
                     },
-                ]  
+                ]
             }
         ]
     }
