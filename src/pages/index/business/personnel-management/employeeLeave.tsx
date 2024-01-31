@@ -2,7 +2,7 @@ import { ActionType, ParamsType, ProColumns, ProForm, ProFormText, ProFormSelect
 import { Button, Modal, Popconfirm } from 'antd';
 import { createStyles } from "antd-style"
 import { ProTable } from '@ant-design/pro-components';
-import { getPersonalEmployeeLeaveList, getBaseEmployeeLeaveAdd, getBaseEmployeeLeaveEdit, getBaseEmployeeEntry } from '@/api/employeeLeave';
+import { getPersonalEmployeeLeaveList, getBaseEmployeeLeaveEdit, getBaseEmployeeEntry } from '@/api/employeeLeave';
 import React, { useState, useRef } from 'react';
 import { message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
@@ -57,7 +57,7 @@ type GithubIssueItem = {
   leaveReason: string;
   subsidyBalance: string;
   previousCashBalance: string;
-  accountId: string;
+  accountId: number;
   payOpenId: string;
   loginPwd: string;
   endTime: string;
@@ -101,7 +101,7 @@ export interface FormValues {
 interface OriginData {
   children: OriginData[];
   departName: string;
-  id: number;
+  accountId: number;
 }
 
 const useStyles = createStyles(() => ({
@@ -227,14 +227,18 @@ export default () => {
   const handleEntry = async (data: GithubIssueItem | OriginData) => {
     try {
       const params = {
-        id: data.id
+        accountId: data.accountId
       }
-      await getBaseEmployeeEntry(params);
-      actionRef.current?.reload();
-      message.success('入职成功')
+      const result = await getBaseEmployeeEntry(params);
+      if(result?.resultCode === '1'){
+        actionRef.current?.reload();
+        message.success('入职成功')
+        return;
+      }
+      message.warning(result.resultMsg || '添加失败！');
     }
     catch (e) {
-      message.warning('入职失败')
+      message.warning('入职失败');
     }
   }
 
@@ -245,7 +249,7 @@ export default () => {
   const handleFinish = async (values: FormValues) => {
     try {
       const result = await getBaseEmployeeLeaveAdd(values);
-      if (result.resultCode === '0') {
+      if (result.resultCode === '1') {
         message.success('添加成功');
         actionRef.current?.reload();
         initialValues.current = {}

@@ -8,15 +8,7 @@ import { get, post } from "./axios";
  * @param v
  */
 export function getPersonalEmployeeLeaveList(v: OrganizationalEmployeeLeaveList) {
-    return get("/api/platform/api/human/personal/employeeleave/list", v)
-}
-
-/**
- * 离职
- * @param v
- */
-export function getBaseEmployeeLeaveAdd(v: BaseEmployeeLeaveAdd) {
-    return post("/api/platform/api/human/personal/employeeleave/add", v)
+    return get("/api/platform/api/human/personal/personleave/list", v)
 }
 
 /**
@@ -24,7 +16,7 @@ export function getBaseEmployeeLeaveAdd(v: BaseEmployeeLeaveAdd) {
  * @param v
  */
 export function getBaseEmployeeLeaveEdit(v: BaseEmployeeLeaveEdit): Promise<EmployeeLeaveEditData> {
-    return post("/api/platform/api/human/personal/employeeleave/edit", v)
+    return post("/api/platform/api/human/personleave/edit", v)
 }
 
 /**
@@ -32,5 +24,5 @@ export function getBaseEmployeeLeaveEdit(v: BaseEmployeeLeaveEdit): Promise<Empl
  * @param v
  */
 export function getBaseEmployeeEntry(v: BaseEmployeeLeaveDel) {
-    return post("/api/platform/api/human/personal/employeeleave/entry", v)
+    return post("/api/platform/api/human/personal/personleave/entry", v)
 }

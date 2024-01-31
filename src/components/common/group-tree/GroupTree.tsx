@@ -87,16 +87,13 @@ export default (props: GroupTreeProps) => {
 
   const renderTree = () => {
     const { treeProps = {} } = props;
-    const a = {
-      test: '123'
-    }
     return treeData?.length ? (
       <Tree
         blockNode={true}
         defaultExpandedKeys={defaultExpandedKeys.current}
         onSelect={handleSelect}
         treeData={treeData}
-        selectedKeys={selectKeys}
+        // selectedKeys={selectKeys}
         {
           ...treeProps
         }

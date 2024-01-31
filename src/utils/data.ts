@@ -639,8 +639,41 @@ export const menuData = [
                         icon: "TextStyle",
                         key: "/business/device/device-list"
                     },
+                    {
+                        label: "设备参数",
+                        icon: "TextStyle",
+                        key: "/business/device/deviceparameter-list"
+                    },
+                    {
+                        label: "设备状态",
+                        icon: "TextStyle",
+                        key: "/business/device/device-status"
+                    },
                 ]
+            },
+            {
+                label:'事务',
+                icon: "Puzzle",
+                key: "/business/work",
+                children:[
+                    {
+                        label: "卡片中心",
+                        icon: "TextStyle",
+                        key: "/business/work/card-issuecard"
+                    },
+                    {
+                        label: "充值中心",
+                        icon: "TextStyle",
+                        key: "/business/work/consume-detail"
+                    },
+                    {
+                        label: "名单中心",
+                        icon: "TextStyle",
+                        key: "/business/work/namelist"
+                    },
+                ]  
             }
         ]
     }
 ]
+

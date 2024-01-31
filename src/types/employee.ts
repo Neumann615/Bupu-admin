@@ -48,7 +48,11 @@ export interface EmployeeEditData extends T{
 }
 
 export interface BaseEmployeeDel{
-    id: number;
+    accountId: number;
+}
+
+export interface BasePersonleave{
+    accountId: number;
 }
 
 interface T {

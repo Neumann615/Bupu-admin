@@ -47,7 +47,7 @@ type GithubIssueItem = {
 interface TreeDataOrigin {
   key: number;
   originData: OriginData;
-  value: string;
+  value:string;
   title: string;
   children?: TreeDataOrigin[];
 }
@@ -230,40 +230,14 @@ export default () => {
         ],
       },
     },
-    {
-      title: '操作',
-      valueType: 'option',
-      key: 'option',
-      fixed: 'right',
-      render: (text, record, _, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            action?.startEditable?.(record.id);
-          }}
-        >
-          编辑
-        </a>,
-        <Popconfirm key="delete" title='删除' description="确认删除？" onConfirm={() => {
-          handleDelete(record)
-        }}>
-          <a href={record.url} target="_blank" rel="noopener noreferrer">
-            删除
-          </a>
-        </Popconfirm>
-
-      ],
-    },
   ];
 
   useEffect(() => {
     init()
-    initCateen()
   }, [])
 
   const init = async () => {
     const { code, data, msg } = await initTreeData()
-    console.log(data, 'data')
     if (code === 0) {
       setTreeData(data)
       return
@@ -271,18 +245,6 @@ export default () => {
     message.warning(msg);
   }
 
-  const initCateen = async () => {
-    const { code, data, msg } = await initCateenTreeData()
-    console.log(data, 'cateeData')
-    if (code === 0) {
-      setCanteeTree(data)
-      // const treeDataTemp = transformTreeData(data, selectKey!)
-      // treeDataOrigin.current = data
-      // setTreeData(data)
-      return
-    }
-    message.warning(msg);
-  }
 
   const transformTreeData = (data: TreeDataOrigin[], selectNode: number): TreeList[] => {
     const dataTemp = cloneDeep(data);
@@ -353,19 +315,12 @@ export default () => {
   }> => {
     try {
       const result = await getAreaTree();
-      if (result.data.data) {
-        return {
-          code: 0,
-          data: transformGroup(result.data.data, 'areaName'),
-          msg: '',
-        };
-      }
-      return {
-        code: 1,
-        data: [],
-        msg: "组织信息获取失败!",
-      };
       console.log(result, 'result')
+      return {
+        code: 0,
+        data: transformGroup(result.data.data, 'areaName'),
+        msg: '',
+      };
     } catch (error) {
       return {
         code: 1,
@@ -407,7 +362,7 @@ export default () => {
         const obj: TreeDataOrigin = {
           title: l[key],
           key: id,
-          value: id,
+          value:id,
           originData: l
         };
         if (children?.length) {
@@ -419,41 +374,6 @@ export default () => {
     };
 
     return loop(data);
-  }
-
-  const handleDelete = async (data: GithubIssueItem | OriginData) => {
-    try {
-      const params = {
-        id: data.id
-      }
-      await getDeviceDel(params);
-      await init()
-      actionRef.current?.reload();
-      message.success('删除成功')
-    }
-    catch (e) {
-      message.warning('删除失败')
-    }
-  }
-
-  const handleCancel = () => {
-    setIsOpen(false);
-    initialValues.current = {}
-  }
-
-  const handelAdd = () => {
-    setMode('add');
-    setTitle('添加');
-    setIsOpen(true);
-  }
-
-  const handelEdit = (item: TreeDataOrigin) => {
-    setMode('edit')
-    initialValues.current = item.originData
-    currentSelect.current = item;
-    console.log(item, 'currentSelect')
-    setTitle('编辑');
-    setIsOpen(true);
   }
 
   const searchParentId = (treeData: TreeDataOrigin[], item: number, p: TreeDataOrigin) => {
@@ -470,74 +390,6 @@ export default () => {
         return null
       }
     }
-  }
-
-  const handleFinish = async (values: DeviceAdd) => {
-    if (mode === 'add') {
-      const params = {
-        ...values,
-      }
-      const result = await getDeviceAdd(params);
-      if (result.resultCode === '1') {
-        await init()
-        message.success('添加成功');
-        actionRef.current?.reload();
-        initialValues.current = {}
-        setIsOpen(false)
-      }
-    }
-    else if (mode === 'edit') {
-      const { id } = (currentSelect.current as TreeDataOrigin).originData
-      const item = searchParentId(treeDataOrigin.current, id, treeDataOrigin.current)
-      const params = {
-        pid: item.key,
-        id,
-        areaName,
-      }
-      const result = await getBaseAreaEdit(params);
-      if (result.resultCode === '0') {
-        await init()
-        initialValues.current = {}
-        message.success('编辑成功');
-        actionRef.current?.reload();
-        setIsOpen(false)
-      }
-    }
-  }
-
-
-
-  const handleSave = async (data: GithubIssueItem) => {
-    const result = await getDeviceEdit(data);
-    if (result.resultCode === '1') {
-      message.success('修改成功')
-      actionRef.current?.reload();
-    }
-
-  }
-
-  const handleDrop = async (info: any) => {
-    confirm({
-      title: "确认拖拽",
-      content: `确认将${info.dragNode.originData.areaName}拖拽到${info.node.originData.areaName}`,
-      okText: '确认',
-      cancelText: '取消',
-      onOk: async () => {
-        const dropKey = info.node.key;
-        const params = {
-          ...info.dragNode.originData,
-          pid: dropKey
-        }
-        const result = await getBaseAreaEdit(params);
-        if (result.resultCode === '0') {
-          await init()
-          initialValues.current = {}
-          message.success('拖拽成功！');
-          actionRef.current?.reload();
-        }
-      }
-    })
-
   }
 
   const handleSelect = (node: number) => {
@@ -564,24 +416,16 @@ export default () => {
           params={tableParams}
           editable={{
             type: 'multiple',
-            onSave: async (_, data) => {
-              handleSave(data)
-            },
           }}
           columnsState={{
             persistenceKey: 'pro-table-singe-demos',
             persistenceType: 'localStorage',
           }}
-          rowKey="id"
+          rowKey="personId"
           search={{
             labelWidth: 'auto',
           }}
           options={false}
-          // options={{
-          //     setting: {
-          //         listsHeight: 400,
-          //     },
-          // }}
           form={{
             // 由于配置了 transform，提交的参与与定义的不同这里需要转化一下
             syncToUrl: (values, type) => {
@@ -609,120 +453,6 @@ export default () => {
           ]}
         />
       </div>
-      <Modal title={title} open={isOpen} onCancel={handleCancel} footer={null} destroyOnClose>
-        <ProForm
-          onFinish={async (values: DeviceAdd) => {
-            handleFinish(values)
-          }}
-          labelCol={{ span: 6 }}
-          wrapperCol={{ span: 18 }}
-          layout="horizontal"
-          grid={true}
-          submitter={{
-            // 配置按钮文本
-            searchConfig: {
-              resetText: '重置',
-              submitText: '提交',
-            },
-            // 配置按钮的属性
-            resetButtonProps: {
-              style: {
-                // 隐藏重置按钮
-                justifyContent: 'center',
-              },
-            },
-          }}
-          initialValues={initialValues.current}
-        >
-          <ProForm.Group>
-            <ProFormText
-              name="devId"
-              width="md"
-              label="设备编号"
-              placeholder="请输入设备编号"
-              rules={[{ required: true, message: '这是必填项' }]}
-            />
-          </ProForm.Group>
-          <ProForm.Group>
-            <ProFormText
-              name="devName"
-              width="md"
-              label="设备名称"
-              placeholder="请输入设备名称"
-              rules={[{ required: true, message: '这是必填项' }]}
-            />
-          </ProForm.Group>
-          <ProForm.Group>
-            <ProFormText
-              name="devSerial"
-              width="md"
-              label="设备序列号"
-              placeholder="请输入设备序列号"
-              rules={[{ required: true, message: '这是必填项' }]}
-            />
-          </ProForm.Group>
-          <ProForm.Group>
-            <ProFormText
-              name="devIP"
-              width="md"
-              label="设备IP地址"
-              placeholder="请输入设备IP地址"
-              rules={[{ required: true, message: '这是必填项' }]}
-            />
-          </ProForm.Group>
-          <ProForm.Group>
-            <ProFormText
-              name="devPort"
-              width="md"
-              label="设备通讯端口"
-              placeholder="请输入设备通讯端口"
-              rules={[{ required: true, message: '这是必填项' }]}
-            />
-          </ProForm.Group>
-          <ProForm.Group>
-            <ProFormText
-              name="devType"
-              width="md"
-              label="设备分类"
-              placeholder="请输入设备分类"
-              rules={[{ required: true, message: '这是必填项' }]}
-            />
-          </ProForm.Group>
-          <ProForm.Group>
-            <ProFormText
-              name="devModel"
-              width="md"
-              label="机型"
-              placeholder="请输入机型"
-              rules={[{ required: true, message: '这是必填项' }]}
-            />
-          </ProForm.Group>
-          <ProForm.Group>
-            <ProFormTreeSelect
-              label="所属餐厅"
-              fieldProps={{
-                fieldNames: {
-                  label: 'title',
-                },
-                treeData: canteeTree,
-                placeholder: '请选择餐厅',
-              }}
-            />
-          </ProForm.Group>
-          <ProForm.Group>
-            <ProFormTreeSelect
-              label="请选择"
-              fieldProps={{
-                fieldNames: {
-                  label: 'title',
-                },
-                treeData: treeData,
-                placeholder: '请选择区域',
-              }}
-            />
-          </ProForm.Group>
-        </ProForm>
-      </Modal>
     </div >
   );
 };

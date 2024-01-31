@@ -1,9 +1,9 @@
-import { DeleteOutlined, EditOutlined, FolderAddOutlined, PlusOutlined } from '@ant-design/icons';
+import { PlusOutlined } from '@ant-design/icons';
 import { ActionType, ParamsType, ProColumns, ProForm, ProFormText, ProFormTreeSelect } from '@ant-design/pro-components';
-import { Button, Modal, Popconfirm, TreeSelect } from 'antd';
+import { Button, Modal, Popconfirm } from 'antd';
 import { createStyles } from "antd-style"
 import { ProTable } from '@ant-design/pro-components';
-import { getDeviceList, getDeviceAdd, getDeviceEdit, getDeviceDel } from '@/api/deviceList';
+import { getDeviceparameterList, getDeviceparameterAdd, getDeviceparameterEdit, getDeviceparameterDel } from '@/api/deviceparameter';
 import { getAreaTree } from '@/api/area';
 import React, { useEffect, useState, useRef } from 'react';
 import Tree from '@/components/common/group-tree/GroupTree';
@@ -47,7 +47,7 @@ type GithubIssueItem = {
 interface TreeDataOrigin {
   key: number;
   originData: OriginData;
-  value: string;
+  value:string;
   title: string;
   children?: TreeDataOrigin[];
 }
@@ -107,9 +107,36 @@ export default () => {
   const [canteeTree, setCanteeTree] = useState<TreeList[]>([])
   const columns: ProColumns<GithubIssueItem>[] = [
     {
-      title: '设备编号',
-      dataIndex: 'devId',
+      title: '设备序列号',
+      dataIndex: 'devSerial',
       ellipsis: true,
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: '此项为必填项',
+          },
+        ],
+      },
+    },
+    {
+      title: '参数值',
+      dataIndex: 'paramValue',
+      ellipsis: true,
+      formItemProps: {
+        rules: [
+          {
+            required: true,
+            message: '此项为必填项',
+          },
+        ],
+      },
+    },
+    {
+      title: '参数Key',
+      dataIndex: 'paramKey',
+      ellipsis: true,
+      search: false,
       formItemProps: {
         rules: [
           {
@@ -123,6 +150,7 @@ export default () => {
       title: '设备名称',
       dataIndex: 'devName',
       ellipsis: true,
+      search: false,
       formItemProps: {
         rules: [
           {
@@ -133,8 +161,8 @@ export default () => {
       },
     },
     {
-      title: '设备序列号',
-      dataIndex: 'devSerial',
+      title: '设备编号',
+      dataIndex: 'devId',
       ellipsis: true,
       search: false,
       formItemProps: {
@@ -147,8 +175,8 @@ export default () => {
       },
     },
     {
-      title: '设备IP地址',
-      dataIndex: 'devIP',
+      title: '参数名称',
+      dataIndex: 'paramName',
       ellipsis: true,
       search: false,
       formItemProps: {
@@ -161,64 +189,8 @@ export default () => {
       },
     },
     {
-      title: '设备通讯端口',
-      dataIndex: 'devPort',
-      ellipsis: true,
-      search: false,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '此项为必填项',
-          },
-        ],
-      },
-    },
-    {
-      title: '所属区域ID',
-      dataIndex: 'areaId',
-      ellipsis: true,
-      search: false,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '此项为必填项',
-          },
-        ],
-      },
-    },
-    {
-      title: '所属餐厅ID',
-      dataIndex: 'canteenId',
-      ellipsis: true,
-      search: false,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '此项为必填项',
-          },
-        ],
-      },
-    },
-    {
-      title: '机型',
-      dataIndex: 'devModel',
-      ellipsis: true,
-      search: false,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '此项为必填项',
-          },
-        ],
-      },
-    },
-    {
-      title: '设备分类',
-      dataIndex: 'devType',
+      title: 'json格式参数',
+      dataIndex: 'paramJson',
       ellipsis: true,
       search: false,
       formItemProps: {
@@ -233,17 +205,18 @@ export default () => {
     {
       title: '操作',
       valueType: 'option',
+      width: 150,
       key: 'option',
       fixed: 'right',
       render: (text, record, _, action) => [
-        <a
-          key="editable"
-          onClick={() => {
-            action?.startEditable?.(record.id);
-          }}
-        >
-          编辑
-        </a>,
+        // <a
+        //   key="editable"
+        //   onClick={() => {
+        //     action?.startEditable?.(record.id);
+        //   }}
+        // >
+        //   编辑
+        // </a>,
         <Popconfirm key="delete" title='删除' description="确认删除？" onConfirm={() => {
           handleDelete(record)
         }}>
@@ -258,7 +231,6 @@ export default () => {
 
   useEffect(() => {
     init()
-    initCateen()
   }, [])
 
   const init = async () => {
@@ -266,19 +238,6 @@ export default () => {
     console.log(data, 'data')
     if (code === 0) {
       setTreeData(data)
-      return
-    }
-    message.warning(msg);
-  }
-
-  const initCateen = async () => {
-    const { code, data, msg } = await initCateenTreeData()
-    console.log(data, 'cateeData')
-    if (code === 0) {
-      setCanteeTree(data)
-      // const treeDataTemp = transformTreeData(data, selectKey!)
-      // treeDataOrigin.current = data
-      // setTreeData(data)
       return
     }
     message.warning(msg);
@@ -321,7 +280,7 @@ export default () => {
       ...rest
     }
     try {
-      const result = await getDeviceList(params1);
+      const result = await getDeviceparameterList(params1);
       if (result.status === 200) {
         return {
           data: result.data.data.list,
@@ -353,19 +312,12 @@ export default () => {
   }> => {
     try {
       const result = await getAreaTree();
-      if (result.data.data) {
-        return {
-          code: 0,
-          data: transformGroup(result.data.data, 'areaName'),
-          msg: '',
-        };
-      }
-      return {
-        code: 1,
-        data: [],
-        msg: "组织信息获取失败!",
-      };
       console.log(result, 'result')
+      return {
+        code: 0,
+        data: transformGroup(result.data.data, 'areaName'),
+        msg: '',
+      };
     } catch (error) {
       return {
         code: 1,
@@ -407,7 +359,7 @@ export default () => {
         const obj: TreeDataOrigin = {
           title: l[key],
           key: id,
-          value: id,
+          value:id,
           originData: l
         };
         if (children?.length) {
@@ -426,7 +378,7 @@ export default () => {
       const params = {
         id: data.id
       }
-      await getDeviceDel(params);
+      await getDeviceparameterDel(params);
       await init()
       actionRef.current?.reload();
       message.success('删除成功')
@@ -472,13 +424,13 @@ export default () => {
     }
   }
 
-  const handleFinish = async (values: DeviceAdd) => {
+  const handleFinish = async (values:DeviceAdd) => {
     if (mode === 'add') {
       const params = {
         ...values,
       }
-      const result = await getDeviceAdd(params);
-      if (result.resultCode === '1') {
+      const result = await getDeviceparameterAdd(params);
+      if (result.resultCode === '0') {
         await init()
         message.success('添加成功');
         actionRef.current?.reload();
@@ -508,8 +460,14 @@ export default () => {
 
 
   const handleSave = async (data: GithubIssueItem) => {
-    const result = await getDeviceEdit(data);
-    if (result.resultCode === '1') {
+    const { id, areaName, pid } = data;
+    const params = {
+      id,
+      pid,
+      areaName,
+    }
+    const result = await getBaseAreaEdit(params);
+    if (result.resultCode === '0') {
       message.success('修改成功')
       actionRef.current?.reload();
     }
@@ -572,7 +530,7 @@ export default () => {
             persistenceKey: 'pro-table-singe-demos',
             persistenceType: 'localStorage',
           }}
-          rowKey="id"
+          rowKey="personId"
           search={{
             labelWidth: 'auto',
           }}
@@ -601,12 +559,12 @@ export default () => {
           }}
           dateFormatter="string"
           headerTitle="岗位资料"
-          toolBarRender={() => [
-            <Button key="3" type="primary" onClick={handleAdd}>
-              <PlusOutlined />
-              新建
-            </Button>,
-          ]}
+          // toolBarRender={() => [
+          //   <Button key="3" type="primary" onClick={handleAdd}>
+          //     <PlusOutlined />
+          //     新建
+          //   </Button>,
+          // ]}
         />
       </div>
       <Modal title={title} open={isOpen} onCancel={handleCancel} footer={null} destroyOnClose>
@@ -692,8 +650,8 @@ export default () => {
             <ProFormText
               name="devModel"
               width="md"
-              label="机型"
-              placeholder="请输入机型"
+              label="设备分类"
+              placeholder="请输入设备分类"
               rules={[{ required: true, message: '这是必填项' }]}
             />
           </ProForm.Group>

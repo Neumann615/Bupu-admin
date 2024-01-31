@@ -2,7 +2,7 @@ import { ActionType, ParamsType, ProColumns, ProForm, ProFormText, ProFormDateTi
 import { Button, Modal, Popconfirm } from 'antd';
 import { createStyles } from "antd-style"
 import { ProTable } from '@ant-design/pro-components';
-import { getOrganizationalEmployeeList, getBaseEmployeeAdd, getBaseEmployeeEdit, getBaseEmployeeDel } from '@/api/employee';
+import { getOrganizationalEmployeeList, getBaseEmployeeAdd, getBaseEmployeeEdit, getBaseEmployeeDel,getBaseEmployeeLeave } from '@/api/employee';
 import React, { useState, useRef } from 'react';
 import { message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
@@ -28,7 +28,7 @@ type GithubIssueItem = {
     updatetime: string;
     timeBalance: string;
     pushMsg: string;
-    birthDate: string;
+    // birthDate: string;
     longLat: string;
     nickName: string;
     personPwd: string;
@@ -53,11 +53,11 @@ type GithubIssueItem = {
     leaveTime: string;
     wxStatus: string;
     createTime: string;
-    personAddress: string;
+    // personAddress: string;
     leaveReason: string;
     subsidyBalance: string;
     previousCashBalance: string;
-    accountId: string;
+    accountId: number;
     payOpenId: string;
     loginPwd: string;
     endTime: string;
@@ -84,7 +84,7 @@ type GithubIssueItem = {
 };
 
 export interface FormValues {
-    birthDate: string;
+    // birthDate: string;
     personPwd: string;
     personName: string;
     personId: string;
@@ -94,14 +94,14 @@ export interface FormValues {
     cardSn: string;
     levelId: string;
     personMobile: string;
-    personAddress: string;
+    // personAddress: string;
     rangeTime:string;
 }
 
 interface OriginData {
     children: OriginData[];
     departName: string;
-    id: number;
+    accountId: number;
 }
 
 const useStyles = createStyles(({ token }) => ({
@@ -109,7 +109,6 @@ const useStyles = createStyles(({ token }) => ({
         width: "100%",
         height: "100%",
         padding: "12px",
-        //display: "flex",
     },
 }))
 
@@ -120,26 +119,27 @@ export default () => {
     const initialValues = useRef<Record<string, any>>({})
     const [title, setTitle] = useState('增加');
     const columns: ProColumns<GithubIssueItem>[] = [
-        {
-            title: '出生日期',
-            dataIndex: 'birthDate',
-            ellipsis: true,
-            width: 150,
-            search: false,
-            fixed: "left",
-            formItemProps: {
-                rules: [
-                    {
-                        required: true,
-                        message: '此项为必填项',
-                    },
-                ],
-            },
-        },
+        // {
+        //     title: '出生日期',
+        //     dataIndex: 'birthDate',
+        //     ellipsis: true,
+        //     width: 150,
+        //     search: false,
+        //     valueType: 'date',
+        //     formItemProps: {
+        //         rules: [
+        //             {
+        //                 required: true,
+        //                 message: '此项为必填项',
+        //             },
+        //         ],
+        //     },
+        // },
         {
             title: '姓名',
             dataIndex: 'personName',
             ellipsis: true,
+            width: 100,
             formItemProps: {
                 rules: [
                     {
@@ -153,6 +153,7 @@ export default () => {
             title: '人员编号',
             dataIndex: 'personId',
             ellipsis: true,
+            width: 100,
             formItemProps: {
                 rules: [
                     {
@@ -182,6 +183,7 @@ export default () => {
             dataIndex: 'beginTime',
             ellipsis: true,
             width: 150,
+            valueType: 'date',
             search: false,
             formItemProps: {
                 rules: [
@@ -240,6 +242,7 @@ export default () => {
             ellipsis: true,
             width: 150,
             search: false,
+            valueType: 'date',
             formItemProps: {
                 rules: [
                     {
@@ -268,6 +271,7 @@ export default () => {
             title: '手机号',
             dataIndex: 'personMobile',
             ellipsis: true,
+            width: 100,
             formItemProps: {
                 rules: [
                     {
@@ -277,23 +281,25 @@ export default () => {
                 ],
             },
         },
-        {
-            title: '联系地址',
-            dataIndex: 'personAddress',
-            ellipsis: true,
-            search: false,
-            formItemProps: {
-                rules: [
-                    {
-                        required: true,
-                        message: '此项为必填项',
-                    },
-                ],
-            },
-        },
+        // {
+        //     title: '联系地址',
+        //     dataIndex: 'personAddress',
+        //     ellipsis: true,
+        //     search: false,
+        //     width: 100,
+        //     formItemProps: {
+        //         rules: [
+        //             {
+        //                 required: true,
+        //                 message: '此项为必填项',
+        //             },
+        //         ],
+        //     },
+        // },
         {
             title: '更新时间',
             dataIndex: 'updateTime',
+            width: 100,
             ellipsis: true,
             search: false,
             editable: false,
@@ -301,6 +307,7 @@ export default () => {
         {
             title: '创建时间',
             dataIndex: 'createTime',
+            width: 100,
             ellipsis: true,
             search: false,
             editable: false,
@@ -312,15 +319,22 @@ export default () => {
             key: 'option',
             fixed: 'right',
             render: (text, record, _, action) => [
+                <Popconfirm key="delete" title='离职' description="确认离职？" onConfirm={() => {
+                    handleLeave(record)
+                }}>
+                    <a href={record.url} target="_blank" rel="noopener noreferrer">
+                        离职
+                    </a>
+                </Popconfirm>,
                 <a
                     key="editable"
                     onClick={() => {
-                        action?.startEditable?.(record.personId);
+                        action?.startEditable?.(record.accountId);
                     }}
                 >
                     编辑
                 </a>,
-                <Popconfirm key="delete" title='删除' description="该岗位下的子节点也会被一起删除，确认删除岗位？" onConfirm={() => {
+                <Popconfirm key="delete" title='删除' description="确认删除此条记录？" onConfirm={() => {
                     handleDelete(record)
                 }}>
                     <a href={record.url} target="_blank" rel="noopener noreferrer">
@@ -361,7 +375,7 @@ export default () => {
     const handleDelete = async (data: GithubIssueItem | OriginData) => {
         try {
             const params = {
-                id: data.id
+                accountId: data.accountId
             }
             await getBaseEmployeeDel(params);
             actionRef.current?.reload();
@@ -369,6 +383,24 @@ export default () => {
         }
         catch (e) {
             message.warning('删除失败')
+        }
+    }
+
+    const handleLeave = async (data: GithubIssueItem | OriginData) => {
+        try {
+            const params = {
+                accountId: data.accountId
+            }
+            const reuslt = await getBaseEmployeeLeave(params);
+            if(reuslt.resultCode === '1'){
+                actionRef.current?.reload();
+                message.success('离职成功')
+                return;
+            }
+            message.warning(reuslt.resultMsg || '操作失败')
+        }
+        catch (e) {
+            message.warning('操作失败')
         }
     }
 
@@ -385,14 +417,14 @@ export default () => {
         }
         try{
             const result = await getBaseEmployeeAdd(params);
-            if (result.resultCode === '0'){
+            if (result.resultCode === '1'){
                 message.success('添加成功');
                 actionRef.current?.reload();
                 initialValues.current = {}
                 setIsOpen(false)
                 return;
             }
-            message.warning('添加失败！')
+            message.warning(result.resultMsg || '添加失败！')
         }
         catch(e){
             message.warning('添加失败！')
@@ -402,13 +434,13 @@ export default () => {
 
 
     const handleSave = async (data: GithubIssueItem) => {
-        const { id, jobName, pid } = data;
-        const params = {
-            id,
-            pid,
-            jobName,
-        }
-        const result = await getBaseEmployeeEdit(params);
+        // const { id, jobName, pid } = data;
+        // const params = {
+        //     id,
+        //     pid,
+        //     jobName,
+        // }
+        const result = await getBaseEmployeeEdit(data);
         if (result.resultCode === '0') {
             message.success('修改成功')
             actionRef.current?.reload();
@@ -431,6 +463,7 @@ export default () => {
                 editable={{
                     type: 'multiple',
                     onSave: async (_, data) => {
+                        console.log('保存')
                         handleSave(data)
                     },
                 }}
@@ -438,7 +471,7 @@ export default () => {
                     persistenceKey: 'pro-table-singe-demos',
                     persistenceType: 'localStorage',
                 }}
-                rowKey="personId"
+                rowKey="accountId"
                 search={{
                     labelWidth: 'auto',
                 }}
