@@ -5,3 +5,4 @@ export * from "@/components/base/Icon/Icon"
 //页面组件
 export * from "@/components/page/Result/Result"
 export * from "@/components/page/PluginsDemo/PluginsDemo"
+export * from "@/components/page/Dashboard/Dashboard"

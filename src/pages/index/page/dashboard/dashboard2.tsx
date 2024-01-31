@@ -1,3 +1,5 @@
+import {Dashboard} from "@/components"
+
 export default ()=>{
-    return <div>dashboard2</div>
+    return <Dashboard type={"template2"}></Dashboard>
 }

@@ -55,3 +55,9 @@ git push upstream master
 git拉代码
 
 git pull
+
+## 待解决问题
+
+1. 过场动画切换时有卡顿
+2. 调整菜单收缩按钮位置
+3. 完善右侧配置项对应的逻辑
