@@ -3,7 +3,7 @@ import { Button, Modal, Popconfirm } from 'antd';
 import { createStyles } from "antd-style"
 import { ProTable } from '@ant-design/pro-components';
 import { getPersonalEmployeeLeaveList, getBaseEmployeeLeaveEdit, getBaseEmployeeEntry } from '@/api/employeeLeave';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -118,6 +118,7 @@ export default () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const initialValues = useRef<Record<string, any>>({})
   const [title, setTitle] = useState('增加');
+  const [height, setHeight] = useState(0);
   const columns: ProColumns<GithubIssueItem>[] = [
     {
       title: '姓名',
@@ -181,7 +182,7 @@ export default () => {
         <a
           key="editable"
           onClick={() => {
-            action?.startEditable?.(record.personId);
+            action?.startEditable?.(record.accountId);
           }}
         >
           编辑
@@ -197,6 +198,22 @@ export default () => {
       ],
     },
   ];
+
+  useEffect(() => {
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
+
+  const handleResize = () => {
+    const proTable = document.getElementById('proTable')
+    const height = proTable?.clientHeight || document.body.clientHeight;
+    const cardHeight = proTable?.querySelector('.proForm')?.clientHeight;
+    const tableHeight = height - (cardHeight || 0) - 200
+    setHeight(tableHeight)
+  }
 
   const handleRequest = async (params: ParamsType) => {
     const params1 = {
@@ -230,7 +247,7 @@ export default () => {
         accountId: data.accountId
       }
       const result = await getBaseEmployeeEntry(params);
-      if(result?.resultCode === '1'){
+      if (result?.resultCode === '1') {
         actionRef.current?.reload();
         message.success('入职成功')
         return;
@@ -279,10 +296,10 @@ export default () => {
   }
 
   return (
-    <div className={styles.main}>
+    <div className={styles.main} id='proTable'>
       <ProTable<GithubIssueItem>
         columns={columns}
-        scroll={{ x: 1300 }}
+        scroll={{ x: 1300, y: height }}
         actionRef={actionRef}
         //cardBordered
         request={handleRequest}
@@ -296,28 +313,12 @@ export default () => {
           persistenceKey: 'pro-table-singe-demos',
           persistenceType: 'localStorage',
         }}
-        rowKey="personId"
+        rowKey="accountId"
         search={{
           labelWidth: 'auto',
+          className: 'proForm'
         }}
         options={false}
-        // options={{
-        //     setting: {
-        //         listsHeight: 400,
-        //     },
-        // }}
-        form={{
-          // 由于配置了 transform，提交的参与与定义的不同这里需要转化一下
-          syncToUrl: (values, type) => {
-            if (type === 'get') {
-              return {
-                ...values,
-                created_at: [values.startTime, values.endTime],
-              };
-            }
-            return values;
-          },
-        }}
         pagination={{
           defaultPageSize: 20,
           pageSizeOptions: [5, 10, 50],
@@ -330,6 +331,9 @@ export default () => {
             <PlusOutlined />
             新建
           </Button>,
+          <Button key="3">
+            导出
+          </Button>
         ]}
       />
       <Modal title={title} open={isOpen} onCancel={handleCancel} footer={null} destroyOnClose>

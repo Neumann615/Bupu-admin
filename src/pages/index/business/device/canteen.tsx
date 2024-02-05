@@ -98,7 +98,8 @@ export default () => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const initialValues = useRef<Record<string, any>>({})
   const currentSelect = useRef<TreeDataOrigin | {}>({});
-  const treeDataOrigin = useRef<TreeDataOrigin[]>([])
+  const treeDataOrigin = useRef<TreeDataOrigin[]>([]);
+  const [height,setHeight] = useState(0);
   const columns: ProColumns<GithubIssueItem>[] = [
     {
       title: '餐厅名称',
@@ -153,8 +154,21 @@ export default () => {
   ];
 
   useEffect(() => {
-    init()
+    init();
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
   }, [])
+
+  const handleResize = () => {
+    const proTable = document.getElementById('proTable')
+    const height = proTable?.clientHeight || document.body.clientHeight;
+    const cardHeight = proTable?.querySelector('.proForm')?.clientHeight;
+    const tableHeight = height - (cardHeight || 0) - 190
+    setHeight(tableHeight)
+  }
 
   const init = async () => {
     const { code, data, msg } = await initTreeData()
@@ -438,15 +452,16 @@ export default () => {
             }
           } />
       </div>
-      <div className={styles.right}>
+      <div className={styles.right} id='proTable'>
         <ProTable<GithubIssueItem>
+          scroll={{ y:height }}
           columns={columns}
           actionRef={actionRef}
           cardBordered
           request={handleRequest}
           editable={{
             type: 'multiple',
-            onSave: async (rowKey, data, row) => {
+            onSave: async (_, data) => {
               handleSave(data)
             },
           }}
@@ -458,22 +473,11 @@ export default () => {
           rowKey="id"
           search={{
             labelWidth: 'auto',
+            className:'proForm'
           }}
           options={{
             setting: {
               listsHeight: 400,
-            },
-          }}
-          form={{
-            // 由于配置了 transform，提交的参与与定义的不同这里需要转化一下
-            syncToUrl: (values, type) => {
-              if (type === 'get') {
-                return {
-                  ...values,
-                  created_at: [values.startTime, values.endTime],
-                };
-              }
-              return values;
             },
           }}
           pagination={{

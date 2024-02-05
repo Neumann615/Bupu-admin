@@ -2,8 +2,8 @@ import { ActionType, ParamsType, ProColumns, ProForm, ProFormText, ProFormDateTi
 import { Button, Modal, Popconfirm } from 'antd';
 import { createStyles } from "antd-style"
 import { ProTable } from '@ant-design/pro-components';
-import { getOrganizationalEmployeeList, getBaseEmployeeAdd, getBaseEmployeeEdit, getBaseEmployeeDel,getBaseEmployeeLeave } from '@/api/employee';
-import React, { useState, useRef } from 'react';
+import { getOrganizationalEmployeeList, getBaseEmployeeAdd, getBaseEmployeeEdit, getBaseEmployeeDel, getBaseEmployeeLeave } from '@/api/employee';
+import React, { useState, useRef,useEffect } from 'react';
 import { message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
@@ -95,7 +95,7 @@ export interface FormValues {
     levelId: string;
     personMobile: string;
     // personAddress: string;
-    rangeTime:string;
+    rangeTime: string;
 }
 
 interface OriginData {
@@ -118,23 +118,8 @@ export default () => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const initialValues = useRef<Record<string, any>>({})
     const [title, setTitle] = useState('增加');
+    const [height,setHeight] = useState(0);
     const columns: ProColumns<GithubIssueItem>[] = [
-        // {
-        //     title: '出生日期',
-        //     dataIndex: 'birthDate',
-        //     ellipsis: true,
-        //     width: 150,
-        //     search: false,
-        //     valueType: 'date',
-        //     formItemProps: {
-        //         rules: [
-        //             {
-        //                 required: true,
-        //                 message: '此项为必填项',
-        //             },
-        //         ],
-        //     },
-        // },
         {
             title: '姓名',
             dataIndex: 'personName',
@@ -198,6 +183,7 @@ export default () => {
             title: '身份证号',
             dataIndex: 'idCard',
             ellipsis: true,
+            search: false,
             width: 150,
             formItemProps: {
                 rules: [
@@ -212,6 +198,7 @@ export default () => {
             title: '部门ID',
             dataIndex: 'departId',
             ellipsis: true,
+            search: false,
             width: 150,
             formItemProps: {
                 rules: [
@@ -227,6 +214,7 @@ export default () => {
             dataIndex: 'cardSn',
             ellipsis: true,
             width: 150,
+            search: false,
             formItemProps: {
                 rules: [
                     {
@@ -271,6 +259,7 @@ export default () => {
             title: '手机号',
             dataIndex: 'personMobile',
             ellipsis: true,
+            search: false,
             width: 100,
             formItemProps: {
                 rules: [
@@ -281,21 +270,6 @@ export default () => {
                 ],
             },
         },
-        // {
-        //     title: '联系地址',
-        //     dataIndex: 'personAddress',
-        //     ellipsis: true,
-        //     search: false,
-        //     width: 100,
-        //     formItemProps: {
-        //         rules: [
-        //             {
-        //                 required: true,
-        //                 message: '此项为必填项',
-        //             },
-        //         ],
-        //     },
-        // },
         {
             title: '更新时间',
             dataIndex: 'updateTime',
@@ -319,7 +293,7 @@ export default () => {
             key: 'option',
             fixed: 'right',
             render: (text, record, _, action) => [
-                <Popconfirm key="delete" title='离职' description="确认离职？" onConfirm={() => {
+                <Popconfirm key="lz" title='离职' description="确认离职？" onConfirm={() => {
                     handleLeave(record)
                 }}>
                     <a href={record.url} target="_blank" rel="noopener noreferrer">
@@ -345,6 +319,22 @@ export default () => {
             ],
         },
     ];
+
+    useEffect(() => {
+        handleResize()
+        window.addEventListener('resize', handleResize)
+        return () => {
+            window.removeEventListener('resize', handleResize)
+        }
+    }, [])
+
+    const handleResize = () => {
+        const proTable = document.getElementById('proTable')
+        const height = proTable?.clientHeight || document.body.clientHeight;
+        const cardHeight = proTable?.querySelector('.proForm')?.clientHeight;
+        const tableHeight = height - (cardHeight || 0) - 200
+        setHeight(tableHeight)
+    }
 
     const handleRequest = async (params: ParamsType) => {
         const params1 = {
@@ -392,7 +382,7 @@ export default () => {
                 accountId: data.accountId
             }
             const reuslt = await getBaseEmployeeLeave(params);
-            if(reuslt.resultCode === '1'){
+            if (reuslt.resultCode === '1') {
                 actionRef.current?.reload();
                 message.success('离职成功')
                 return;
@@ -408,16 +398,16 @@ export default () => {
         setIsOpen(false);
         initialValues.current = {}
     }
-    const handleFinish = async (values:FormValues) => {
+    const handleFinish = async (values: FormValues) => {
         const { rangeTime, ...rest } = values;
         const params = {
             beginTime: rangeTime[0],
             endTime: rangeTime[1],
             ...rest
         }
-        try{
+        try {
             const result = await getBaseEmployeeAdd(params);
-            if (result.resultCode === '1'){
+            if (result.resultCode === '1') {
                 message.success('添加成功');
                 actionRef.current?.reload();
                 initialValues.current = {}
@@ -426,7 +416,7 @@ export default () => {
             }
             message.warning(result.resultMsg || '添加失败！')
         }
-        catch(e){
+        catch (e) {
             message.warning('添加失败！')
         }
     }
@@ -453,12 +443,11 @@ export default () => {
     }
 
     return (
-        <div className={styles.main}>
+        <div className={styles.main} id='proTable'>
             <ProTable<GithubIssueItem>
                 columns={columns}
-                scroll={{ x: 1300 }}
+                scroll={{ x: 1300, y: height }}
                 actionRef={actionRef}
-                //cardBordered
                 request={handleRequest}
                 editable={{
                     type: 'multiple',
@@ -474,13 +463,9 @@ export default () => {
                 rowKey="accountId"
                 search={{
                     labelWidth: 'auto',
+                    className:'proForm'
                 }}
                 options={false}
-                // options={{
-                //     setting: {
-                //         listsHeight: 400,
-                //     },
-                // }}
                 form={{
                     // 由于配置了 transform，提交的参与与定义的不同这里需要转化一下
                     syncToUrl: (values, type) => {

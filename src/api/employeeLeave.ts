@@ -16,7 +16,7 @@ export function getPersonalEmployeeLeaveList(v: OrganizationalEmployeeLeaveList)
  * @param v
  */
 export function getBaseEmployeeLeaveEdit(v: BaseEmployeeLeaveEdit): Promise<EmployeeLeaveEditData> {
-    return post("/api/platform/api/human/personleave/edit", v)
+    return post("/api/platform/api/human/personal/personleave/edit", v)
 }
 
 /**

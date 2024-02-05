@@ -47,7 +47,7 @@ type GithubIssueItem = {
 interface TreeDataOrigin {
   key: number;
   originData: OriginData;
-  value:string;
+  value: string;
   title: string;
   children?: TreeDataOrigin[];
 }
@@ -104,6 +104,7 @@ export default () => {
   const initialValues = useRef<Record<string, any>>({})
   const currentSelect = useRef<TreeDataOrigin | {}>({});
   const treeDataOrigin = useRef<TreeDataOrigin[]>([]);
+  const [height,setHeight] = useState(0);
   const [canteeTree, setCanteeTree] = useState<TreeList[]>([])
   const columns: ProColumns<GithubIssueItem>[] = [
     {
@@ -209,14 +210,6 @@ export default () => {
       key: 'option',
       fixed: 'right',
       render: (text, record, _, action) => [
-        // <a
-        //   key="editable"
-        //   onClick={() => {
-        //     action?.startEditable?.(record.id);
-        //   }}
-        // >
-        //   编辑
-        // </a>,
         <Popconfirm key="delete" title='删除' description="确认删除？" onConfirm={() => {
           handleDelete(record)
         }}>
@@ -230,12 +223,24 @@ export default () => {
   ];
 
   useEffect(() => {
-    init()
+    init();
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
   }, [])
+
+  const handleResize = () => {
+    const proTable = document.getElementById('proTable')
+    const height = proTable?.clientHeight || document.body.clientHeight;
+    const cardHeight = proTable?.querySelector('.proForm')?.clientHeight;
+    const tableHeight = height - (cardHeight || 0) - 190
+    setHeight(tableHeight)
+  }
 
   const init = async () => {
     const { code, data, msg } = await initTreeData()
-    console.log(data, 'data')
     if (code === 0) {
       setTreeData(data)
       return
@@ -359,7 +364,7 @@ export default () => {
         const obj: TreeDataOrigin = {
           title: l[key],
           key: id,
-          value:id,
+          value: id,
           originData: l
         };
         if (children?.length) {
@@ -424,7 +429,7 @@ export default () => {
     }
   }
 
-  const handleFinish = async (values:DeviceAdd) => {
+  const handleFinish = async (values: DeviceAdd) => {
     if (mode === 'add') {
       const params = {
         ...values,
@@ -512,12 +517,11 @@ export default () => {
       <div className={styles.tree}>
         <Tree data={treeData} onSelect={handleSelect} />
       </div>
-      <div className={styles.right}>
+      <div className={styles.right} id='proTable'>
         <ProTable<GithubIssueItem>
           columns={columns}
-          scroll={{ x: 1300 }}
+          scroll={{ x: 1300,y:height }}
           actionRef={actionRef}
-          //cardBordered
           request={handleRequest}
           params={tableParams}
           editable={{
@@ -533,25 +537,9 @@ export default () => {
           rowKey="personId"
           search={{
             labelWidth: 'auto',
+            className:'proForm'
           }}
           options={false}
-          // options={{
-          //     setting: {
-          //         listsHeight: 400,
-          //     },
-          // }}
-          form={{
-            // 由于配置了 transform，提交的参与与定义的不同这里需要转化一下
-            syncToUrl: (values, type) => {
-              if (type === 'get') {
-                return {
-                  ...values,
-                  created_at: [values.startTime, values.endTime],
-                };
-              }
-              return values;
-            },
-          }}
           pagination={{
             defaultPageSize: 20,
             pageSizeOptions: [5, 10, 50],
@@ -559,12 +547,12 @@ export default () => {
           }}
           dateFormatter="string"
           headerTitle="岗位资料"
-          // toolBarRender={() => [
-          //   <Button key="3" type="primary" onClick={handleAdd}>
-          //     <PlusOutlined />
-          //     新建
-          //   </Button>,
-          // ]}
+        // toolBarRender={() => [
+        //   <Button key="3" type="primary" onClick={handleAdd}>
+        //     <PlusOutlined />
+        //     新建
+        //   </Button>,
+        // ]}
         />
       </div>
       <Modal title={title} open={isOpen} onCancel={handleCancel} footer={null} destroyOnClose>

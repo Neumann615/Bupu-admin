@@ -41,6 +41,14 @@ const DemoColumn = () => {
             type: '家庭清洁',
             sales: 38,
         },
+        {
+            type: '食品',
+            sales: 38,
+        },
+        {
+            type: '家庭',
+            sales: 38,
+        },
     ];
     const config = {
         data,

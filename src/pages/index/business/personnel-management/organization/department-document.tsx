@@ -123,7 +123,7 @@ export default () => {
     const [title, setTitle] = useState<string>('');
     const [mode, setMode] = useState<string>('add');
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    const [tableParams, setTableParams] = useState({});
+    const [height,setHeight] = useState(0);
     const initialValues = useRef<Record<string, any>>({})
     const currentSelect = useRef<TreeDataOrigin | {}>({});
     const treeDataOrigin = useRef<TreeDataOrigin[]>([]);
@@ -182,8 +182,21 @@ export default () => {
     ];
 
     useEffect(() => {
-        init()
+        init();
+        handleResize()
+        window.addEventListener('resize',handleResize)
+        return () => {
+            window.removeEventListener('resize',handleResize)
+        }
     }, [])
+
+    const handleResize = () => {
+        const proTable = document.getElementById('proTable')
+        const height = proTable?.clientHeight || document.body.clientHeight;
+        const cardHeight = proTable?.querySelector('.proForm')?.clientHeight;
+        const tableHeight = height - (cardHeight || 0) - 190
+        setHeight(tableHeight)
+    }
 
     const init = async () => {
         const { code, data, msg } = await initTreeData()
@@ -425,19 +438,7 @@ export default () => {
     const handleSelect = async(node: number, info: any) => {
         const treeDataTemp = transformTreeData(treeDataOrigin.current, node)
         setSelectKey(node)
-        setTreeData(treeDataTemp)
-        if (ref.current) {
-            await ref.current.setFieldsValue({
-                departName: info.originData.departName
-            });
-        }
-        // setTableParams({
-        //     departName: info.originData.departName
-        // })
-        setTimeout(() => {
-            actionRef.current?.reload();
-        },3000)
-        
+        setTreeData(treeDataTemp)        
     }
 
     const handleDrop = async (info: any) => {
@@ -478,14 +479,14 @@ export default () => {
                         }
                     } />
             </div>
-            <div className={styles.right}>
+            <div className={styles.right} id='proTable'>
                 <ProTable<GithubIssueItem>
                     columns={columns}
                     actionRef={actionRef}
                     cardBordered
                     request={handleRequest}
-                    params={tableParams}
                     formRef={ref}
+                    scroll={{y:height}}
                     editable={{
                         type: 'multiple',
                         onSave: async (_, data) => {
@@ -500,23 +501,12 @@ export default () => {
                     rowKey="id"
                     search={{
                         labelWidth: 'auto',
+                        className:'proForm'
                     }}
                     options={{
                         setting: {
                             listsHeight: 400,
                         },
-                    }}
-                    form={{
-                        // 由于配置了 transform，提交的参与与定义的不同这里需要转化一下
-                        // syncToUrl: (values, type) => {
-                        //     if (type === 'get') {
-                        //         return {
-                        //             ...values,
-                        //             created_at: [values.startTime, values.endTime],
-                        //         };
-                        //     }
-                        //     return values;
-                        // },
                     }}
                     pagination={{
                         defaultPageSize: 20,

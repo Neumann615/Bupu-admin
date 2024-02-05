@@ -6,6 +6,7 @@ import { getJobList, getBasJobAdd, getBaseJobEdit, getBaseJobDel } from '@/api/j
 import React, { useState, useRef } from 'react';
 import { message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
+import { useEffect } from 'react';
 
 export const waitTimePromise = async (time: number = 100) => {
     return new Promise((resolve) => {
@@ -69,6 +70,7 @@ export default () => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const initialValues = useRef<Record<string, any>>({})
     const [title, setTitle] = useState('增加');
+    const [height,setHeight] = useState(0);
     const columns: ProColumns<GithubIssueItem>[] = [
         {
             title: '岗位名称',
@@ -121,6 +123,22 @@ export default () => {
             ],
         },
     ];
+
+    useEffect(() => {
+        handleResize()
+        window.addEventListener('resize', handleResize)
+        return () => {
+            window.removeEventListener('resize', handleResize)
+        }
+    }, [])
+
+    const handleResize = () => {
+        const proTable = document.getElementById('proTable')
+        const height = proTable?.clientHeight || document.body.clientHeight;
+        const cardHeight = proTable?.querySelector('.proForm')?.clientHeight;
+        const tableHeight = height - (cardHeight || 0) - 190
+        setHeight(tableHeight)
+    }
 
     const handleRequest = async (params: ParamsType) => {
         const params1 = {
@@ -205,11 +223,12 @@ export default () => {
     }
 
     return (
-        <div className={styles.main}>
+        <div className={styles.main} id='proTable'>
             <ProTable<GithubIssueItem>
                 columns={columns}
                 actionRef={actionRef}
                 cardBordered
+                scroll={{y:height}}
                 request={handleRequest}
                 editable={{
                     type: 'multiple',
@@ -225,24 +244,25 @@ export default () => {
                 rowKey="id"
                 search={{
                     labelWidth: 'auto',
+                    className:'proForm'
                 }}
                 options={{
                     setting: {
                         listsHeight: 400,
                     },
                 }}
-                form={{
-                    // 由于配置了 transform，提交的参与与定义的不同这里需要转化一下
-                    syncToUrl: (values, type) => {
-                        if (type === 'get') {
-                            return {
-                                ...values,
-                                created_at: [values.startTime, values.endTime],
-                            };
-                        }
-                        return values;
-                    },
-                }}
+                // form={{
+                //     // 由于配置了 transform，提交的参与与定义的不同这里需要转化一下
+                //     syncToUrl: (values, type) => {
+                //         if (type === 'get') {
+                //             return {
+                //                 ...values,
+                //                 created_at: [values.startTime, values.endTime],
+                //             };
+                //         }
+                //         return values;
+                //     },
+                // }}
                 pagination={{
                     defaultPageSize: 20,
                     pageSizeOptions: [5, 10, 50],
