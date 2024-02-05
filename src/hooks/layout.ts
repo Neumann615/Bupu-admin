@@ -44,7 +44,8 @@ export function useControlTab() {
                 key: "/",
                 label: homePageTitle
             }]
-        } else {
+        }
+        else {
             if (isEnableHomePage) {
                 pathList.unshift({
                     icon: "Home",
@@ -86,7 +87,6 @@ export function useControlTab() {
             navigate(v.key)
         }
     }
-
 
     type closeTabAction = "left" | "right" | "other" | "default"
 

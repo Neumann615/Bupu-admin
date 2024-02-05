@@ -1,7 +1,7 @@
 import {createStyles} from "antd-style"
 import {Responsive, WidthProvider} from "react-grid-layout"
 import {CaretUpOutlined, CaretDownOutlined} from "@ant-design/icons";
-import {Card, Space, Statistic} from "antd";
+import {Card, Space, Statistic, Button} from "antd";
 import {ArrowDownOutlined, ArrowUpOutlined} from "@ant-design/icons";
 import React, {useState, useEffect} from 'react';
 import ReactDOM from 'react-dom';
@@ -137,8 +137,17 @@ function Template1LayoutArea() {
     return <Tiny.Area {...config} />;
 }
 
+function a1() {
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve(true)
+        }, 3000)
+    })
+}
+
 export function Dashboard(props: DashboardProps) {
     const {styles, theme} = useStyles()
+    const [count, setCount] = useState(0)
 
     return <>
         {props.type === "template1" ? <ResponsiveReactGridLayout
@@ -243,7 +252,12 @@ export function Dashboard(props: DashboardProps) {
             <div key={"e"} style={{border: "1px solid red"}}>
                 <Template1LayoutArea></Template1LayoutArea>
             </div>
-            <div key={"f"} style={{border: "1px solid red"}}></div>
+            <div key={"f"} style={{border: "1px solid red"}}>
+                {count}
+                <Button onClick={() => {
+                    setCount(count + 1)
+                }}>测试</Button>
+            </div>
             <div key={"g"} style={{border: "1px solid red"}}></div>
             <div key={"h"} style={{border: "1px solid red"}}></div>
         </ResponsiveReactGridLayout> : null}

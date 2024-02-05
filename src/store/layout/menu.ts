@@ -18,6 +18,6 @@ export const useMenuStore: any = create(
         }
     ), {
         name: defaultSetting.app.storagePrefix + "menu",
-        storage: createJSONStorage(() => defaultSetting.app.storageType === "local" ? localStorage : sessionStorage)
+        storage: defaultSetting.app.isEnableMemory?(createJSONStorage(() => defaultSetting.app.storageType === "local" ? localStorage : sessionStorage)):undefined
     })
 )

@@ -16,8 +16,24 @@ function setFixedTabHandler(tabs, tabId) {
 export const useTabBarStore: any = create(
     persist((set: any) => ({
         ...defaultSetting.tabBar,
-        tabs: [],
-        nowTab: {
+        tabs: defaultSetting.homePage.isEnable ? [
+            {
+                menuData: {
+                    icon: "Home",
+                    id: "home_xxxx",
+                    key: "/",
+                    title: defaultSetting.homePage.title
+                },
+                tabId: "home_xxx",
+                title: defaultSetting.homePage.title,
+                icon: "Home"
+            }
+        ] : [],
+        nowTab: defaultSetting.homePage.isEnable ? {
+            tabId: "home_xxx",
+            title: defaultSetting.homePage.title,
+            icon: "Home"
+        } : {
             tabId: "",
             title: "",
             icon: ""
@@ -27,6 +43,6 @@ export const useTabBarStore: any = create(
         setFixedTab: (tabId: string) => set((state: any) => ({tabs: setFixedTabHandler(state.tabs, tabId)}))
     }), {
         name: defaultSetting.app.storagePrefix + "tabBar",
-        storage: createJSONStorage(() => defaultSetting.app.storageType === "local" ? localStorage : sessionStorage)
+        storage: defaultSetting.app.isEnableMemory ? (createJSONStorage(() => defaultSetting.app.storageType === "local" ? localStorage : sessionStorage)) : undefined
     })
 )

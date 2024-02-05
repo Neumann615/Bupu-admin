@@ -346,240 +346,6 @@ export const defaultSetting = {
 
 export const menuData = [
     {
-        id: "1",
-        label: "功能演示",
-        icon: "Application",
-        key: "/demo",
-        children: [
-            {
-                label: "插件",
-                icon: "Puzzle",
-                key: "/demo/plugins",
-                children: [
-                    {
-                        label: "富文本",
-                        icon: "TextStyle",
-                        key: "/demo/plugins/react-quill",
-                    },
-                    {
-                        label: "代码编辑器",
-                        icon: "TextStyle",
-                        key: "/demo/plugins/react-codemirror"
-                    },
-                    {
-                        label: "滑块验证",
-                        icon: "TextStyle",
-                        key: "/demo/plugins/react-slider"
-                    },
-                    {
-                        label: "拖动",
-                        icon: "TextStyle",
-                        key: "/demo/plugins/react-beautiful-dnd"
-                    },
-                    {
-                        label: "加载",
-                        icon: "TextStyle",
-                        key: "/demo/plugins/react-spinners"
-                    }
-                ]
-            },
-            {
-                label: "组件示例",
-                icon: "Components",
-                key: "/demo/component",
-                children: [
-                    {
-                        label: "基础组件",
-                        icon: "",
-                        key: "/component/base",
-                        children: []
-                    },
-                    {
-                        label: "业务组件",
-                        icon: "",
-                        key: "/component/business",
-                        children: []
-                    }
-                ]
-            },
-            {
-                label: "内置特性",
-                icon: "Magic",
-                key: "texing",
-                //children: []
-            },
-            {
-                label: "权限验证",
-                icon: "Permissions",
-                key: "2",
-                //children: []
-            },
-        ]
-    },
-    {
-        id: "2",
-        label: "页面模板",
-        icon: "PageTemplate",
-        key: "/page",
-        children: [
-            {
-                label: "登录页面",
-                icon: "Login",
-                key: "/page/login",
-                children: [
-                    {
-                        label: "登陆模板1",
-                        icon: "",
-                        key: "/page/login/login1",
-                    },
-                    {
-                        label: "登录模板2",
-                        icon: "",
-                        key: "/page/login/login2",
-                    },
-                    {
-                        label: "登陆模板3",
-                        icon: "",
-                        key: "/page/login/login3",
-                    }
-                ]
-            },
-            {
-                label: "仪表盘",
-                icon: "Dashboard",
-                key: "/page/dashboard",
-                children: [
-                    {
-                        label: "仪表盘1",
-                        icon: "",
-                        key: "/page/dashboard/dashboard1",
-                    },
-                    {
-                        label: "仪表盘2",
-                        icon: "",
-                        key: "/page/dashboard/dashboard2",
-                    },
-                    {
-                        label: "仪表盘3",
-                        icon: "",
-                        key: "/page/dashboard/dashboard3",
-                    }
-                ]
-            },
-            {
-                label: "列表页面",
-                icon: "ListView",
-                key: "/page/list",
-                children: [
-                    {
-                        label: "基础列表",
-                        icon: "",
-                        key: "/page/list/basic-list",
-                    },
-                    {
-                        label: "卡片列表",
-                        icon: "",
-                        key: "/page/list/card-list",
-                    },
-                    {
-                        label: "双栏列表",
-                        icon: "",
-                        key: "/page/list/between-list",
-                    }
-                ]
-            },
-            {
-                label: "表单页面",
-                icon: "FormOne",
-                key: "/page/form",
-                children: [
-                    {
-                        label: "表单1",
-                        icon: "",
-                        key: "/page/form/form1",
-                    },
-                    {
-                        label: "表单2",
-                        icon: "",
-                        key: "/page/form/form2",
-                    },
-                    {
-                        label: "表单3",
-                        icon: "",
-                        key: "/page/form/form3",
-                    }
-                ]
-            },
-            {
-                label: "状态页面",
-                icon: "CheckOne",
-                key: "/page/status",
-                children: [
-                    {
-                        label: "信息页",
-                        icon: "",
-                        key: "/page/status/info",
-                    },
-                    {
-                        label: "成功页",
-                        icon: "",
-                        key: "/page/status/success",
-                    },
-                    {
-                        label: "警告页",
-                        icon: "",
-                        key: "/page/status/warning",
-                    },
-                    {
-                        label: "失败页",
-                        icon: "",
-                        key: "/page/status/error",
-                    }
-                ]
-            },
-            {
-                label: "异常页面",
-                icon: "Abnormal",
-                key: "/page/abnormal",
-                children: [
-                    {
-                        label: "403",
-                        icon: "",
-                        key: "/page/abnormal/403",
-                    },
-                    {
-                        label: "404",
-                        icon: "",
-                        key: "/page/abnormal/404",
-                    },
-                    {
-                        label: "500",
-                        icon: "",
-                        key: "/page/abnormal/500",
-                    }
-                ]
-            }
-        ]
-    },
-    {
-        id: "3",
-        label: "相关资料",
-        icon: "DocumentFolder",
-        key: "/information",
-        children: [
-            {
-                label: "项目信息",
-                icon: "Book",
-                key: "/information/project"
-            },
-            {
-                label: "关于我",
-                icon: "IdCardH",
-                key: "/information/personal"
-            }
-        ]
-    },
-    {
         id: "4",
         label: "业务代码",
         icon: "Application",
@@ -679,6 +445,240 @@ export const menuData = [
                 ]
             }
         ]
-    }
+    },
+    {
+        id: "1",
+        label: "功能演示",
+        icon: "Application",
+        key: "/demo",
+        children: [
+            {
+                label: "插件",
+                icon: "Puzzle",
+                key: "/demo/plugins",
+                children: [
+                    {
+                        label: "富文本",
+                        icon: "TextStyle",
+                        key: "/demo/plugins/react-quill",
+                    },
+                    {
+                        label: "代码编辑器",
+                        icon: "TextStyle",
+                        key: "/demo/plugins/react-codemirror"
+                    },
+                    {
+                        label: "滑块验证",
+                        icon: "TextStyle",
+                        key: "/demo/plugins/react-slider"
+                    },
+                    {
+                        label: "拖动",
+                        icon: "TextStyle",
+                        key: "/demo/plugins/react-beautiful-dnd"
+                    },
+                    {
+                        label: "加载",
+                        icon: "TextStyle",
+                        key: "/demo/plugins/react-spinners"
+                    }
+                ]
+            },
+            // {
+            //     label: "组件示例",
+            //     icon: "Components",
+            //     key: "/demo/component",
+            //     children: [
+            //         {
+            //             label: "基础组件",
+            //             icon: "",
+            //             key: "/component/base",
+            //             children: []
+            //         },
+            //         {
+            //             label: "业务组件",
+            //             icon: "",
+            //             key: "/component/business",
+            //             children: []
+            //         }
+            //     ]
+            // },
+            // {
+            //     label: "内置特性",
+            //     icon: "Magic",
+            //     key: "texing",
+            //     //children: []
+            // },
+            // {
+            //     label: "权限验证",
+            //     icon: "Permissions",
+            //     key: "2",
+            //     //children: []
+            // },
+        ]
+    },
+    // {
+    //     id: "2",
+    //     label: "页面模板",
+    //     icon: "PageTemplate",
+    //     key: "/page",
+    //     children: [
+    //         {
+    //             label: "登录页面",
+    //             icon: "Login",
+    //             key: "/page/login",
+    //             children: [
+    //                 {
+    //                     label: "登陆模板1",
+    //                     icon: "",
+    //                     key: "/page/login/login1",
+    //                 },
+    //                 {
+    //                     label: "登录模板2",
+    //                     icon: "",
+    //                     key: "/page/login/login2",
+    //                 },
+    //                 {
+    //                     label: "登陆模板3",
+    //                     icon: "",
+    //                     key: "/page/login/login3",
+    //                 }
+    //             ]
+    //         },
+    //         {
+    //             label: "仪表盘",
+    //             icon: "Dashboard",
+    //             key: "/page/dashboard",
+    //             children: [
+    //                 {
+    //                     label: "仪表盘1",
+    //                     icon: "",
+    //                     key: "/page/dashboard/dashboard1",
+    //                 },
+    //                 {
+    //                     label: "仪表盘2",
+    //                     icon: "",
+    //                     key: "/page/dashboard/dashboard2",
+    //                 },
+    //                 {
+    //                     label: "仪表盘3",
+    //                     icon: "",
+    //                     key: "/page/dashboard/dashboard3",
+    //                 }
+    //             ]
+    //         },
+    //         {
+    //             label: "列表页面",
+    //             icon: "ListView",
+    //             key: "/page/list",
+    //             children: [
+    //                 {
+    //                     label: "基础列表",
+    //                     icon: "",
+    //                     key: "/page/list/basic-list",
+    //                 },
+    //                 {
+    //                     label: "卡片列表",
+    //                     icon: "",
+    //                     key: "/page/list/card-list",
+    //                 },
+    //                 {
+    //                     label: "双栏列表",
+    //                     icon: "",
+    //                     key: "/page/list/between-list",
+    //                 }
+    //             ]
+    //         },
+    //         {
+    //             label: "表单页面",
+    //             icon: "FormOne",
+    //             key: "/page/form",
+    //             children: [
+    //                 {
+    //                     label: "表单1",
+    //                     icon: "",
+    //                     key: "/page/form/form1",
+    //                 },
+    //                 {
+    //                     label: "表单2",
+    //                     icon: "",
+    //                     key: "/page/form/form2",
+    //                 },
+    //                 {
+    //                     label: "表单3",
+    //                     icon: "",
+    //                     key: "/page/form/form3",
+    //                 }
+    //             ]
+    //         },
+    //         {
+    //             label: "状态页面",
+    //             icon: "CheckOne",
+    //             key: "/page/status",
+    //             children: [
+    //                 {
+    //                     label: "信息页",
+    //                     icon: "",
+    //                     key: "/page/status/info",
+    //                 },
+    //                 {
+    //                     label: "成功页",
+    //                     icon: "",
+    //                     key: "/page/status/success",
+    //                 },
+    //                 {
+    //                     label: "警告页",
+    //                     icon: "",
+    //                     key: "/page/status/warning",
+    //                 },
+    //                 {
+    //                     label: "失败页",
+    //                     icon: "",
+    //                     key: "/page/status/error",
+    //                 }
+    //             ]
+    //         },
+    //         {
+    //             label: "异常页面",
+    //             icon: "Abnormal",
+    //             key: "/page/abnormal",
+    //             children: [
+    //                 {
+    //                     label: "403",
+    //                     icon: "",
+    //                     key: "/page/abnormal/403",
+    //                 },
+    //                 {
+    //                     label: "404",
+    //                     icon: "",
+    //                     key: "/page/abnormal/404",
+    //                 },
+    //                 {
+    //                     label: "500",
+    //                     icon: "",
+    //                     key: "/page/abnormal/500",
+    //                 }
+    //             ]
+    //         }
+    //     ]
+    // },
+    // {
+    //     id: "3",
+    //     label: "相关资料",
+    //     icon: "DocumentFolder",
+    //     key: "/information",
+    //     children: [
+    //         {
+    //             label: "项目信息",
+    //             icon: "Book",
+    //             key: "/information/project"
+    //         },
+    //         {
+    //             label: "关于我",
+    //             icon: "IdCardH",
+    //             key: "/information/personal"
+    //         }
+    //     ]
+    // },
 ]
 

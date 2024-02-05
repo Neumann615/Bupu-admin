@@ -4,5 +4,5 @@ import {persist, createJSONStorage} from 'zustand/middleware'
 
 export const useCopyrightStore: any = create(persist((set: any) => (defaultSetting.copyright), {
     name: defaultSetting.app.storagePrefix + "copyright",
-    storage: createJSONStorage(() => defaultSetting.app.storageType === "local" ? localStorage : sessionStorage)
+    storage: defaultSetting.app.isEnableMemory?(createJSONStorage(() => defaultSetting.app.storageType === "local" ? localStorage : sessionStorage)):undefined
 }))

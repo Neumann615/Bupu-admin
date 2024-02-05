@@ -1,13 +1,13 @@
 export default {
     app: {
         //项目名称
-        name: "诺伊曼管理平台",
+        name: "Bupu管理平台",
         //LOGO
         logo: "http://192.168.31.6:3000/vite.svg",
         //生产环境是否开始全局配置
         isEnableProductionAppSetting: true,
         //开启记忆功能
-        isEnableMemory: false,
+        isEnableMemory: true,
         //全局页面加载
         isEnablePageLoadProgress: true,
         //收藏功能
@@ -54,7 +54,7 @@ export default {
         //开启过渡
         isEnableTransition: true,
         //过渡类型
-        transitionType: "slide-left"
+        transitionType: "lightspeed-left"
     },
     //版权
     copyright: {

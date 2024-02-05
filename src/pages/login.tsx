@@ -14,6 +14,7 @@ import SliderCaptch from 'rc-slider-captcha';
 import {login} from '@/api/index'
 import {useMenuStore} from "@/store";
 import {menuData} from "@/utils";
+import {createStyles} from "antd-style";
 
 const {Link} = Typography
 const MainStyle: React.CSSProperties = {
@@ -23,7 +24,7 @@ const MainStyle: React.CSSProperties = {
     height: '100%',
     width: '100%',
     backgroundImage: 'url(https://gw.alipayobjects.com/zos/rmsportal/TVYTbAXWheQpRcWDaDMu.svg)',
-    paddingTop: '150px'
+    paddingTop: '160px'
 }
 const TitleImgStyle = {
     width: "44px",
@@ -33,6 +34,7 @@ const TitleImgStyle = {
 const TitleStyle = {
     display: "flex",
     justifyContent: 'center',
+    marginBottom: "16px"
 }
 const TitleTextStyle: React.CSSProperties = {
     position: 'relative',
@@ -49,6 +51,8 @@ const ContentStyle: React.CSSProperties = {
 const BottomStyle = {
     display: 'flex',
     justifyContent: 'space-between',
+    boxSizing: "border-box",
+    padding: "16px 0px 20px 0px"
 }
 const PassWordStyle = {
     display: 'flex'
@@ -90,9 +94,21 @@ const items = [
     },
 ];
 
+const useStyles = createStyles(({token, css}) => ({
+    customSlider: {
+        "--rcsc-primary": token ["blue-5"],
+        "--rcsc-primary-light": token ['blue-2'],
+        "--rcsc-error": token ["red-5"],
+        "--rcsc-error-light": token ['red-2'],
+        "--rcsc-success": token ["purple-5"],
+        "--rcsc-success-light": token ['purple-2']
+    }
+}))
+
 export default function Login() {
     const [selectedKeys, setSelectedKeys] = useState<string[]>([items[0].key]);
     const [activeTab, setActiveTab] = useState<string>('1');
+    const {styles, theme} = useStyles()
     const initData = JSON.parse(window.localStorage.getItem("remeber")!)
     const [form] = Form.useForm();
     const navigate = useNavigate()
@@ -134,7 +150,9 @@ export default function Login() {
                     />
                 </Form.Item>
                 <SliderCaptch
+                    bgSize={{width: 350}}
                     mode="slider"
+                    className={styles.customSlider}
                     tipText={{
                         default: '请按住滑块，拖动到最右边',
                         moving: '请按住滑块，拖动到最右边',
@@ -145,7 +163,7 @@ export default function Login() {
                     onVerify={(data) => {
                         console.log(data, 'data');
                         // 默认背景图宽度 320 减去默认拼图宽度 60 所以滑轨宽度是 260
-                        if (data.x === 260) {
+                        if (data.x === 290) {
                             return Promise.resolve();
                         }
                         return Promise.reject();
@@ -160,9 +178,7 @@ export default function Login() {
     const renderFooter = () => {
         return <>
             <div style={BottomStyle}>
-                <Form.Item name="autoLogin" valuePropName="checked">
-                    <Checkbox onChange={changeBox}>自动登录</Checkbox>
-                </Form.Item>
+                <Checkbox onChange={changeBox}>自动登录</Checkbox>
                 <Link>
                     忘记密码?
                 </Link>
@@ -289,18 +305,10 @@ export default function Login() {
         setActiveTab(key)
     }
     return <div style={MainStyle}>
-        <div style={LanguageStyle}>
-            <Dropdown menu={{items, selectedKeys, onClick}} placement="bottomLeft" arrow>
-                <FontColorsOutlined/>
-            </Dropdown>
-        </div>
         <div>
             <div style={TitleStyle}>
-                <img src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" style={TitleImgStyle}/>
-                <div style={TitleTextStyle}>Ant Design</div>
-            </div>
-            <div style={TitleContentStyle}>
-                Ant Design 是西湖区最具影响力的 Web 设计规范
+                <img src="http://192.168.31.6:3000/vite.svg" style={TitleImgStyle}/>
+                <div style={TitleTextStyle}>Bupu后台管理系统</div>
             </div>
         </div>
         <Tabs activeKey={activeTab} onChange={handleTabs} centered>
