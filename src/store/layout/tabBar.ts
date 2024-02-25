@@ -20,17 +20,17 @@ export const useTabBarStore: any = create(
             {
                 menuData: {
                     icon: "Home",
-                    id: "home_xxxx",
+                    id: "/",
                     key: "/",
                     title: defaultSetting.homePage.title
                 },
-                tabId: "home_xxx",
+                tabId: "/",
                 title: defaultSetting.homePage.title,
                 icon: "Home"
             }
         ] : [],
         nowTab: defaultSetting.homePage.isEnable ? {
-            tabId: "home_xxx",
+            tabId: "/",
             title: defaultSetting.homePage.title,
             icon: "Home"
         } : {

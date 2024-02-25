@@ -1,7 +1,7 @@
-import React, {useState, useCallback, useRef, useEffect} from 'react'
-import {useMount} from 'ahooks'
+//react-spinners
+import React, {createElement, useCallback, useRef, useState} from 'react'
 import {createStyles} from 'antd-style'
-import {Alert, Row, Col, Button} from 'antd'
+import {Alert, Button, Col, Row, Flex} from 'antd'
 import {LinkOutlined} from '@ant-design/icons'
 //react-quill
 import ReactQuill from 'react-quill'
@@ -11,11 +11,8 @@ import CodeMirror from '@uiw/react-codemirror'
 import {javascript} from '@codemirror/lang-javascript'
 //rc-slider-captcha
 import ImageBg1 from '@/assets/img/0699.jpg';
-import ImageBg2 from '@/assets/img//0723.jpg';
-import createPuzzle, {Result} from 'create-puzzle'
+import createPuzzle from 'create-puzzle'
 import SliderCaptcha, {ActionType} from 'rc-slider-captcha'
-//react-spinners
-import {createElement} from "react";
 import {
     BarLoader,
     BeatLoader,
@@ -31,8 +28,8 @@ import {
     MoonLoader,
     PacmanLoader,
     PropagateLoader,
-    PulseLoader,
     PuffLoader,
+    PulseLoader,
     RingLoader,
     RiseLoader,
     RotateLoader,
@@ -41,8 +38,16 @@ import {
     SquareLoader,
     SyncLoader
 } from "react-spinners"
+//rc-virtual-list
+import RcVirtualList from "rc-virtual-list";
 
-type PluginName = "react-quill" | "react-codemirror" | "rc-slider-captcha" | "react-beautiful-dnd" | "react-spinners"
+type PluginName =
+    "react-quill"
+    | "react-codemirror"
+    | "rc-slider-captcha"
+    | "react-beautiful-dnd"
+    | "react-spinners"
+    | "rc-virtual-list"
 
 interface PluginsDemoProps {
     pluginName: PluginName
@@ -52,6 +57,8 @@ const useStyles = createStyles(({token, css}) => ({
     pluginsDemo: css`
       width: 100%;
       height: 100%;
+      display: flex;
+      flex-direction: column;
     `,
     pluginsDemoHeader: css`
       width: 100%;
@@ -67,6 +74,7 @@ const useStyles = createStyles(({token, css}) => ({
     pluginsDemoBody: css`
       box-sizing: border-box;
       padding: ${token.paddingMD}px;
+      flex: 1;
     `,
     pluginsDemoReactQuill: css`
       box-sizing: border-box;
@@ -84,6 +92,14 @@ const useStyles = createStyles(({token, css}) => ({
         border: none;
         color: ${token.colorTextSecondary}
       }
+    `,
+    pluginsDemoReactCodemirror: css`
+      width: 100%;
+      height: auto;
+      background-color: ${token.colorBgContainer};
+      box-sizing: border-box;
+      border: 1px solid ${token.colorBorder};
+
     `,
     pluginsDemoSlider: css`
       background-color: ${token.colorBgContainer};
@@ -117,20 +133,30 @@ const useStyles = createStyles(({token, css}) => ({
       display: flex;
       flex-wrap: wrap;
       box-sizing: border-box;
-      padding: 16px 0px 0px 16px;
+      padding: 16px 8px 16px 8px;
+      align-content: flex-start;
     `,
     reactSpinnersItem: css`
       width: 20%;
-      height: auto;
       box-sizing: border-box;
-      padding: 0px 16px 16px 0px;
+      padding: 0px 8px 0px 8px;
+      margin-bottom: 16px;
     `,
     reactSpinnersContent: css`
       width: 100%;
-      height: 240px;
+      height: 100%;
       display: grid;
       place-items: center;
+      aspect-ratio: 1;
       background-color: ${token.colorBgContainer};
+      border-radius: ${token.borderRadiusLG}px;
+    `,
+    pluginsDemoRcVirtualList: css`
+      width: 100%;
+      height: auto;
+      background-color: ${token.colorBgContainer};
+      box-sizing: border-box;
+      padding: ${token.paddingMD}px
     `
 }))
 
@@ -140,7 +166,8 @@ function openDocumentPage(pluginName: PluginName) {
         "react-codemirror": "https://github.com/uiwjs/react-codemirror",
         "rc-slider-captcha": "https://www.npmjs.com/package/rc-slider-captcha",
         "react-beautiful-dnd": "https://github.com/atlassian/react-beautiful-dnd",
-        "react-spinners": "https://www.davidhu.io/react-spinners/"
+        "react-spinners": "https://www.davidhu.io/react-spinners/",
+        "rc-virtual-list": "https://www.npmjs.com/package/rc-virtual-list"
     }
     window.open(doucmentPageUrlSet[pluginName])
 }
@@ -191,10 +218,12 @@ function ReactCodeMirrorDemo() {
                 </Col>
             </Row>
         </div>
-        <div className={styles["pluginsDemoReactQuill"]}>
-            <CodeMirror value={value} height="600px"
-                        extensions={javascript({jsx: true, typescript: true})}
-                        onChange={onChange}/>
+        <div className={styles["pluginsDemoBody"]}>
+            <div className={styles["pluginsDemoReactCodemirror"]}>
+                <CodeMirror value={value} height="700px"
+                            extensions={javascript({jsx: true, typescript: true})}
+                            onChange={onChange}/>
+            </div>
         </div>
     </div>
 }
@@ -351,12 +380,31 @@ function ReactSliderDemo() {
 }
 
 function ReactBeautifulDnd() {
-    return "我是拖动demo"
+    const {styles, theme} = useStyles()
+    return <div className={styles["pluginsDemo"]}>
+        <div className={styles["pluginsDemoHeader"]}>
+            <Alert type={"warning"}
+                   message={"说明:插件模块仅作为第三方插件的演示页面，用来梳理整合逻辑和范例，框架本身并不包含这些插件。"}></Alert>
+            <Row align={"middle"} style={{marginTop: theme.marginMD}}>
+                <Col span={12}>
+                    <span className={styles["pluginsDemoHeaderTitle"]}>拖动(react-beautiful-dnd)</span>
+                </Col>
+                <Col span={12} style={{textAlign: "right"}}>
+                    <Button onClick={() => {
+                        openDocumentPage("react-beautiful-dnd")
+                    }} icon={<LinkOutlined></LinkOutlined>}>项目地址</Button>
+                </Col>
+            </Row>
+        </div>
+        <div className={styles.pluginsDemoBody}>
+            <iframe frameBorder={"none"} width={"100%"} height={"100%"}
+                    src={"https://react-beautiful-dnd.netlify.app/?path=/story/single-vertical-list--basic"}></iframe>
+        </div>
+    </div>
 }
 
 function ReactSpinnersDemo() {
     const {styles, theme} = useStyles()
-    const [value, setValue] = useState('')
     const loadingComponentList = [BarLoader,
         BeatLoader,
         BounceLoader,
@@ -407,9 +455,45 @@ function ReactSpinnersDemo() {
     </div>
 }
 
+//虚拟列表
+function RcVirtualListDemo() {
+    const {styles, theme} = useStyles()
+    const dataList = []
+    for (let i = 1; i < 100000; i++) {
+        dataList.push(i)
+    }
+    return <div className={styles["pluginsDemo"]}>
+        <div className={styles["pluginsDemoHeader"]}>
+            <Alert type={"warning"}
+                   message={"说明:插件模块仅作为第三方插件的演示页面，用来梳理整合逻辑和范例，框架本身并不包含这些插件。"}></Alert>
+            <Row align={"middle"} style={{marginTop: theme.marginMD}}>
+                <Col span={12}>
+                    <span className={styles["pluginsDemoHeaderTitle"]}>虚拟列表(rc-virtual-list)</span>
+                </Col>
+                <Col span={12} style={{textAlign: "right"}}>
+                    <Button onClick={() => {
+                        openDocumentPage("rc-virtual-list")
+                    }} icon={<LinkOutlined></LinkOutlined>}>项目地址</Button>
+                </Col>
+            </Row>
+        </div>
+        <div className={styles.pluginsDemoBody}>
+            <div className={styles.pluginsDemoRcVirtualList}>
+                <RcVirtualList data={dataList} height={700} itemHeight={50} itemKey="id">
+                    {index => <div style={{
+                        height: "50px",
+                        lineHeight: "50px",
+                        boxSizing: "border-box",
+                        borderBottom: `1px solid ${theme.colorBorder}`,
+                    }}>{index}</div>}
+                </RcVirtualList>
+            </div>
+        </div>
+    </div>
+}
+
 
 export function PluginsDemo(props: PluginsDemoProps) {
-
     if (props.pluginName === "react-quill") {
         return <ReactQuillDemo></ReactQuillDemo>
     }
@@ -424,6 +508,9 @@ export function PluginsDemo(props: PluginsDemoProps) {
     }
     if (props.pluginName === "react-spinners") {
         return <ReactSpinnersDemo></ReactSpinnersDemo>
+    }
+    if (props.pluginName === "rc-virtual-list") {
+        return <RcVirtualListDemo></RcVirtualListDemo>
     }
     return null
 }

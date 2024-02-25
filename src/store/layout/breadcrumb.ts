@@ -7,7 +7,7 @@ export const useBreadcrumbStore: any = create(
         ...defaultSetting.breadcrumb,
         breadcrumbList: defaultSetting.homePage.isEnable ? [{
             icon: "Home",
-            id: "home_xxxx",
+            id: "/",
             key: "/",
             label: defaultSetting.homePage.title
         }] : [],

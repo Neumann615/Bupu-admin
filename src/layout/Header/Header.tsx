@@ -314,6 +314,7 @@ export function Header() {
                 }
             }
         }
+        console.log(tabs)
         return [
             {
                 tooltip: "搜索",
@@ -491,23 +492,15 @@ export function Header() {
         </div>
         <Row align={"middle"} className={styles.headerModule}>
             <Col span={12}>
-                <Space>
-                    {["side", "head", "simple"].includes(menuType) && isEnableSubMenuCollapse ? <Icon
-                            onClick={changeSubMenuCollapse}
-                            fill={theme.colorText}
-                            size={25}
-                            name={subMenuCollapse ? "MenuFoldOne" : "MenuUnfoldOne"}></Icon>
-                        : null}
-                    {isEnable ? <Breadcrumb
-                        items={breadcrumbList.map((menuItem: any) => {
-                            return {
-                                title: menuItem.label,
-                                onClick: () => {
-                                    menuItem?.children?.length ? null : openTab(menuItem)
-                                }
+                {isEnable ? <Breadcrumb
+                    items={breadcrumbList.map((menuItem: any) => {
+                        return {
+                            title: menuItem.label,
+                            onClick: () => {
+                                menuItem?.children?.length ? null : openTab(menuItem)
                             }
-                        })}></Breadcrumb> : null}
-                </Space>
+                        }
+                    })}></Breadcrumb> : null}
             </Col>
             <Col span={12} align={"right"}>
                 <Toolbar></Toolbar>

@@ -2,171 +2,94 @@ import {Responsive, WidthProvider} from 'react-grid-layout'
 import {createStyles} from "antd-style"
 import {Button, Card, Space, Statistic} from "antd"
 import {ArrowDownOutlined, ArrowUpOutlined, DownOutlined} from "@ant-design/icons"
-import {Bar, Column, Pie} from '@ant-design/plots'
+import {Bar, Column, Pie,Tiny} from '@ant-design/charts'
 import React from "react"
 import type {ProColumns} from '@ant-design/pro-components'
 import {ProTable, TableDropdown} from '@ant-design/pro-components'
 
 const DemoColumn = () => {
-    const data = [
-        {
-            type: '家具家电',
-            sales: 38,
-        },
-        {
-            type: '粮油副食',
-            sales: 52,
-        },
-        {
-            type: '生鲜水果',
-            sales: 61,
-        },
-        {
-            type: '美容洗护',
-            sales: 145,
-        },
-        {
-            type: '母婴用品',
-            sales: 48,
-        },
-        {
-            type: '进口食品',
-            sales: 38,
-        },
-        {
-            type: '食品饮料',
-            sales: 38,
-        },
-        {
-            type: '家庭清洁',
-            sales: 38,
-        },
-        {
-            type: '食品',
-            sales: 38,
-        },
-        {
-            type: '家庭',
-            sales: 38,
-        },
-    ];
     const config = {
-        data,
-        height: "100%",
-        xField: 'type',
-        yField: 'sales',
-        label: {
-            // 可手动配置 label 数据标签位置
-            position: 'middle',
-            // 'top', 'bottom', 'middle',
-            // 配置样式
-            style: {
-                fill: '#FFFFFF',
-                opacity: 0.6,
-            },
+        data: {
+            type: 'fetch',
+            value: 'https://gw.alipayobjects.com/os/antfincdn/iPY8JFnxdb/dodge-padding.json',
         },
-        xAxis: {
-            label: {
-                autoHide: true,
-                autoRotate: false,
-            },
-        },
-        meta: {
-            type: {
-                alias: '类别',
-            },
-            sales: {
-                alias: '销售额',
-            },
+        xField: '月份',
+        yField: '月均降雨量',
+        colorField: 'name',
+        group: true,
+        style: {
+            // 矩形四个方向的内边距
+            inset: 5,
+            // 矩形单个方向的内边距
+            // insetLeft:5,
+            // insetRight:20,
+            // insetBottom:10
+            // insetTop:10
         },
     };
     return <Column {...config} />;
 }
 
 const DemoPie = () => {
-    const data = [
-        {
-            type: '分类一',
-            value: 27,
-        },
-        {
-            type: '分类二',
-            value: 25,
-        },
-        {
-            type: '分类三',
-            value: 18,
-        },
-        {
-            type: '分类四',
-            value: 15,
-        },
-        {
-            type: '分类五',
-            value: 10,
-        },
-        {
-            type: '其他',
-            value: 5,
-        },
-    ];
     const config = {
-        appendPadding: 10,
-        data,
-        height: "100%",
-        angleField: 'value',
-        colorField: 'type',
-        radius: 0.8,
-        label: {
-            type: 'outer',
-            content: '{name} {percentage}',
+        data: {
+            type: 'fetch',
+            value: 'https://render.alipay.com/p/yuyan/180020010001215413/antd-charts/pie-doughnut.json',
         },
-        interactions: [
+        angleField: 'value',
+        colorField: 'name',
+        legend: false,
+        innerRadius: 0.6,
+        labels: [
+            { text: 'name', style: { fontSize: 10, fontWeight: 'bold' } },
             {
-                type: 'pie-legend-active',
-            },
-            {
-                type: 'element-active',
+                text: (d, i, data) => (i < data.length - 3 ? d.value : ''),
+                style: {
+                    fontSize: 9,
+                    dy: 12,
+                },
             },
         ],
+        style: {
+            stroke: '#fff',
+            inset: 1,
+            radius: 10,
+        },
+        scale: {
+            color: {
+                palette: 'spectral',
+                offset: (t) => t * 0.8 + 0.1,
+            },
+        },
     };
-    return <Pie {...config} />;
+    return <Pie {...config} />
 }
 
 const DemoBar = () => {
-    const data = [
-        {
-            year: '1951 年',
-            value: 38,
-        },
-        {
-            year: '1952 年',
-            value: 52,
-        },
-        {
-            year: '1956 年',
-            value: 61,
-        },
-        {
-            year: '1957 年',
-            value: 145,
-        },
-        {
-            year: '1958 年',
-            value: 48,
-        },
-    ];
     const config = {
-        data,
-        height: "100%",
-        xField: 'value',
-        yField: 'year',
-        seriesField: 'year',
-        legend: {
-            position: 'top-left',
+        data: {
+            type: 'fetch',
+            value: 'https://render.alipay.com/p/yuyan/180020010001215413/antd-charts/column-stacked.json',
+        },
+        xField: 'state',
+        yField: 'population',
+        colorField: 'age',
+        stack: true,
+        sort: {
+            reverse: true,
+            by: 'y',
+        },
+        axis: {
+            y: { labelFormatter: '~s' },
+            x: {
+                labelSpacing: 4,
+                style: {
+                    labelTransform: 'rotate(90)',
+                },
+            },
         },
     };
-    return <Bar {...config} />;
+    return <Column {...config} />;
 }
 
 const AllTable = () => {

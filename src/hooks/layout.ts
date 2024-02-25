@@ -40,7 +40,7 @@ export function useControlTab() {
         if (v.key === "/") {
             pathList = [{
                 icon: "Home",
-                id: "home_xxxx",
+                id: "/",
                 key: "/",
                 label: homePageTitle
             }]
@@ -49,7 +49,7 @@ export function useControlTab() {
             if (isEnableHomePage) {
                 pathList.unshift({
                     icon: "Home",
-                    id: "home_xxxx",
+                    id: "/",
                     key: "/",
                     label: homePageTitle
                 })

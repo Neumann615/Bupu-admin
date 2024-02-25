@@ -559,77 +559,82 @@ export const menuData = [
     //         }
     //     ]
     // },
-    // {
-    //     id: "1",
-    //     label: "功能演示",
-    //     icon: "Application",
-    //     key: "/demo",
-    //     children: [
-    //         {
-    //             label: "插件",
-    //             icon: "Puzzle",
-    //             key: "/demo/plugins",
-    //             children: [
-    //                 {
-    //                     label: "富文本",
-    //                     icon: "TextStyle",
-    //                     key: "/demo/plugins/react-quill",
-    //                 },
-    //                 {
-    //                     label: "代码编辑器",
-    //                     icon: "TextStyle",
-    //                     key: "/demo/plugins/react-codemirror"
-    //                 },
-    //                 {
-    //                     label: "滑块验证",
-    //                     icon: "TextStyle",
-    //                     key: "/demo/plugins/react-slider"
-    //                 },
-    //                 {
-    //                     label: "拖动",
-    //                     icon: "TextStyle",
-    //                     key: "/demo/plugins/react-beautiful-dnd"
-    //                 },
-    //                 {
-    //                     label: "加载",
-    //                     icon: "TextStyle",
-    //                     key: "/demo/plugins/react-spinners"
-    //                 }
-    //             ]
-    //         },
-    //         // {
-    //         //     label: "组件示例",
-    //         //     icon: "Components",
-    //         //     key: "/demo/component",
-    //         //     children: [
-    //         //         {
-    //         //             label: "基础组件",
-    //         //             icon: "",
-    //         //             key: "/component/base",
-    //         //             children: []
-    //         //         },
-    //         //         {
-    //         //             label: "业务组件",
-    //         //             icon: "",
-    //         //             key: "/component/business",
-    //         //             children: []
-    //         //         }
-    //         //     ]
-    //         // },
-    //         // {
-    //         //     label: "内置特性",
-    //         //     icon: "Magic",
-    //         //     key: "texing",
-    //         //     //children: []
-    //         // },
-    //         // {
-    //         //     label: "权限验证",
-    //         //     icon: "Permissions",
-    //         //     key: "2",
-    //         //     //children: []
-    //         // },
-    //     ]
-    // },
+    {
+        id: "1",
+        label: "功能演示",
+        icon: "Application",
+        key: "/demo",
+        children: [
+            {
+                label: "插件",
+                icon: "Puzzle",
+                key: "/demo/plugins",
+                children: [
+                    {
+                        label: "富文本",
+                        icon: "TextStyle",
+                        key: "/demo/plugins/react-quill",
+                    },
+                    {
+                        label: "代码编辑器",
+                        icon: "TextStyle",
+                        key: "/demo/plugins/react-codemirror"
+                    },
+                    {
+                        label: "滑块验证",
+                        icon: "TextStyle",
+                        key: "/demo/plugins/react-slider"
+                    },
+                    {
+                        label: "拖动",
+                        icon: "TextStyle",
+                        key: "/demo/plugins/react-beautiful-dnd"
+                    },
+                    {
+                        label: "加载",
+                        icon: "TextStyle",
+                        key: "/demo/plugins/react-spinners"
+                    },
+                    {
+                        label:"虚拟列表",
+                        icon:"TextStyle",
+                        key:"/demo/plugins/rc-virtual-list"
+                    }
+                ]
+            },
+            // {
+            //     label: "组件示例",
+            //     icon: "Components",
+            //     key: "/demo/component",
+            //     children: [
+            //         {
+            //             label: "基础组件",
+            //             icon: "",
+            //             key: "/component/base",
+            //             children: []
+            //         },
+            //         {
+            //             label: "业务组件",
+            //             icon: "",
+            //             key: "/component/business",
+            //             children: []
+            //         }
+            //     ]
+            // },
+            // {
+            //     label: "内置特性",
+            //     icon: "Magic",
+            //     key: "texing",
+            //     //children: []
+            // },
+            // {
+            //     label: "权限验证",
+            //     icon: "Permissions",
+            //     key: "2",
+            //     //children: []
+            // },
+        ]
+    },
     // {
     //     id: "2",
     //     label: "页面模板",

@@ -1,9 +1,10 @@
-import {Menu as AntdMenu} from "antd"
+import {Menu as AntdMenu, Flex, Tooltip} from "antd"
 import React, {useMemo, useState} from 'react'
 import {createStyles} from "antd-style"
 import {Icon} from "@/components"
 import {useAppStore, useMenuStore} from "@/store"
 import {Resizable} from "re-resizable"
+import {MenuFoldOutlined, MenuUnfoldOutlined} from "@ant-design/icons";
 import {useControlTab} from "@/hooks"
 
 //@ts-ignore
@@ -44,15 +45,25 @@ const useStyles = createStyles(({token, css}) => ({
         width: "100%",
         overflow: 'auto'
     },
-    test: css`
-      transition: width .2s;
-      //width:300px!important;
-    `,
-    test1: css`
-      width: 64px !important;
-    `,
-    test2: css`
+    asideMenuFooter: {
+        boxSizing: "border-box",
+        padding: token.paddingMD
+    },
+    asideMenuFooterModule: css`
       width: auto;
+      height: auto;
+      box-sizing: border-box;
+      padding: ${token.paddingXS}px;
+      background-color: ${token.colorFillContent};
+      border-radius: ${token.borderRadiusSM}px;
+      cursor: pointer;
+      transition: all .3s;
+      color: ${token.colorText};
+
+      :hover {
+        transition: all .3s;
+        background-color: ${token.colorFillContentHover};
+      }
     `
 }))
 
@@ -65,6 +76,8 @@ export function Menu() {
         menuType,
         menuCurrentKeys,
         subMenuUniqueOpened,
+        changeSubMenuCollapse,
+        isEnableSubMenuCollapse,
         openKeys,
         setOpenKeys
     } = useMenuStore()
@@ -118,6 +131,19 @@ export function Menu() {
                 items={renderMenuData}
             />
         </div>
+        {isEnableSubMenuCollapse ? <Flex className={styles.asideMenuFooter} align={"center"} justify={"center"}>
+            <div className={styles["asideMenuFooterModule"]}>
+                {subMenuCollapse ? <MenuUnfoldOutlined
+                    onClick={changeSubMenuCollapse}
+                    style={{
+                        fontSize: theme.fontSizeXL
+                    }}></MenuUnfoldOutlined> : <MenuFoldOutlined
+                    onClick={changeSubMenuCollapse}
+                    style={{
+                        fontSize: theme.fontSizeXL
+                    }}></MenuFoldOutlined>}
+            </div>
+        </Flex> : null}
     </div>
 
     // <Resizable
