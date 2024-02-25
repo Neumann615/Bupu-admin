@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined, FolderAddOutlined } from '@ant-design/icons';
-import { ActionType, ParamsType, ProColumns, ProForm, ProFormText } from '@ant-design/pro-components';
+import { ActionType, ColumnsState, ParamsType, ProColumns, ProForm, ProFormText } from '@ant-design/pro-components';
 import { Button, Modal, Popconfirm, Spin, Upload, UploadProps } from 'antd';
 import { createStyles } from "antd-style"
 import { ProTable } from '@ant-design/pro-components';
@@ -7,9 +7,11 @@ import { getOrganizationalDepartList, getPartTree, getBaseDepartEdit, getBaseDep
 import React, { useEffect, useState, useRef } from 'react';
 import Tree from '@/components/common/group-tree/GroupTree';
 import { downloadByPost } from '@/shared/download';
-import { transformGroup,searchParentId } from '@/utils/tree';
+import { transformGroup, searchParentId } from '@/utils/tree';
+import { getGridcolAdd, getGridcolList } from '@/api/commonApi';
 import { TreeDataOrigin } from '@/components/common/group-tree/GroupTree';
 import { message } from 'antd';
+import { GridcolAddCols, GridcolAddParams } from '@/types/api';
 const { confirm } = Modal
 
 const useStyles = createStyles(({ token }) => ({
@@ -20,15 +22,15 @@ const useStyles = createStyles(({ token }) => ({
         display: "flex",
     },
     tree: {
-        width: '30%',
+        width: '280px',
         height: '100%',
         marginRight: '12px',
         backgroundColor: token.colorBgContainer,
         borderRadius: '6px',
-        padding: token.paddingMD
+        padding: token.paddingSM
     },
     right: {
-        width: '70%',
+        width: 'calc(100% - 260px)',
     },
     treeItem: {
         display: 'flex',
@@ -56,7 +58,9 @@ export default () => {
     const [queryParams, setQueryParams] = useState({});
 
     const initialValues = useRef<Record<string, any>>({})
-    const currentSelect = useRef<TreeDataOrigin | {}>({});
+    const [columnsStateMap, setColumnsStateMap] = useState<
+        Record<string, ColumnsState>
+    >({});
     const columns: ProColumns[] = [
         {
             title: '部门名称',
@@ -89,11 +93,13 @@ export default () => {
             title: '操作',
             valueType: 'option',
             key: 'option',
-            render: (__, record, _, action) => [
+            filters: false,
+            fixed: 'right',
+            render: (__, record) => [
                 <a
                     key="editable"
                     onClick={() => {
-                        action?.startEditable?.(record.id);
+                        handelTableEdit(record)
                     }}
                 >
                     编辑
@@ -112,12 +118,20 @@ export default () => {
 
     useEffect(() => {
         init();
+        initColumn();
         handleResize()
         window.addEventListener('resize', handleResize)
         return () => {
             window.removeEventListener('resize', handleResize)
         }
     }, [])
+
+    const handelTableEdit = (item: any) => {
+        setMode('edit')
+        setTitle('编辑');
+        setIsOpen(true);
+        initialValues.current = item
+    }
 
     const handleResize = () => {
         const proTable = document.getElementById('proTable')
@@ -128,12 +142,40 @@ export default () => {
     }
 
     const init = async () => {
-        const { code, data, msg } = await initTreeData()
-        if (code === 0) {
-            setTreeData(data)
-            return
+        try {
+            const { code, data, msg } = await initTreeData()
+            if (code === 0) {
+                setTreeData(data)
+                return
+            }
+            message.warning(msg || '获取部门树失败！');
         }
-        message.warning(msg);
+        catch (e) {
+            message.warning('获取部门树失败！');
+        }
+    }
+
+    const initColumn = async () => {
+        try {
+            const params = {
+                gridName: 'depart'
+            }
+            const result = await getGridcolList(params);
+            const colsData = result.data.data.list
+            const columnsData: Record<string, any> = {}
+            colsData.forEach(i => {
+                if (i['colVisible'] === '0') {
+                    columnsData[i['colName']] = {
+                        show: false,
+                    }
+                }
+            })
+            console.log(columnsData,'columnsData')
+            setColumnsStateMap(columnsData)
+        }
+        catch (e) {
+            message.warning('获取列表数据失败！')
+        }
     }
 
     const handleRequest = async (params: ParamsType) => {
@@ -232,7 +274,6 @@ export default () => {
     const handelEdit = (item: TreeDataOrigin) => {
         setMode('edit')
         initialValues.current = item.originData
-        currentSelect.current = item;
         setTitle('编辑');
         setIsOpen(true);
     }
@@ -256,15 +297,19 @@ export default () => {
             }
         }
         else if (mode === 'edit') {
-            const { id } = (currentSelect.current as TreeDataOrigin).originData
-            const item = searchParentId(treeData, id)
+            const { id, pid } = initialValues.current;
+            let itemPid = '0'
+            if (pid === 'undefined') {
+                const item = searchParentId(treeData, id)
+                itemPid = item?.length ? item[0]?.key : 0
+            }
+            else {
+                itemPid = pid
+            }
             let params = {
-                pid: item[0].key,
+                pid: itemPid,
                 id,
                 departName,
-            }
-            if(item?.length){
-                params.pid = item[0].key;
             }
             const result = await getBaseDepartEdit(params);
             if (result.resultCode === '1') {
@@ -360,6 +405,37 @@ export default () => {
         </div>
     }
 
+    const transformColumns = (item: Record<string, ColumnsState>) => {
+        return columns.map((i, index: number) => {
+            const colVisible = item?.[i.dataIndex as string]?.show === false ? 0 : 1
+            return {
+                colName: i.dataIndex as string,
+                colLabel: i.title as string,
+                colSort: index,
+                colVisible: colVisible,
+            }
+        })
+    }
+
+    const saveColumns = async (params: GridcolAddCols[],item:any) => {
+        const param = {
+            gridName: "depart",
+            cols: params
+        }
+        try {
+            const result = await getGridcolAdd(param);
+            if (result?.resultCode === '1') {
+                message.success('保存成功！')
+                setColumnsStateMap(item)
+                return;
+            }
+            message.warning('保存失败！')
+        }
+        catch (e) {
+            message.warning('保存失败！')
+        }
+    }
+
     return (
         <>
             <Spin tip="加载中..." size="small" spinning={isSpinning} wrapperClassName={styles.spin} fullscreen />
@@ -406,6 +482,13 @@ export default () => {
                         }}
                         dateFormatter="string"
                         headerTitle="部门资料"
+                        columnsState={{
+                            value: columnsStateMap,
+                            onChange: (item) => {
+                                const transformData = transformColumns(item)
+                                saveColumns(transformData,item)
+                            },
+                        }}
                         toolBarRender={() => [
                             <Upload
                                 {...uploadParam}

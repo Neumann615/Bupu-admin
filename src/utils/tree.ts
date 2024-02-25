@@ -10,7 +10,7 @@ export const transformGroup = (data: Record<string, any>[], title: string) => {
             const obj: TreeDataOrigin = {
                 title: l[title],
                 key: id,
-                originData: l
+                originData: l,
             };
             if (children?.length) {
                 obj.children = loop(children);

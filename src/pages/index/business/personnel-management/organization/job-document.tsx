@@ -29,7 +29,8 @@ export default () => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const initialValues = useRef<Record<string, any>>({})
     const [title, setTitle] = useState('增加');
-    const [height,setHeight] = useState(0);
+    const [mode, setMode] = useState<string>('add');
+    const [height, setHeight] = useState(0);
     const columns: ProColumns[] = [
         {
             title: '岗位名称',
@@ -62,11 +63,11 @@ export default () => {
             title: '操作',
             valueType: 'option',
             key: 'option',
-            render: (__, record, _, action) => [
+            render: (__, record) => [
                 <a
                     key="editable"
                     onClick={() => {
-                        action?.startEditable?.(record.id);
+                        handleTableEdit(record)
                     }}
                 >
                     编辑
@@ -90,6 +91,13 @@ export default () => {
             window.removeEventListener('resize', handleResize)
         }
     }, [])
+
+    const handleTableEdit = (item: any) => {
+        setIsOpen(true)
+        setTitle('编辑');
+        setMode('edit')
+        initialValues.current = item
+    }
 
     const handleResize = () => {
         const proTable = document.getElementById('proTable')
@@ -131,7 +139,7 @@ export default () => {
                 id: data.id
             }
             const result = await getBaseJobDel(params);
-            if(result.resultCode === '1'){
+            if (result.resultCode === '1') {
                 actionRef.current?.reload();
                 message.success('删除成功');
                 return;
@@ -151,23 +159,40 @@ export default () => {
         jobName: string
     }) => {
         const { jobName } = values
-        const params = {
-            jobName,
+        if (mode === 'add') {
+            const params = {
+                jobName,
+            }
+            const result = await getBasJobAdd(params);
+            if (result.resultCode === '1') {
+                message.success('添加成功');
+                actionRef.current?.reload();
+                initialValues.current = {}
+                setIsOpen(false)
+                return
+            }
+            message.warning('添加失败');
         }
-        const result = await getBasJobAdd(params);
-        if (result.resultCode === '1') {
-            message.success('添加成功');
-            actionRef.current?.reload();
-            initialValues.current = {}
-            setIsOpen(false)
-            return 
+        else if (mode === 'edit') {
+            const { id } = initialValues.current;
+            const params = {
+                id,
+                jobName,
+            }
+            const result = await getBaseJobEdit(params);
+            if (result.resultCode === '1') {
+                message.success('修改成功')
+                setIsOpen(false)
+                actionRef.current?.reload();
+                return
+            }
+            message.warning('编辑失败');
         }
-        message.warning('添加失败');
     }
 
 
 
-    const handleSave = async (data:any) => {
+    const handleSave = async (data: any) => {
         const { id, jobName, pid } = data;
         const params = {
             id,
@@ -184,7 +209,6 @@ export default () => {
     }
 
     const handleAdd = () => {
-        console.log('弹出安徽')
         setIsOpen(true)
         setTitle('新建');
     }
@@ -195,7 +219,7 @@ export default () => {
                 columns={columns}
                 actionRef={actionRef}
                 cardBordered
-                scroll={{y:height}}
+                scroll={{ y: height }}
                 request={handleRequest}
                 editable={{
                     type: 'multiple',
@@ -211,7 +235,7 @@ export default () => {
                 rowKey="id"
                 search={{
                     labelWidth: 'auto',
-                    className:'proForm'
+                    className: 'proForm'
                 }}
                 options={{
                     setting: {
