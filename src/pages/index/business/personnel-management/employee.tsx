@@ -3,88 +3,10 @@ import { Button, Modal, Popconfirm } from 'antd';
 import { createStyles } from "antd-style"
 import { ProTable } from '@ant-design/pro-components';
 import { getOrganizationalEmployeeList, getBaseEmployeeAdd, getBaseEmployeeEdit, getBaseEmployeeDel, getBaseEmployeeLeave } from '@/api/employee';
-import React, { useState, useRef,useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { message } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
-
-export const waitTimePromise = async (time: number = 100) => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(true);
-        }, time);
-    });
-};
-
-export const waitTime = async (time: number = 100) => {
-    await waitTimePromise(time);
-};
-
-type GithubIssueItem = {
-    url: string;
-    id: number;
-    number: number;
-    title: string;
-    sex: string;
-    updatetime: string;
-    timeBalance: string;
-    pushMsg: string;
-    // birthDate: string;
-    longLat: string;
-    nickName: string;
-    personPwd: string;
-    sequId: string;
-    personName: string;
-    personId: string;
-    doorRule: string;
-    departName: string;
-    jobId: string;
-    previousWalletBalance: string;
-    updateBy: string;
-    isDel: string;
-    beginTime: string;
-    idCard: string;
-    lastTime: string;
-    departId: string;
-    entryTime: string;
-    cashBalance: string;
-    cardSn: string;
-    previousSubsidyBalance: string;
-    leaveType: string;
-    leaveTime: string;
-    wxStatus: string;
-    createTime: string;
-    // personAddress: string;
-    leaveReason: string;
-    subsidyBalance: string;
-    previousCashBalance: string;
-    accountId: number;
-    payOpenId: string;
-    loginPwd: string;
-    endTime: string;
-    openId: string;
-    levelId: string;
-    consumeRule: string;
-    jobName: string;
-    personMobile: string;
-    createBy: string;
-    headImg: string;
-    appId: string;
-    attendanceRule: string;
-    askLeaveTime: string;
-    pid: string;
-    labels: {
-        name: string;
-        color: string;
-    }[];
-    state: string;
-    comments: number;
-    created_at: string;
-    updated_at: string;
-    closed_at?: string;
-};
-
+import { PlusOutlined } from '@ant-design/icons';;
 export interface FormValues {
-    // birthDate: string;
     personPwd: string;
     personName: string;
     personId: string;
@@ -94,7 +16,6 @@ export interface FormValues {
     cardSn: string;
     levelId: string;
     personMobile: string;
-    // personAddress: string;
     rangeTime: string;
 }
 
@@ -104,7 +25,7 @@ interface OriginData {
     accountId: number;
 }
 
-const useStyles = createStyles(({ token }) => ({
+const useStyles = createStyles(() => ({
     main: {
         width: "100%",
         height: "100%",
@@ -118,8 +39,8 @@ export default () => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const initialValues = useRef<Record<string, any>>({})
     const [title, setTitle] = useState('增加');
-    const [height,setHeight] = useState(0);
-    const columns: ProColumns<GithubIssueItem>[] = [
+    const [height, setHeight] = useState(0);
+    const columns: ProColumns[] = [
         {
             title: '姓名',
             dataIndex: 'personName',
@@ -292,7 +213,7 @@ export default () => {
             width: 150,
             key: 'option',
             fixed: 'right',
-            render: (text, record, _, action) => [
+            render: (__, record, _, action) => [
                 <Popconfirm key="lz" title='离职' description="确认离职？" onConfirm={() => {
                     handleLeave(record)
                 }}>
@@ -336,7 +257,7 @@ export default () => {
         setHeight(tableHeight)
     }
 
-    const handleRequest = async (params: ParamsType) => {
+    const handleRequest = async (params: any) => {
         const params1 = {
             ...params,
             pageNum: params.current,
@@ -362,32 +283,35 @@ export default () => {
         }
     }
 
-    const handleDelete = async (data: GithubIssueItem | OriginData) => {
+    const handleDelete = async (data: OriginData) => {
         try {
             const params = {
                 accountId: data.accountId
             }
-            await getBaseEmployeeDel(params);
-            actionRef.current?.reload();
-            message.success('删除成功')
+            const result = await getBaseEmployeeDel(params);
+            if (result.resultCode === '1'){
+                actionRef.current?.reload();
+                message.success('删除成功')
+            }
+            message.warning('删除失败')
         }
         catch (e) {
             message.warning('删除失败')
         }
     }
 
-    const handleLeave = async (data: GithubIssueItem | OriginData) => {
+    const handleLeave = async (data: OriginData) => {
         try {
             const params = {
                 accountId: data.accountId
             }
-            const reuslt = await getBaseEmployeeLeave(params);
-            if (reuslt.resultCode === '1') {
+            const result = await getBaseEmployeeLeave(params);
+            if (result.resultCode === '1') {
                 actionRef.current?.reload();
                 message.success('离职成功')
                 return;
             }
-            message.warning(reuslt.resultMsg || '操作失败')
+            message.warning(result.resultMsg || '操作失败')
         }
         catch (e) {
             message.warning('操作失败')
@@ -398,7 +322,7 @@ export default () => {
         setIsOpen(false);
         initialValues.current = {}
     }
-    const handleFinish = async (values: FormValues) => {
+    const handleFinish = async (values: any) => {
         const { rangeTime, ...rest } = values;
         const params = {
             beginTime: rangeTime[0],
@@ -423,18 +347,14 @@ export default () => {
 
 
 
-    const handleSave = async (data: GithubIssueItem) => {
-        // const { id, jobName, pid } = data;
-        // const params = {
-        //     id,
-        //     pid,
-        //     jobName,
-        // }
+    const handleSave = async (data: any) => {
         const result = await getBaseEmployeeEdit(data);
-        if (result.resultCode === '0') {
+        if (result.resultCode === '1') {
             message.success('修改成功')
             actionRef.current?.reload();
+            return
         }
+        message.warning('添加失败！')
     }
 
     const handleAdd = () => {
@@ -444,7 +364,7 @@ export default () => {
 
     return (
         <div className={styles.main} id='proTable'>
-            <ProTable<GithubIssueItem>
+            <ProTable
                 columns={columns}
                 scroll={{ x: 1300, y: height }}
                 actionRef={actionRef}
@@ -463,7 +383,7 @@ export default () => {
                 rowKey="accountId"
                 search={{
                     labelWidth: 'auto',
-                    className:'proForm'
+                    className: 'proForm'
                 }}
                 options={false}
                 form={{
@@ -494,9 +414,7 @@ export default () => {
             />
             <Modal title={title} open={isOpen} onCancel={handleCancel} footer={null} destroyOnClose>
                 <ProForm
-                    onFinish={async (values: {
-                        jobName: string
-                    }) => {
+                    onFinish={async (values: FormValues) => {
                         handleFinish(values)
                     }}
                     labelCol={{ span: 6 }}

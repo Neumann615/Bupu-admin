@@ -4,7 +4,6 @@ import { Input, Tree, Spin, message, TreeProps } from 'antd';
 import { cloneDeep } from 'lodash-es';
 import { EventDataNode } from 'antd/lib/tree';
 import { createStyles } from 'antd-style';
-import { TreeList } from '@/pages/index/business/personnel-management/organization/department-document';
 
 const useStyles = createStyles(({ token, css }) => ({
   main: {
@@ -25,6 +24,13 @@ const useStyles = createStyles(({ token, css }) => ({
 
 const { Search } = Input;
 
+export interface TreeList extends TreeDataOrigin {
+  title: any;
+  originTitle: string;
+  key: number;
+  originData: OriginData;
+}
+
 export interface DataNode {
   key: string;
   originTitle: string;
@@ -32,9 +38,10 @@ export interface DataNode {
   children?: DataNode[];
 }
 interface GroupTreeProps {
-  data: TreeList[];
+  data: TreeDataOrigin[];
   treeProps?: TreeProps,
   onSelect?: (selectedKeys: number, node: EventDataNode<DataNode>) => void;
+  renderTreeFooter?:(item:TreeDataOrigin) => React.ReactNode
 }
 interface GroupTreeState {
   loadingTree: boolean;
@@ -56,12 +63,24 @@ interface SelectInfo {
   nativeEvent: MouseEvent;
 }
 
+export interface TreeDataOrigin {
+  key: number;
+  originData: Record<string,any>;
+  title: string;
+  children?: TreeDataOrigin[];
+}
+export interface OriginData {
+  children: OriginData[];
+  departName: string;
+  id: number;
+}
 
 export default (props: GroupTreeProps) => {
   const [loadingTree, setLoadingTree] = useState<Boolean>(true);
   const [treeData, setTreeData] = useState<DataNode[]>([]);
-  const [selectKeys, setSelectKey] = useState<string[]>([]);
+  const [selectKeys, setSelectKey] = useState<number[]>([]);
   const defaultExpandedKeys = useRef<(string | number)[]>([]);
+  const treeDataOrigin = useRef<TreeDataOrigin[]>([]);
   const originTreeData = useRef<DataNode[]>([]);
 
   useEffect(() => {
@@ -71,7 +90,9 @@ export default (props: GroupTreeProps) => {
   const initData = async () => {
     const { data } = props
     if (data?.length) {
-      setTreeData(data)
+      const treeDataTemp = transformTreeData(data,selectKeys[0]);
+      treeDataOrigin.current = data
+      setTreeData(treeDataTemp)
       const { defaultExpandedKeys } = getDefaultKey(data!);
       defaultExpandedKeys.current = defaultExpandedKeys;
       originTreeData.current = data!;
@@ -81,9 +102,42 @@ export default (props: GroupTreeProps) => {
   }
   const handleSelect = (selectedKeysTemp: string[], info: SelectInfo) => {
     const keys = selectedKeysTemp.length ? selectedKeysTemp : selectKeys;
+    const treeDataTemp = transformTreeData(treeDataOrigin.current, keys[0])
+    setTreeData(treeDataTemp)
     setSelectKey(keys);
     props.onSelect?.(keys[0], info.node);
   };
+
+  const transformTreeData = (data: TreeDataOrigin[], selectNode: number): TreeList[] => {
+    const dataTemp = cloneDeep(data);
+    return dataTemp.map(item => {
+      if (item.children?.length) {
+        return {
+          ...item,
+          title: () => {
+            return (
+              (item.key === selectNode && props.renderTreeFooter)?
+              props?.renderTreeFooter(item)
+                : <div>{item.title}</div>
+            )
+
+          },
+          originTitle: item.title,
+          children: transformTreeData(item.children, selectNode)
+        }
+      }
+      return {
+        ...item,
+        originTitle: item.title,
+        title: () => {
+          return (
+            (item.key === selectNode && props.renderTreeFooter) ?
+            props.renderTreeFooter(item): <div>{item.title}</div>
+          )
+        }
+      }
+    })
+  }
 
   const renderTree = () => {
     const { treeProps = {} } = props;
@@ -93,11 +147,9 @@ export default (props: GroupTreeProps) => {
         defaultExpandedKeys={defaultExpandedKeys.current}
         onSelect={handleSelect}
         treeData={treeData}
-        // selectedKeys={selectKeys}
         {
-          ...treeProps
+        ...treeProps
         }
-      // ...treeProps
       />
     ) : (
       <div>暂无数据</div>

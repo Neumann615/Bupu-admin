@@ -288,7 +288,7 @@ const AllTable = () => {
         rowKey="key"
         pagination={{
             showQuickJumper: true,
-            pageSize:10
+            pageSize: 10
         }}
         columns={columns}
         search={false}
@@ -535,7 +535,8 @@ export default () => {
             h: 8,
             autoSize: true,
             static: true,
-            dom: <Card style={{height: "100%"}} bodyStyle={{height: "100%", padding: 0}}
+            dom: <Card style={{height: "100%"}}
+                       styles={{body: {height: "100%", padding: 0}}}
                        bordered={false}>
                 <div className={styles.mainItem}>
                     <div className={styles.mainItemTitle}>

@@ -307,7 +307,7 @@ export default function Login() {
     return <div style={MainStyle}>
         <div>
             <div style={TitleStyle}>
-                <img src="http://192.168.31.6:3000/vite.svg" style={TitleImgStyle}/>
+                <img src="/images/vite.svg" style={TitleImgStyle}/>
                 <div style={TitleTextStyle}>Bupu后台管理系统</div>
             </div>
         </div>

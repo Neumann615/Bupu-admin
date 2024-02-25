@@ -3,7 +3,7 @@ export default {
         //项目名称
         name: "Bupu管理平台",
         //LOGO
-        logo: "http://192.168.31.6:3000/vite.svg",
+        logo: "/images/vite.svg",
         //生产环境是否开始全局配置
         isEnableProductionAppSetting: true,
         //开启记忆功能

@@ -1,4 +1,3 @@
-import { DeleteOutlined, EditOutlined, FolderAddOutlined } from '@ant-design/icons';
 import { ActionType, ParamsType, ProColumns, ProForm, ProFormText } from '@ant-design/pro-components';
 import { Modal, Popconfirm } from 'antd';
 import { createStyles } from "antd-style"
@@ -7,60 +6,9 @@ import { getAreaTree, getOrganizationalAreaList, getBaseAreaAdd, getBaseAreaEdit
 import React, { useEffect, useState, useRef } from 'react';
 import Tree from '@/components/common/group-tree/GroupTree';
 import { message } from 'antd';
-import { cloneDeep } from 'lodash-es';
-import { AreaDataSource } from '@/types/area';
+import { transformGroup, searchParentId } from '@/utils/tree';
+import { TreeDataOrigin } from '@/components/common/group-tree/GroupTree';
 const { confirm } = Modal
-
-export const waitTimePromise = async (time: number = 100) => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(true);
-    }, time);
-  });
-};
-
-export const waitTime = async (time: number = 100) => {
-  await waitTimePromise(time);
-};
-
-type GithubIssueItem = {
-  url: string;
-  id: number;
-  number: number;
-  title: string;
-  areaName: string;
-  pid: string;
-  labels: {
-    name: string;
-    color: string;
-  }[];
-  state: string;
-  comments: number;
-  created_at: string;
-  updated_at: string;
-  closed_at?: string;
-};
-
-interface TreeDataOrigin {
-  key: number;
-  originData: OriginData;
-  title: string;
-  children?: TreeDataOrigin[];
-}
-
-interface OriginData {
-  children: OriginData[];
-  areaName: string;
-  id: number;
-}
-
-export interface TreeList extends TreeDataOrigin {
-  title: any;
-  originTitle: string;
-  key: number;
-  originData: OriginData;
-}
-
 const useStyles = createStyles(({ token }) => ({
   main: {
     width: "100%",
@@ -89,18 +37,17 @@ const useStyles = createStyles(({ token }) => ({
 }))
 
 export default () => {
-  const actionRef = useRef<ActionType>();
   const { styles } = useStyles();
-  const [treeData, setTreeData] = useState<TreeList[]>([])
+  const actionRef = useRef<ActionType>();
+  const [treeData, setTreeData] = useState<TreeDataOrigin[]>([])
   const [selectKey, setSelectKey] = useState<number | null>(null)
   const [title, setTitle] = useState<string>('');
   const [mode, setMode] = useState<string>('add');
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const initialValues = useRef<Record<string, any>>({})
   const currentSelect = useRef<TreeDataOrigin | {}>({});
-  const [height,setHeight] = useState(0);
-  const treeDataOrigin = useRef<TreeDataOrigin[]>([])
-  const columns: ProColumns<GithubIssueItem>[] = [
+  const [height, setHeight] = useState(0);
+  const columns: ProColumns[] = [
     {
       title: '区域名称',
       dataIndex: 'areaName',
@@ -132,7 +79,7 @@ export default () => {
       title: '操作',
       valueType: 'option',
       key: 'option',
-      render: (text, record, _, action) => [
+      render: (__, record, _, action) => [
         <a
           key="editable"
           onClick={() => {
@@ -173,68 +120,13 @@ export default () => {
   const init = async () => {
     const { code, data, msg } = await initTreeData()
     if (code === 0) {
-      const treeDataTemp = transformTreeData(data, selectKey!)
-      treeDataOrigin.current = data
-      setTreeData(treeDataTemp)
+      setTreeData(data)
       return
     }
-    message.warning(msg);
-  }
-
-  const transformTreeData = (data: TreeDataOrigin[], selectNode: number): TreeList[] => {
-    const dataTemp = cloneDeep(data);
-    return dataTemp.map(item => {
-      if (item.children?.length) {
-        return {
-          ...item,
-          title: () => {
-            return (
-              item.key === selectNode ? <div className={styles.treeItem}>
-                <div>{item.title}</div>
-                <div>
-                  <FolderAddOutlined className={styles.treeItemIcon} title='添加' onClick={handelAdd} />
-                  <EditOutlined className={styles.treeItemIcon} title='修改' onClick={() => { handelEdit(item) }} />
-                  <Popconfirm key="delete" title='删除' description="该部门下的子节点也会被一起删除，确认删除该部门？" onConfirm={() => {
-                    handleDelete(item.originData)
-                  }}>
-                    <DeleteOutlined title='删除' />
-                  </Popconfirm>
-
-                </div>
-              </div> : <div>{item.title}</div>
-            )
-
-          },
-          originTitle: item.title,
-          children: transformTreeData(item.children, selectNode)
-        }
-      }
-      return {
-        ...item,
-        originTitle: item.title,
-        title: () => {
-          return (
-            item.key === selectNode ?
-              <div className={styles.treeItem}>
-                <div>{item.title}</div>
-                <div>
-                  <FolderAddOutlined className={styles.treeItemIcon} title='添加' onClick={handelAdd} />
-                  <EditOutlined className={styles.treeItemIcon} title='修改' onClick={() => { handelEdit(item) }} />
-                  <Popconfirm key="delete" title='删除' description="该部门下的子节点也会被一起删除，确认删除该部门？" onConfirm={() => {
-                    handleDelete(item.originData)
-                  }}>
-                    <DeleteOutlined title='删除' />
-                  </Popconfirm>
-                </div>
-              </div> : <div>{item.title}</div>
-          )
-        }
-      }
-    })
+    message.warning(msg || '查询失败！');
   }
 
   const handleRequest = async (params: ParamsType) => {
-    console.log(params, 'params')
     const params1 = {
       areaName: params.areaName,
       pageNum: params.current,
@@ -266,10 +158,9 @@ export default () => {
   }> => {
     try {
       const result = await getAreaTree();
-      console.log(result, 'result')
       return {
         code: 0,
-        data: transformGroup(result.data.data),
+        data: transformGroup(result.data.data, 'areaName'),
         msg: '',
       };
     } catch (error) {
@@ -281,31 +172,7 @@ export default () => {
     }
   }
 
-  const transformGroup = (data: AreaDataSource[]) => {
-    const loop = (data: AreaDataSource[]) => {
-      return data.map(l => {
-        const {
-          areaName,
-          id,
-          children,
-        } = l;
-        const obj: TreeDataOrigin = {
-          title: areaName,
-          key: id,
-          originData: l
-        };
-        if (children?.length) {
-          obj.children = loop(children);
-          return obj;
-        }
-        return obj;
-      });
-    };
-
-    return loop(data);
-  }
-
-  const handleDelete = async (data: GithubIssueItem | OriginData) => {
+  const handleDelete = async (data: Record<string, any>) => {
     try {
       const params = {
         id: data.id
@@ -325,37 +192,6 @@ export default () => {
     initialValues.current = {}
   }
 
-  const handelAdd = () => {
-    setMode('add');
-    setTitle('添加');
-    setIsOpen(true);
-  }
-
-  const handelEdit = (item: TreeDataOrigin) => {
-    setMode('edit')
-    initialValues.current = item.originData
-    currentSelect.current = item;
-    console.log(item, 'currentSelect')
-    setTitle('编辑');
-    setIsOpen(true);
-  }
-
-  const searchParentId = (treeData: TreeDataOrigin[], item: number, p: TreeDataOrigin) => {
-    for (let i = 0; i < treeData?.length; i++) {
-      const e = treeData[i];
-      if (item === e.key) {
-        return p
-      }
-      if (e.children?.length) {
-        const res = searchParentId(e.children, item, e)
-        if (res) {
-          return res
-        }
-        return null
-      }
-    }
-  }
-
   const handleFinish = async (values: {
     areaName: string
   }) => {
@@ -365,48 +201,70 @@ export default () => {
         pid: selectKey!,
         areaName,
       }
-      const result = await getBaseAreaAdd(params);
-      if (result.resultCode === '0') {
-        await init()
-        message.success('添加成功');
-        actionRef.current?.reload();
-        initialValues.current = {}
-        setIsOpen(false)
+      try {
+        const result = await getBaseAreaAdd(params);
+        if (result.resultCode === '1') {
+          await init()
+          message.success('添加成功');
+          actionRef.current?.reload();
+          initialValues.current = {}
+          setIsOpen(false)
+          return;
+        }
       }
+      catch (e) {
+        message.warning('添加失败')
+      }
+      message.warning('添加失败！')
     }
     else if (mode === 'edit') {
       const { id } = (currentSelect.current as TreeDataOrigin).originData
-      const item = searchParentId(treeDataOrigin.current, id, treeDataOrigin.current)
+      const item = searchParentId(treeData, id)
       const params = {
         pid: item.key,
         id,
         areaName,
       }
-      const result = await getBaseAreaEdit(params);
-      if (result.resultCode === '0') {
-        await init()
-        initialValues.current = {}
-        message.success('编辑成功');
-        actionRef.current?.reload();
-        setIsOpen(false)
+      try {
+        const result = await getBaseAreaEdit(params);
+        if (result.resultCode === '1') {
+          await init()
+          initialValues.current = {}
+          message.success('编辑成功');
+          actionRef.current?.reload();
+          setIsOpen(false)
+          return
+        }
+        message.warning('编辑失败！')
+      }
+      catch (e) {
+        message.warning('编辑失败！')
       }
     }
   }
 
 
 
-  const handleSave = async (data: GithubIssueItem) => {
+  const handleSave = async (data: any) => {
     const { id, areaName, pid } = data;
     const params = {
       id,
       pid,
       areaName,
     }
-    const result = await getBaseAreaEdit(params);
-    if (result.resultCode === '0') {
-      message.success('修改成功')
-      actionRef.current?.reload();
+    try {
+      const result = await getBaseAreaEdit(params);
+      if (result.resultCode === '1') {
+        message.success('修改成功')
+        actionRef.current?.reload();
+        return
+      }
+      message.warning('修改失败！')
     }
+    catch (e) {
+      message.warning('修改失败！')
+    }
+
 
   }
 
@@ -423,47 +281,48 @@ export default () => {
           pid: dropKey
         }
         const result = await getBaseAreaEdit(params);
-        if (result.resultCode === '0') {
+        if (result.resultCode === '1') {
           await init()
           initialValues.current = {}
           message.success('拖拽成功！');
           actionRef.current?.reload();
+          return
         }
+        message.warning('拖拽失败！')
       }
     })
 
   }
 
   const handleSelect = (node: number) => {
-    const treeDataTemp = transformTreeData(treeDataOrigin.current, node)
-    console.log(node, 'node')
     setSelectKey(node)
-    setTreeData(treeDataTemp)
   }
 
   return (
     <div className={styles.main}>
       <div className={styles.tree}>
-        <Tree data={treeData} onSelect={handleSelect} treeProps={
-          {
-            draggable: true,
-            onDragEnter: (info) => {
-              console.log(info, 'onDragEnter')
-            },
-            onDrop: handleDrop
-          }
-        } />
+        <Tree data={treeData}
+          onSelect={handleSelect}
+          treeProps={
+            {
+              draggable: true,
+              onDragEnter: (info) => {
+                console.log(info, 'onDragEnter')
+              },
+              onDrop: handleDrop
+            }
+          } />
       </div>
       <div className={styles.right} id='proTable'>
-        <ProTable<GithubIssueItem>
-          scroll={{ y:height }}
+        <ProTable
+          scroll={{ y: height }}
           columns={columns}
           actionRef={actionRef}
           cardBordered
           request={handleRequest}
           editable={{
             type: 'multiple',
-            onSave: async (rowKey, data, row) => {
+            onSave: async (__, data) => {
               handleSave(data)
             },
           }}
@@ -475,7 +334,7 @@ export default () => {
           rowKey="id"
           search={{
             labelWidth: 'auto',
-            className:'proForm'
+            className: 'proForm'
           }}
           options={{
             setting: {
@@ -488,7 +347,7 @@ export default () => {
             showSizeChanger: true,
           }}
           dateFormatter="string"
-          headerTitle="部门资料"
+          headerTitle="区域资料"
         />
       </div>
       <Modal title={title} open={isOpen} onCancel={handleCancel} footer={null} destroyOnClose>

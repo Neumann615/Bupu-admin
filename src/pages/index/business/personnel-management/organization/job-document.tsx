@@ -8,54 +8,13 @@ import { message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
 
-export const waitTimePromise = async (time: number = 100) => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(true);
-        }, time);
-    });
-};
-
-export const waitTime = async (time: number = 100) => {
-    await waitTimePromise(time);
-};
-
-type GithubIssueItem = {
-    url: string;
-    id: number;
-    number: number;
-    title: string;
-    jobName: string;
-    pid: string;
-    labels: {
-        name: string;
-        color: string;
-    }[];
-    state: string;
-    comments: number;
-    created_at: string;
-    updated_at: string;
-    closed_at?: string;
-};
-
-interface IAttributes {
-    code: string;
-    ecode: string;
-    info: string;
-    level: string;
-    memo: string | null;
-    orderby: string;
-    type: string;
-    visible: string | boolean | null;
-}
-
 interface OriginData {
     children: OriginData[];
     departName: string;
     id: number;
 }
 
-const useStyles = createStyles(({ token }) => ({
+const useStyles = createStyles(() => ({
     main: {
         width: "100%",
         height: "100%",
@@ -71,7 +30,7 @@ export default () => {
     const initialValues = useRef<Record<string, any>>({})
     const [title, setTitle] = useState('增加');
     const [height,setHeight] = useState(0);
-    const columns: ProColumns<GithubIssueItem>[] = [
+    const columns: ProColumns[] = [
         {
             title: '岗位名称',
             dataIndex: 'jobName',
@@ -103,7 +62,7 @@ export default () => {
             title: '操作',
             valueType: 'option',
             key: 'option',
-            render: (text, record, _, action) => [
+            render: (__, record, _, action) => [
                 <a
                     key="editable"
                     onClick={() => {
@@ -166,14 +125,18 @@ export default () => {
         }
     }
 
-    const handleDelete = async (data: GithubIssueItem | OriginData) => {
+    const handleDelete = async (data: OriginData) => {
         try {
             const params = {
                 id: data.id
             }
-            await getBaseJobDel(params);
-            actionRef.current?.reload();
-            message.success('删除成功')
+            const result = await getBaseJobDel(params);
+            if(result.resultCode === '1'){
+                actionRef.current?.reload();
+                message.success('删除成功');
+                return;
+            }
+            message.warning('添加失败');
         }
         catch (e) {
             message.warning('删除失败')
@@ -192,17 +155,19 @@ export default () => {
             jobName,
         }
         const result = await getBasJobAdd(params);
-        if (result.resultCode === '0') {
+        if (result.resultCode === '1') {
             message.success('添加成功');
             actionRef.current?.reload();
             initialValues.current = {}
             setIsOpen(false)
+            return 
         }
+        message.warning('添加失败');
     }
 
 
 
-    const handleSave = async (data: GithubIssueItem) => {
+    const handleSave = async (data:any) => {
         const { id, jobName, pid } = data;
         const params = {
             id,
@@ -210,10 +175,12 @@ export default () => {
             jobName,
         }
         const result = await getBaseJobEdit(params);
-        if (result.resultCode === '0') {
+        if (result.resultCode === '1') {
             message.success('修改成功')
             actionRef.current?.reload();
+            return
         }
+        message.warning('编辑失败');
     }
 
     const handleAdd = () => {
@@ -224,7 +191,7 @@ export default () => {
 
     return (
         <div className={styles.main} id='proTable'>
-            <ProTable<GithubIssueItem>
+            <ProTable
                 columns={columns}
                 actionRef={actionRef}
                 cardBordered
@@ -232,7 +199,7 @@ export default () => {
                 request={handleRequest}
                 editable={{
                     type: 'multiple',
-                    onSave: async (rowKey, data, row) => {
+                    onSave: async (_, data) => {
                         handleSave(data)
                     },
                 }}
@@ -251,18 +218,6 @@ export default () => {
                         listsHeight: 400,
                     },
                 }}
-                // form={{
-                //     // 由于配置了 transform，提交的参与与定义的不同这里需要转化一下
-                //     syncToUrl: (values, type) => {
-                //         if (type === 'get') {
-                //             return {
-                //                 ...values,
-                //                 created_at: [values.startTime, values.endTime],
-                //             };
-                //         }
-                //         return values;
-                //     },
-                // }}
                 pagination={{
                     defaultPageSize: 20,
                     pageSizeOptions: [5, 10, 50],

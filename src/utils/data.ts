@@ -223,7 +223,7 @@ transitionTypeList.forEach((transition: any) => {
     transitionTypeSet[transition.value] = transition.classNames
 })
 
-export {transitionTypeSet}
+export { transitionTypeSet }
 
 export const menuTypeList = [
     {
@@ -346,177 +346,290 @@ export const defaultSetting = {
 
 export const menuData = [
     {
-        id: "4",
-        label: "业务代码",
-        icon: "Application",
-        key: "/business",
+        label: "人事",
+        icon: "Puzzle",
+        key: "/business/personnel-management",
         children: [
             {
-                label: "人事",
-                icon: "Puzzle",
-                key: "/business/personnel-management",
-                children: [
-                    {
-                        label: "组织架构",
-                        icon: "TextStyle",
-                        key: "/business/personnel-management/organization",
-                        children: [
-                            {
-                                label: "部门资料",
-                                icon: "TextStyle",
-                                key: "/business/personnel-management/organization/department-document",
-                            },
-                            {
-                                label: "岗位资料",
-                                icon: "TextStyle",
-                                key: "/business/personnel-management/organization/job-document",
-                            }
-                        ]
-                    },
-                    {
-                        label: "人事档案",
-                        icon: "TextStyle",
-                        key: "/business/personnel-management/employee"
-                    },
-                    {
-                        label: "离职档案",
-                        icon: "TextStyle",
-                        key: "/business/personnel-management/employeeLeave"
-                    },
-                    {
-                        label: "测试",
-                        icon: "TextStyle",
-                        key: "/business/personnel-management/test"
-                    }
-                ]
+                label: "部门资料",
+                icon: "TextStyle",
+                key: "/business/personnel-management/organization/department-document",
             },
             {
-                label: '设备',
-                icon: "Puzzle",
-                key: "/business/device",
-                children: [
-                    {
-                        label: "区域资料",
-                        icon: "TextStyle",
-                        key: "/business/device/area-list"
-                    },
-                    {
-                        label: "餐厅资料",
-                        icon: "TextStyle",
-                        key: "/business/device/canteen"
-                    },
-                    {
-                        label: "设备资料",
-                        icon: "TextStyle",
-                        key: "/business/device/device-list"
-                    },
-                    {
-                        label: "设备参数",
-                        icon: "TextStyle",
-                        key: "/business/device/deviceparameter-list"
-                    },
-                    {
-                        label: "设备状态",
-                        icon: "TextStyle",
-                        key: "/business/device/device-status"
-                    },
-                ]
+                label: "岗位资料",
+                icon: "TextStyle",
+                key: "/business/personnel-management/organization/job-document",
             },
             {
-                label: '事务',
-                icon: "Puzzle",
-                key: "/business/work",
-                children: [
-                    {
-                        label: "卡片中心",
-                        icon: "TextStyle",
-                        key: "/business/work/card-issuecard"
-                    },
-                    {
-                        label: "充值中心",
-                        icon: "TextStyle",
-                        key: "/business/work/consume-detail"
-                    },
-                    {
-                        label: "名单中心",
-                        icon: "TextStyle",
-                        key: "/business/work/namelist"
-                    },
-                ]
-            }
+                label: "人事档案",
+                icon: "TextStyle",
+                key: "/business/personnel-management/employee"
+            },
+            {
+                label: "离职档案",
+                icon: "TextStyle",
+                key: "/business/personnel-management/employeeLeave"
+            },
+            // {
+            //     label: "测试",
+            //     icon: "TextStyle",
+            //     key: "/business/personnel-management/test"
+            // }
         ]
     },
     {
-        id: "1",
-        label: "功能演示",
-        icon: "Application",
-        key: "/demo",
+        label: '设备',
+        icon: "Puzzle",
+        key: "/business/device",
         children: [
             {
-                label: "插件",
-                icon: "Puzzle",
-                key: "/demo/plugins",
-                children: [
-                    {
-                        label: "富文本",
-                        icon: "TextStyle",
-                        key: "/demo/plugins/react-quill",
-                    },
-                    {
-                        label: "代码编辑器",
-                        icon: "TextStyle",
-                        key: "/demo/plugins/react-codemirror"
-                    },
-                    {
-                        label: "滑块验证",
-                        icon: "TextStyle",
-                        key: "/demo/plugins/react-slider"
-                    },
-                    {
-                        label: "拖动",
-                        icon: "TextStyle",
-                        key: "/demo/plugins/react-beautiful-dnd"
-                    },
-                    {
-                        label: "加载",
-                        icon: "TextStyle",
-                        key: "/demo/plugins/react-spinners"
-                    }
-                ]
+                label: "区域资料",
+                icon: "TextStyle",
+                key: "/business/device/area-list"
             },
-            // {
-            //     label: "组件示例",
-            //     icon: "Components",
-            //     key: "/demo/component",
-            //     children: [
-            //         {
-            //             label: "基础组件",
-            //             icon: "",
-            //             key: "/component/base",
-            //             children: []
-            //         },
-            //         {
-            //             label: "业务组件",
-            //             icon: "",
-            //             key: "/component/business",
-            //             children: []
-            //         }
-            //     ]
-            // },
-            // {
-            //     label: "内置特性",
-            //     icon: "Magic",
-            //     key: "texing",
-            //     //children: []
-            // },
-            // {
-            //     label: "权限验证",
-            //     icon: "Permissions",
-            //     key: "2",
-            //     //children: []
-            // },
+            {
+                label: "餐厅资料",
+                icon: "TextStyle",
+                key: "/business/device/canteen"
+            },
+            {
+                label: "设备资料",
+                icon: "TextStyle",
+                key: "/business/device/device-list"
+            },
+            {
+                label: "设备参数",
+                icon: "TextStyle",
+                key: "/business/device/deviceparameter-list"
+            },
+            {
+                label: "设备状态",
+                icon: "TextStyle",
+                key: "/business/device/device-status"
+            },
         ]
     },
+    {
+        label: '事务',
+        icon: "Puzzle",
+        key: "/business/work",
+        children: [
+            {
+                label: "卡片操作",
+                icon: "TextStyle",
+                key: "/business/work/card-issuecard"
+            },
+            {
+                label: "充值中心",
+                icon: "TextStyle",
+                key: "/business/work/consume-detail"
+            },
+            {
+                label: "名单管理",
+                icon: "TextStyle",
+                key: "/business/work/namelist"
+            },
+        ]
+    },
+    // {
+    //     label: '消费',
+    //     icon: "Puzzle",
+    //     key: "/business/work",
+    //     children: [
+    //         {
+    //             label: "消费规则",
+    //             icon: "TextStyle",
+    //             key: "/business/work/card-issuecard"
+    //         },
+    //         {
+    //             label: "明细记录",
+    //             icon: "TextStyle",
+    //             key: "/business/work/consume-detail"
+    //         },
+    //         {
+    //             label: "汇总报表",
+    //             icon: "TextStyle",
+    //             key: "/business/work/namelist"
+    //         },
+    //         {
+    //             label: "财务报表",
+    //             icon: "TextStyle",
+    //             key: "/business/work/namelist"
+    //         },
+    //     ]
+    // }
+    // {
+    //     id: "4",
+    //     label: "业务代码",
+    //     icon: "Application",
+    //     key: "/business",
+    //     children: [
+    //         {
+    //             label: "人事",
+    //             icon: "Puzzle",
+    //             key: "/business/personnel-management",
+    //             children: [
+    //                 {
+    //                     label: "组织架构",
+    //                     icon: "TextStyle",
+    //                     key: "/business/personnel-management/organization",
+    //                     children: [
+    //                         {
+    //                             label: "部门资料",
+    //                             icon: "TextStyle",
+    //                             key: "/business/personnel-management/organization/department-document",
+    //                         },
+    //                         {
+    //                             label: "岗位资料",
+    //                             icon: "TextStyle",
+    //                             key: "/business/personnel-management/organization/job-document",
+    //                         }
+    //                     ]
+    //                 },
+    //                 {
+    //                     label: "人事档案",
+    //                     icon: "TextStyle",
+    //                     key: "/business/personnel-management/employee"
+    //                 },
+    //                 {
+    //                     label: "离职档案",
+    //                     icon: "TextStyle",
+    //                     key: "/business/personnel-management/employeeLeave"
+    //                 },
+    //                 {
+    //                     label: "测试",
+    //                     icon: "TextStyle",
+    //                     key: "/business/personnel-management/test"
+    //                 }
+    //             ]
+    //         },
+    //         {
+    //             label: '设备',
+    //             icon: "Puzzle",
+    //             key: "/business/device",
+    //             children: [
+    //                 {
+    //                     label: "区域资料",
+    //                     icon: "TextStyle",
+    //                     key: "/business/device/area-list"
+    //                 },
+    //                 {
+    //                     label: "餐厅资料",
+    //                     icon: "TextStyle",
+    //                     key: "/business/device/canteen"
+    //                 },
+    //                 {
+    //                     label: "设备资料",
+    //                     icon: "TextStyle",
+    //                     key: "/business/device/device-list"
+    //                 },
+    //                 {
+    //                     label: "设备参数",
+    //                     icon: "TextStyle",
+    //                     key: "/business/device/deviceparameter-list"
+    //                 },
+    //                 {
+    //                     label: "设备状态",
+    //                     icon: "TextStyle",
+    //                     key: "/business/device/device-status"
+    //                 },
+    //             ]
+    //         },
+    //         {
+    //             label: '事务',
+    //             icon: "Puzzle",
+    //             key: "/business/work",
+    //             children: [
+    //                 {
+    //                     label: "卡片中心",
+    //                     icon: "TextStyle",
+    //                     key: "/business/work/card-issuecard"
+    //                 },
+    //                 {
+    //                     label: "充值中心",
+    //                     icon: "TextStyle",
+    //                     key: "/business/work/consume-detail"
+    //                 },
+    //                 {
+    //                     label: "名单中心",
+    //                     icon: "TextStyle",
+    //                     key: "/business/work/namelist"
+    //                 },
+    //             ]
+    //         }
+    //     ]
+    // },
+    // {
+    //     id: "1",
+    //     label: "功能演示",
+    //     icon: "Application",
+    //     key: "/demo",
+    //     children: [
+    //         {
+    //             label: "插件",
+    //             icon: "Puzzle",
+    //             key: "/demo/plugins",
+    //             children: [
+    //                 {
+    //                     label: "富文本",
+    //                     icon: "TextStyle",
+    //                     key: "/demo/plugins/react-quill",
+    //                 },
+    //                 {
+    //                     label: "代码编辑器",
+    //                     icon: "TextStyle",
+    //                     key: "/demo/plugins/react-codemirror"
+    //                 },
+    //                 {
+    //                     label: "滑块验证",
+    //                     icon: "TextStyle",
+    //                     key: "/demo/plugins/react-slider"
+    //                 },
+    //                 {
+    //                     label: "拖动",
+    //                     icon: "TextStyle",
+    //                     key: "/demo/plugins/react-beautiful-dnd"
+    //                 },
+    //                 {
+    //                     label: "加载",
+    //                     icon: "TextStyle",
+    //                     key: "/demo/plugins/react-spinners"
+    //                 }
+    //             ]
+    //         },
+    //         // {
+    //         //     label: "组件示例",
+    //         //     icon: "Components",
+    //         //     key: "/demo/component",
+    //         //     children: [
+    //         //         {
+    //         //             label: "基础组件",
+    //         //             icon: "",
+    //         //             key: "/component/base",
+    //         //             children: []
+    //         //         },
+    //         //         {
+    //         //             label: "业务组件",
+    //         //             icon: "",
+    //         //             key: "/component/business",
+    //         //             children: []
+    //         //         }
+    //         //     ]
+    //         // },
+    //         // {
+    //         //     label: "内置特性",
+    //         //     icon: "Magic",
+    //         //     key: "texing",
+    //         //     //children: []
+    //         // },
+    //         // {
+    //         //     label: "权限验证",
+    //         //     icon: "Permissions",
+    //         //     key: "2",
+    //         //     //children: []
+    //         // },
+    //     ]
+    // },
     // {
     //     id: "2",
     //     label: "页面模板",
