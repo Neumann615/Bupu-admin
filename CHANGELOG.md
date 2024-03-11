@@ -52,6 +52,11 @@
 2. 修复首次登录首页状态异常的问题
 3. 调整菜单缩放按钮位置
 
+## 2024-3-10
+
+1. 整合markdown预览demo及完善组件逻辑
+
+
 ## 待解决问题
 
 1. 过场动画切换时有卡顿
@@ -64,7 +69,7 @@ git提交代码
 
 git add .
 git commit -m ""
-git push upstream master
+git push origin master
 
 git拉代码
 

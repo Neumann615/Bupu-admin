@@ -223,7 +223,7 @@ transitionTypeList.forEach((transition: any) => {
     transitionTypeSet[transition.value] = transition.classNames
 })
 
-export { transitionTypeSet }
+export {transitionTypeSet}
 
 export const menuTypeList = [
     {
@@ -596,31 +596,24 @@ export const menuData = [
                         key: "/demo/plugins/react-spinners"
                     },
                     {
-                        label:"虚拟列表",
-                        icon:"TextStyle",
-                        key:"/demo/plugins/rc-virtual-list"
+                        label: "虚拟列表",
+                        icon: "TextStyle",
+                        key: "/demo/plugins/rc-virtual-list"
                     }
                 ]
             },
-            // {
-            //     label: "组件示例",
-            //     icon: "Components",
-            //     key: "/demo/component",
-            //     children: [
-            //         {
-            //             label: "基础组件",
-            //             icon: "",
-            //             key: "/component/base",
-            //             children: []
-            //         },
-            //         {
-            //             label: "业务组件",
-            //             icon: "",
-            //             key: "/component/business",
-            //             children: []
-            //         }
-            //     ]
-            // },
+            {
+                label: "内置功能组件",
+                icon: "Components",
+                key: "/demo/component",
+                children: [
+                    {
+                        label: "Markdown预览",
+                        icon: "TextStyle",
+                        key: "/demo/component/markdown",
+                    },
+                ]
+            },
             // {
             //     label: "内置特性",
             //     icon: "Magic",

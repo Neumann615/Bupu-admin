@@ -7,7 +7,7 @@ export default {
         //生产环境是否开始全局配置
         isEnableProductionAppSetting: true,
         //开启记忆功能
-        isEnableMemory: false,
+        isEnableMemory: true,
         //全局页面加载
         isEnablePageLoadProgress: true,
         //收藏功能
