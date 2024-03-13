@@ -4,8 +4,82 @@ import { Tabs, Button } from 'antd';
 import { createStyles } from 'antd-style';
 import moment from 'moment'
 import { getIssuecard, getLostcard, getReissuecard, getReturncard, getUnhookcard } from '@/api/cardIssuecard';
-import success from '../../page/status/success';
+import SelectGroup from '@/components/common/select-group/SelectGroup';
 
+const treeDataTemp = [
+    {
+        "name": "测试",
+        "children": [
+            {
+                "name": "财务分部",
+                "children": [
+                    {
+                        "name": "财务分部一部",
+                        "children": [
+                            {
+                                "name": "财务分布测试",
+                                "children": [
+                                    {
+                                        "name": "测测试",
+                                        "id": "263"
+                                    }
+                                ],
+                                "id": "262"
+                            }
+                        ],
+                        "id": "227"
+                    }
+                ],
+                "id": "226"
+            },
+            {
+                "name": "财务部测试",
+                "id": "235"
+            },
+            {
+                "name": "aaaa11111",
+                "id": "250"
+            },
+            {
+                "name": "aaaa",
+                "id": "251"
+            },
+            {
+                "name": "aaaa",
+                "id": "252"
+            },
+            {
+                "name": "aaaa",
+                "id": "253"
+            },
+            {
+                "name": "aaaa",
+                "id": "254"
+            },
+            {
+                "name": "aaaa",
+                "id": "255"
+            },
+            {
+                "name": "aaaa",
+                "id": "256"
+            },
+            {
+                "name": "aaaa",
+                "id": "257"
+            },
+            {
+                "name": "aaaa",
+                "id": "258"
+            },
+            {
+                "name": "aaaa",
+                "id": "259"
+            }
+        ],
+        "id": "223"
+    },
+]
 const useStyles = createStyles(() => ({
     tab: {
         width: "100%",
@@ -29,40 +103,43 @@ export interface TabProps {
 export default () => {
     const { styles } = useStyles();
     const actionRef = useRef<ActionType>();
-    const [activeKey, setActiveKey] = useState<string>('issuecard')
+    const [activeKey, setActiveKey] = useState<string>('issuecard');
+    const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [title, setTitle] = useState<string>('');
+    const [treeData, setTreeData] = useState<any[]>(treeDataTemp);
     const columns: ProColumns[] = [
         {
             title: '日期范围',
             dataIndex: 'startTime',
             valueType: 'dateRange',
             hideInTable: true,
-            initialValue: [moment().subtract(1, 'years'),moment()],
+            initialValue: [moment().subtract(1, 'years'), moment()],
             formItemProps: {
                 rules: [
-                  {
-                    required: true,
-                    message: '此项为必填项',
-                  },
+                    {
+                        required: true,
+                        message: '此项为必填项',
+                    },
                 ],
-              },
+            },
         },
         {
             title: 'IC卡序列号',
             dataIndex: 'cardId',
             ellipsis: true,
-            search:false,
+            search: false,
         },
         {
             title: '部门ID',
             dataIndex: 'departId',
             ellipsis: true,
-            search:false,
+            search: false,
         },
         {
             title: '人员编号',
             dataIndex: 'personId',
             ellipsis: true,
-            search:false,
+            search: false,
         },
         {
             title: '人员姓名',
@@ -78,12 +155,12 @@ export default () => {
     }
 
     const handleRequest = async (params: ParamsType) => {
-        const { current, pageSize,startTime, ...rest } = params
+        const { current, pageSize, startTime, ...rest } = params
         const params1 = {
             pageNum: current,
             pageSize: pageSize,
-            beginTime:startTime[0],
-            endTime:startTime[1],
+            beginTime: startTime[0],
+            endTime: startTime[1],
             ...rest
         }
         let result: {
@@ -251,7 +328,7 @@ export default () => {
             actionRef={actionRef}
             request={handleRequest}
             columnsState={{
-                persistenceKey: 'pro-table-singe-demos-'+item,
+                persistenceKey: 'pro-table-singe-demos-' + item,
                 persistenceType: 'localStorage',
             }}
             rowKey="personId"
@@ -279,10 +356,17 @@ export default () => {
             dateFormatter="string"
             headerTitle="卡片中心"
             toolBarRender={() => [
-                <Button type="primary">{tabNum[item]}</Button>,
+                <Button type="primary" onClick={() => handleClick(item)}>{tabNum[item]}</Button>,
             ]}
         />
     }
+
+    const handleClick = (item: string) => {
+        console.log(tabNum, 'tabNum');
+        setIsOpen(true);
+        setTitle(tabNum[item])
+    }
+
     const tabItems = [
         {
             label: '发卡',
@@ -311,5 +395,8 @@ export default () => {
         },
     ]
 
-    return <Tabs activeKey={activeKey} onChange={onChange} items={tabItems} className={styles.tab} />
+    return <>
+        <Tabs activeKey={activeKey} onChange={onChange} items={tabItems} className={styles.tab} />
+        <SelectGroup isOpen={isOpen} title={title} treeData={treeData} />
+    </>
 }

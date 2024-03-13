@@ -16,7 +16,6 @@ export interface BaseJobAdd{
 
 export interface BaseJobEdit{
     id: number;
-    pid: string;
     jobName: string;
 }
 
