@@ -26,12 +26,12 @@ import {
     useTopBarStore
 } from "@/store";
 import {useEffect, useState} from "react"
+//@ts-ignore
 import {CSSTransition} from "react-transition-group"
 import {useInterval, useUnmount} from "ahooks"
 import React from "react";
 
 const useStyles = createStyles(({token, css}) => {
-    //console.log(token)
     return {
         setting: css`
           width: 44px;
@@ -81,32 +81,71 @@ const useStyles = createStyles(({token, css}) => {
           justify-content: center;
         `,
         themeItem: css`
-          width: 44px;
-          height: 44px;
-          border-radius: 8px;
+          width: 12%;
+          aspect-ratio: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           position: relative;
+        `,
+        themeItemColor: css`
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
         `,
         checkedIcon: css`
           position: absolute;
           bottom: 0px;
           right: 0px;
+          width: 100%;
+          height: 100%;
+          border: 2px solid ${token.colorPrimaryBorder};
+          border-radius: ${token.borderRadius}px;
+        `,
+        unCheckedIcon: css`
+          position: absolute;
+          bottom: 0px;
+          right: 0px;
+          width: 100%;
+          height: 100%;
+          border: 2px solid ${token.colorBorderSecondary};
+          border-radius: ${token.borderRadius}px;
         `,
         transitionContainer: css`
-          width: 100%;
-          height: 44px;
+          width: 20%;
+          aspect-ratio: 1.35;
           display: flex;
           align-items: center;
           justify-content: center;
           box-shadow: ${token.boxShadow};
           box-sizing: border-box;
-          padding: 6px;
+          position: relative;
+          padding: 12px;
           border-radius: ${token.borderRadius}px;
         `,
         transitionContent: css`
           width: 100%;
           height: 100%;
           border-radius: ${token.borderRadius}px;
-          background-color: ${token.colorBgLayout};
+          background-color: ${token.colorPrimaryBg};
+        `,
+        layoutContainer: css`
+          width: 20%;
+          aspect-ratio: 1.35;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: ${token.boxShadow};
+          box-sizing: border-box;
+          padding: 8px;
+          border-radius: ${token.borderRadius}px;
+          position: relative;
+        `,
+        layoutContent: css`
+          width: 100%;
+          height: 100%;
+          border-radius: ${token.borderRadiusSM}px;
+          overflow: hidden;
         `,
         resetDrawer: css`
           .ant-drawer-body {
@@ -115,6 +154,8 @@ const useStyles = createStyles(({token, css}) => {
         `
     }
 })
+
+type LayoutType = "side" | "only-side" | "head" | "only-head" | "simple"
 
 function mergeAttribute(obj1: any, obj2: any) {
     for (const key in obj1) {
@@ -158,6 +199,67 @@ export function Setting() {
     const onClose = () => {
         setOpen(false)
     }
+
+    function renderLayout(type: LayoutType) {
+        if (type === "side") {
+            return <div style={{width: "100%", height: "100%", display: "flex", gap: 4}}>
+                <div style={{width: "20%", height: "100%", backgroundColor: theme.colorPrimary}}></div>
+                <div style={{width: "20%", height: "100%", backgroundColor: theme.colorPrimaryBgHover}}></div>
+                <div style={{
+                    flex: 1,
+                    height: "100%",
+                    border: "2px dashed " + theme.colorPrimaryBorder,
+                    backgroundColor: theme.colorPrimaryBg
+                }}></div>
+            </div>
+        } else if (type === "only-side") {
+            return <div style={{width: "100%", height: "100%", display: "flex", gap: 4}}>
+                <div style={{width: "20%", height: "100%", backgroundColor: theme.colorPrimary}}></div>
+                <div style={{
+                    flex: 1,
+                    height: "100%",
+                    border: "2px dashed " + theme.colorPrimaryBorder,
+                    backgroundColor: theme.colorPrimaryBg
+                }}></div>
+            </div>
+        } else if (type === "head") {
+            return <div style={{width: "100%", height: "100%", display: "flex", gap: 4, flexDirection: "column"}}>
+                <div style={{width: "100%", height: "23%", backgroundColor: theme.colorPrimary}}></div>
+                <div style={{flex: 1, height: "1px", display: "flex", gap: 4}}>
+                    <div style={{width: "20%", height: "100%", backgroundColor: theme.colorPrimaryBgHover}}></div>
+                    <div style={{
+                        flex: 1,
+                        height: "100%",
+                        border: "2px dashed " + theme.colorPrimaryBorder,
+                        backgroundColor: theme.colorPrimaryBg
+                    }}></div>
+                </div>
+            </div>
+        } else if (type === "only-head") {
+            return <div style={{width: "100%", height: "100%", display: "flex", gap: 4, flexDirection: "column"}}>
+                <div style={{width: "100%", height: "23%", backgroundColor: theme.colorPrimary}}></div>
+                <div style={{
+                    flex: 1,
+                    height: "1px",
+                    width: "100%",
+                    border: "2px dashed " + theme.colorPrimaryBorder,
+                    backgroundColor: theme.colorPrimaryBg
+                }}></div>
+            </div>
+        } else if (type === "simple") {
+            return <div style={{width: "100%", height: "100%", display: "flex", gap: 4}}>
+                <div style={{width: "20%", height: "100%", backgroundColor: theme.colorPrimaryBgHover}}></div>
+                <div style={{
+                    flex: 1,
+                    height: "100%",
+                    border: "2px dashed " + theme.colorPrimaryBorder,
+                    backgroundColor: theme.colorPrimaryBg
+                }}></div>
+            </div>
+        }
+
+    }
+
     useEffect(() => {
         useAppStore.setState(defaultSetting.app)
         useThemeStore.setState(defaultSetting.theme)
@@ -202,7 +304,7 @@ export function Setting() {
         <Drawer
             rootClassName={styles.resetDrawer}
             getContainer={() => document.getElementById("root")}
-            width={460}
+            width={480}
             destroyOnClose
             title={"应用配置"} placement="right" onClose={onClose}
             open={open}>
@@ -267,28 +369,33 @@ export function Setting() {
                         </Col>
                     </Row>
                     <Divider>主题</Divider>
-                    <Row className={styles.configItem} justify={"space-around"}>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            gap: 12,
+                            marginBottom: 12
+                        }}>
                         {themeColorList.map((color: string) => {
-                            return <Col
+                            return <div
                                 key={color}
                                 onClick={() => {
                                     setDefaultSetting({
                                         ...defaultSetting,
                                         theme: {...defaultSetting.theme, themeColor: color}
                                     })
-                                }}
-                                className={styles.themeItem} style={{backgroundColor: color}}>
-                                {defaultSetting.theme.themeColor === color ?
-                                    <Icon className={styles.checkedIcon} name={"CheckOne"}
-                                          fill={"#fff"}
-                                          size={23}></Icon> : null}
-                            </Col>
+                                }} className={styles.themeItem}>
+                                <div className={styles.themeItemColor} style={{backgroundColor: color}}></div>
+                                <div
+                                    className={defaultSetting.theme.themeColor === color ? styles.checkedIcon : styles.unCheckedIcon}></div>
+                            </div>
                         })}
-                    </Row>
+                    </div>
+
                     <Row align={"middle"} justify={"center"} className={styles.configItem}>
                         <Col>
                             <Checkbox.Group
-                                defaultValue={[defaultSetting.theme.darkMode ? "dark" : "", defaultSetting.theme.compactMode ? "compact" : "", defaultSetting.theme.happyEffect ? "happy" : ""]}
+                                defaultValue={[(defaultSetting.theme.darkMode ? "dark" : "", defaultSetting.theme.compactMode ? "compact" : "", defaultSetting.theme.happyEffect ? "happy" : "")]}
                                 onChange={(v: any) => {
                                     setDefaultSetting({
                                         ...defaultSetting, theme: {
@@ -385,58 +492,60 @@ export function Setting() {
                         </Col>
                     </Row>
                     <Divider>页面过渡动画</Divider>
-                    <Row align={"middle"} className={styles.configItem} style={{height: "auto"}}
-                         gutter={[16, 16]}>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            gap: 8,
+                            marginBottom: 12
+                        }}>
                         {transitionTypeList.map((transition: any, index: number) => {
                             return <Tooltip title={transition.label} key={index}>
-                                <Col span={4} key={index} onClick={() => {
+                                <div className={styles.transitionContainer} onClick={() => {
                                     setDefaultSetting({
                                         ...defaultSetting,
                                         mainPage: {...defaultSetting.mainPage, transitionType: transition.value}
                                     })
                                 }}>
-                                    <div className={styles.transitionContainer}>
-                                        <CSSTransition
-                                            timeout={800}
-                                            in={isTransition}
-                                            unmountOnExit
-                                            classNames={transition.classNames}>
-                                            <div className={styles.transitionContent}>
-                                            </div>
-                                        </CSSTransition>
-                                        {defaultSetting.mainPage.transitionType === transition.value ?
-                                            <Icon className={styles.checkedIcon} name={"CheckOne"}
-                                                  fill={theme.blue}
-                                                  size={23}></Icon> : null}
-                                    </div>
-                                </Col>
+                                    <CSSTransition
+                                        timeout={800}
+                                        in={isTransition}
+                                        unmountOnExit
+                                        classNames={transition.classNames}>
+                                        <div className={styles.transitionContent}>
+                                        </div>
+                                    </CSSTransition>
+                                    {defaultSetting.mainPage.transitionType === transition.value ?
+                                        <div className={styles.checkedIcon}></div> : null}
+                                </div>
                             </Tooltip>
                         })}
-                    </Row>
+                    </div>
                     <Divider>导航模式</Divider>
-                    <Row align={"middle"}
-                         wrap={false}
-                         className={styles.configItem} style={{height: "auto"}}
-                         gutter={[24, 24]}>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            gap: 8,
+                            marginBottom: 12
+                        }}>
                         {menuTypeList.map((item: any, index: number) => {
                             return <Tooltip title={item.label} key={index}>
-                                <Col span={5} key={index} onClick={() => {
+                                <div className={styles.layoutContainer} onClick={() => {
                                     setDefaultSetting({
                                         ...defaultSetting,
                                         menu: {...defaultSetting.menu, menuType: item.value}
                                     })
                                 }}>
-                                    <div className={styles.transitionContainer}>
-                                        {defaultSetting.menu.menuType === item.value ?
-                                            <Icon className={styles.checkedIcon} name={"CheckOne"}
-                                                  fill={theme.blue}
-                                                  size={23}></Icon> : null}
-                                        <div className={styles.transitionContent}></div>
+                                    {defaultSetting.menu.menuType === item.value ?
+                                        <div className={styles.checkedIcon}></div> : null}
+                                    <div className={styles.layoutContent}>
+                                        {renderLayout(item.value)}
                                     </div>
-                                </Col>
+                                </div>
                             </Tooltip>
                         })}
-                    </Row>
+                    </div>
                     <Divider>导航栏</Divider>
                     <Row align={"middle"} className={styles.configItem}>
                         <Col flex={1}>

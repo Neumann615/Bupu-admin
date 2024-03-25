@@ -73,19 +73,7 @@ export const storageTypeList = [
 
 export const transitionTypeList = [
     {
-        label: "滑动1",
-        value: "slide-left",
-        classNames: {
-            appear: "animate__animated",
-            appearActive: "animate__slideInLeft",
-            enter: "animate__animated",
-            enterActive: "animate__slideInLeft",
-            exit: "animate__animated",
-            exitActive: "animate__slideOutRight",
-        }
-    },
-    {
-        label: "滑动2",
+        label: "滑动",
         value: "slide-right",
         classNames: {
             appear: "animate__animated",
@@ -94,30 +82,6 @@ export const transitionTypeList = [
             enterActive: "animate__slideInRight",
             exit: "animate__animated",
             exitActive: "animate__slideOutLeft",
-        }
-    },
-    {
-        label: "滑动3",
-        value: "slide-up",
-        classNames: {
-            appear: "animate__animated",
-            appearActive: "animate__slideInUp",
-            enter: "animate__animated",
-            enterActive: "animate__slideInUp",
-            exit: "animate__animated",
-            exitActive: "animate__slideOutDown",
-        }
-    },
-    {
-        label: "滑动4",
-        value: "slide-down",
-        classNames: {
-            appear: "animate__animated",
-            appearActive: "animate__slideInDown",
-            enter: "animate__animated",
-            enterActive: "animate__slideInDown",
-            exit: "animate__animated",
-            exitActive: "animate__slideOutUp",
         }
     },
     {
@@ -145,42 +109,6 @@ export const transitionTypeList = [
         }
     },
     {
-        label: "淡入淡出3",
-        value: "fade-down",
-        classNames: {
-            appear: "animate__animated",
-            appearActive: "animate__fadeInDown",
-            enter: "animate__animated",
-            enterActive: "animate__fadeInDown",
-            exit: "animate__animated",
-            exitActive: "animate__fadeOutUp",
-        }
-    },
-    {
-        label: "淡入淡出4",
-        value: "fade-left",
-        classNames: {
-            appear: "animate__animated",
-            appearActive: "animate__fadeInLeft",
-            enter: "animate__animated",
-            enterActive: "animate__fadeInLeft",
-            exit: "animate__animated",
-            exitActive: "animate__fadeOutRight",
-        }
-    },
-    {
-        label: "淡入淡出5",
-        value: "fade-right",
-        classNames: {
-            appear: "animate__animated",
-            appearActive: "animate__fadeInRight",
-            enter: "animate__animated",
-            enterActive: "animate__fadeInRight",
-            exit: "animate__animated",
-            exitActive: "animate__fadeOutLeft",
-        }
-    },
-    {
         label: "闪动1",
         value: "lightspeed-left",
         classNames: {
@@ -190,18 +118,6 @@ export const transitionTypeList = [
             enterActive: "animate__lightSpeedInLeft",
             exit: "animate__animated",
             exitActive: "animate__lightSpeedOutRight",
-        }
-    },
-    {
-        label: "闪动2",
-        value: "lightspeed-right",
-        classNames: {
-            appear: "animate__animated",
-            appearActive: "animate__lightSpeedInRight",
-            enter: "animate__animated",
-            enterActive: "animate__lightSpeedInRight",
-            exit: "animate__animated",
-            exitActive: "animate__lightSpeedOutLeft",
         }
     },
     {
@@ -227,23 +143,23 @@ export {transitionTypeSet}
 
 export const menuTypeList = [
     {
-        label: "侧边栏模式（含主导航）",
+        label: "侧边栏模式",
         value: "side"
     },
     {
-        label: "侧边栏模式（不含主导航）",
+        label: "侧边栏精简模式",
         value: "only-side"
     },
     {
-        label: "顶部模式（含主导航）",
+        label: "顶部模式",
         value: "head"
     },
     {
-        label: "顶部模式（不含主导航）",
+        label: "顶部精简模式",
         value: "only-head"
     },
     {
-        label: "精简模式",
+        label: "精简模式（不包含主导航）",
         value: "simple"
     }
 ]
@@ -628,168 +544,168 @@ export const menuData = [
             // },
         ]
     },
-    // {
-    //     id: "2",
-    //     label: "页面模板",
-    //     icon: "PageTemplate",
-    //     key: "/page",
-    //     children: [
-    //         {
-    //             label: "登录页面",
-    //             icon: "Login",
-    //             key: "/page/login",
-    //             children: [
-    //                 {
-    //                     label: "登陆模板1",
-    //                     icon: "",
-    //                     key: "/page/login/login1",
-    //                 },
-    //                 {
-    //                     label: "登录模板2",
-    //                     icon: "",
-    //                     key: "/page/login/login2",
-    //                 },
-    //                 {
-    //                     label: "登陆模板3",
-    //                     icon: "",
-    //                     key: "/page/login/login3",
-    //                 }
-    //             ]
-    //         },
-    //         {
-    //             label: "仪表盘",
-    //             icon: "Dashboard",
-    //             key: "/page/dashboard",
-    //             children: [
-    //                 {
-    //                     label: "仪表盘1",
-    //                     icon: "",
-    //                     key: "/page/dashboard/dashboard1",
-    //                 },
-    //                 {
-    //                     label: "仪表盘2",
-    //                     icon: "",
-    //                     key: "/page/dashboard/dashboard2",
-    //                 },
-    //                 {
-    //                     label: "仪表盘3",
-    //                     icon: "",
-    //                     key: "/page/dashboard/dashboard3",
-    //                 }
-    //             ]
-    //         },
-    //         {
-    //             label: "列表页面",
-    //             icon: "ListView",
-    //             key: "/page/list",
-    //             children: [
-    //                 {
-    //                     label: "基础列表",
-    //                     icon: "",
-    //                     key: "/page/list/basic-list",
-    //                 },
-    //                 {
-    //                     label: "卡片列表",
-    //                     icon: "",
-    //                     key: "/page/list/card-list",
-    //                 },
-    //                 {
-    //                     label: "双栏列表",
-    //                     icon: "",
-    //                     key: "/page/list/between-list",
-    //                 }
-    //             ]
-    //         },
-    //         {
-    //             label: "表单页面",
-    //             icon: "FormOne",
-    //             key: "/page/form",
-    //             children: [
-    //                 {
-    //                     label: "表单1",
-    //                     icon: "",
-    //                     key: "/page/form/form1",
-    //                 },
-    //                 {
-    //                     label: "表单2",
-    //                     icon: "",
-    //                     key: "/page/form/form2",
-    //                 },
-    //                 {
-    //                     label: "表单3",
-    //                     icon: "",
-    //                     key: "/page/form/form3",
-    //                 }
-    //             ]
-    //         },
-    //         {
-    //             label: "状态页面",
-    //             icon: "CheckOne",
-    //             key: "/page/status",
-    //             children: [
-    //                 {
-    //                     label: "信息页",
-    //                     icon: "",
-    //                     key: "/page/status/info",
-    //                 },
-    //                 {
-    //                     label: "成功页",
-    //                     icon: "",
-    //                     key: "/page/status/success",
-    //                 },
-    //                 {
-    //                     label: "警告页",
-    //                     icon: "",
-    //                     key: "/page/status/warning",
-    //                 },
-    //                 {
-    //                     label: "失败页",
-    //                     icon: "",
-    //                     key: "/page/status/error",
-    //                 }
-    //             ]
-    //         },
-    //         {
-    //             label: "异常页面",
-    //             icon: "Abnormal",
-    //             key: "/page/abnormal",
-    //             children: [
-    //                 {
-    //                     label: "403",
-    //                     icon: "",
-    //                     key: "/page/abnormal/403",
-    //                 },
-    //                 {
-    //                     label: "404",
-    //                     icon: "",
-    //                     key: "/page/abnormal/404",
-    //                 },
-    //                 {
-    //                     label: "500",
-    //                     icon: "",
-    //                     key: "/page/abnormal/500",
-    //                 }
-    //             ]
-    //         }
-    //     ]
-    // },
-    // {
-    //     id: "3",
-    //     label: "相关资料",
-    //     icon: "DocumentFolder",
-    //     key: "/information",
-    //     children: [
-    //         {
-    //             label: "项目信息",
-    //             icon: "Book",
-    //             key: "/information/project"
-    //         },
-    //         {
-    //             label: "关于我",
-    //             icon: "IdCardH",
-    //             key: "/information/personal"
-    //         }
-    //     ]
-    // },
+    {
+        id: "2",
+        label: "页面模板",
+        icon: "PageTemplate",
+        key: "/page",
+        children: [
+            {
+                label: "登录页面",
+                icon: "Login",
+                key: "/page/login",
+                children: [
+                    {
+                        label: "登陆模板1",
+                        icon: "",
+                        key: "/page/login/login1",
+                    },
+                    {
+                        label: "登录模板2",
+                        icon: "",
+                        key: "/page/login/login2",
+                    },
+                    {
+                        label: "登陆模板3",
+                        icon: "",
+                        key: "/page/login/login3",
+                    }
+                ]
+            },
+            {
+                label: "仪表盘",
+                icon: "Dashboard",
+                key: "/page/dashboard",
+                children: [
+                    {
+                        label: "仪表盘1",
+                        icon: "",
+                        key: "/page/dashboard/dashboard1",
+                    },
+                    {
+                        label: "仪表盘2",
+                        icon: "",
+                        key: "/page/dashboard/dashboard2",
+                    },
+                    {
+                        label: "仪表盘3",
+                        icon: "",
+                        key: "/page/dashboard/dashboard3",
+                    }
+                ]
+            },
+            {
+                label: "列表页面",
+                icon: "ListView",
+                key: "/page/list",
+                children: [
+                    {
+                        label: "基础列表",
+                        icon: "",
+                        key: "/page/list/basic-list",
+                    },
+                    {
+                        label: "卡片列表",
+                        icon: "",
+                        key: "/page/list/card-list",
+                    },
+                    {
+                        label: "双栏列表",
+                        icon: "",
+                        key: "/page/list/between-list",
+                    }
+                ]
+            },
+            {
+                label: "表单页面",
+                icon: "FormOne",
+                key: "/page/form",
+                children: [
+                    {
+                        label: "表单1",
+                        icon: "",
+                        key: "/page/form/form1",
+                    },
+                    {
+                        label: "表单2",
+                        icon: "",
+                        key: "/page/form/form2",
+                    },
+                    {
+                        label: "表单3",
+                        icon: "",
+                        key: "/page/form/form3",
+                    }
+                ]
+            },
+            {
+                label: "状态页面",
+                icon: "CheckOne",
+                key: "/page/status",
+                children: [
+                    {
+                        label: "信息页",
+                        icon: "",
+                        key: "/page/status/info",
+                    },
+                    {
+                        label: "成功页",
+                        icon: "",
+                        key: "/page/status/success",
+                    },
+                    {
+                        label: "警告页",
+                        icon: "",
+                        key: "/page/status/warning",
+                    },
+                    {
+                        label: "失败页",
+                        icon: "",
+                        key: "/page/status/error",
+                    }
+                ]
+            },
+            {
+                label: "异常页面",
+                icon: "Abnormal",
+                key: "/page/abnormal",
+                children: [
+                    {
+                        label: "403",
+                        icon: "",
+                        key: "/page/abnormal/403",
+                    },
+                    {
+                        label: "404",
+                        icon: "",
+                        key: "/page/abnormal/404",
+                    },
+                    {
+                        label: "500",
+                        icon: "",
+                        key: "/page/abnormal/500",
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        id: "3",
+        label: "相关资料",
+        icon: "DocumentFolder",
+        key: "/information",
+        children: [
+            {
+                label: "项目信息",
+                icon: "Book",
+                key: "/information/project"
+            },
+            {
+                label: "关于我",
+                icon: "IdCardH",
+                key: "/information/personal"
+            }
+        ]
+    },
 ]
 

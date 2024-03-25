@@ -367,6 +367,10 @@ export default () => {
         setTitle(tabNum[item])
     }
 
+    const handleClose = () => {
+        setIsOpen(false)
+    }
+
     const tabItems = [
         {
             label: '发卡',
@@ -397,6 +401,6 @@ export default () => {
 
     return <>
         <Tabs activeKey={activeKey} onChange={onChange} items={tabItems} className={styles.tab} />
-        <SelectGroup isOpen={isOpen} title={title} treeData={treeData} />
+        <SelectGroup isOpen={isOpen} title={title} treeData={treeData} handleClose={handleClose}/>
     </>
 }
