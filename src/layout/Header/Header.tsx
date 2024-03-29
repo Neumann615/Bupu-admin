@@ -314,7 +314,6 @@ export function Header() {
                 }
             }
         }
-        console.log(tabs)
         return [
             {
                 tooltip: "搜索",

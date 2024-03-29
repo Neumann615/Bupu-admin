@@ -81,7 +81,6 @@ export function useControlTab() {
                 tabs.push(tabData)
                 setTabs(tabs)
             }
-            console.log(tabData)
             if (tabData.tabId === nowTab.tabId) return
             setNowTab(tabData)
             navigate(v.key)

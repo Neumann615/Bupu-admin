@@ -11,7 +11,7 @@ import { transformGroup, searchParentId } from '@/utils/tree';
 import { getGridcolAdd, getGridcolList } from '@/api/commonApi';
 import { TreeDataOrigin } from '@/components/common/group-tree/GroupTree';
 import { message } from 'antd';
-import { GridcolAddCols, GridcolAddParams } from '@/types/api';
+import { GridcolAddCols } from '@/types/api';
 const { confirm } = Modal
 
 const useStyles = createStyles(({ token }) => ({
@@ -120,7 +120,7 @@ export default () => {
         init();
         initColumn();
         handleResize()
-        window.addEventListener('resize', handleResize)
+        window.addEventListener('resize', handleResize, { passive: true })
         return () => {
             window.removeEventListener('resize', handleResize)
         }
@@ -170,7 +170,6 @@ export default () => {
                     }
                 }
             })
-            console.log(columnsData,'columnsData')
             setColumnsStateMap(columnsData)
         }
         catch (e) {
@@ -236,7 +235,6 @@ export default () => {
         try {
             const result = downloadByPost('/api/platform/api/human/organizational/depart/export', queryParams, '部门资料')
             setIsSpinning(false);
-            console.log(result, 'result')
         }
         catch (e) {
             setIsSpinning(false);
@@ -391,18 +389,28 @@ export default () => {
     };
 
     const renderTreeFooter = (item: TreeDataOrigin) => {
-        return <div className={styles.treeItem}>
-            <div>{item.title}</div>
-            <div>
-                <FolderAddOutlined className={styles.treeItemIcon} title='添加' onClick={handelAdd} />
-                <EditOutlined className={styles.treeItemIcon} title='修改' onClick={() => { handelEdit(item) }} />
-                <Popconfirm key="delete" title='删除' description="该部门下的子节点也会被一起删除，确认删除该部门？" onConfirm={() => {
-                    handleDelete(item.originData)
-                }}>
-                    <DeleteOutlined title='删除' />
-                </Popconfirm>
-            </div>
+        return <div>
+            <FolderAddOutlined className={styles.treeItemIcon} title='添加' onClick={handelAdd} />
+            <EditOutlined className={styles.treeItemIcon} title='修改' onClick={() => { handelEdit(item) }} />
+            <Popconfirm key="delete" title='删除' description="该部门下的子节点也会被一起删除，确认删除该部门？" onConfirm={() => {
+                handleDelete(item.originData)
+            }}>
+                <DeleteOutlined title='删除' />
+            </Popconfirm>
         </div>
+
+        // <div className={styles.treeItem}>
+        //     <div>{item.title}</div>
+        //     <div>
+        //         <FolderAddOutlined className={styles.treeItemIcon} title='添加' onClick={handelAdd} />
+        //         <EditOutlined className={styles.treeItemIcon} title='修改' onClick={() => { handelEdit(item) }} />
+        //         <Popconfirm key="delete" title='删除' description="该部门下的子节点也会被一起删除，确认删除该部门？" onConfirm={() => {
+        //             handleDelete(item.originData)
+        //         }}>
+        //             <DeleteOutlined title='删除' />
+        //         </Popconfirm>
+        //     </div>
+        // </div>
     }
 
     const transformColumns = (item: Record<string, ColumnsState>) => {
@@ -417,7 +425,7 @@ export default () => {
         })
     }
 
-    const saveColumns = async (params: GridcolAddCols[],item:any) => {
+    const saveColumns = async (params: GridcolAddCols[], item: any) => {
         const param = {
             gridName: "depart",
             cols: params
@@ -434,6 +442,12 @@ export default () => {
         catch (e) {
             message.warning('保存失败！')
         }
+    }
+
+    const handleClick  = () => {
+        console.log('123')
+        const url = `${window.location.origin}/exportTemplate/departExport.xls`;
+        window.open(url,'_parent')
     }
 
     return (
@@ -486,7 +500,7 @@ export default () => {
                             value: columnsStateMap,
                             onChange: (item) => {
                                 const transformData = transformColumns(item)
-                                saveColumns(transformData,item)
+                                saveColumns(transformData, item)
                             },
                         }}
                         toolBarRender={() => [
@@ -503,7 +517,8 @@ export default () => {
                                 <Button key="export">
                                     导出
                                 </Button>
-                            </Popconfirm>
+                            </Popconfirm>,
+                            <Button onClick={handleClick}>导入模板下载</Button>
                         ]}
                     />
                 </div>

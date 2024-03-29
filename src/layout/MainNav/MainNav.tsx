@@ -215,7 +215,6 @@ export function MainNav() {
                 return <Menu.SubMenu key={item.key}
                                      onTitleClick={(v) => {
                                          if (menuType === "side" || menuType === "head") {
-                                             console.log(v)
                                              useMenuStore.setState((store: any) => ({
                                                  menuData: mainNavData[index].children,
                                                  mainNavCurrentKeys: [item.key]

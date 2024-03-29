@@ -1,11 +1,13 @@
 import { ActionType, ParamsType, ProColumns, ProForm, ProFormText, ProFormDateTimeRangePicker, ProFormDatePicker } from '@ant-design/pro-components';
-import { Button, Modal, Popconfirm } from 'antd';
+import { Button, Modal, Popconfirm, Upload, UploadProps } from 'antd';
 import { createStyles } from "antd-style"
 import { ProTable } from '@ant-design/pro-components';
 import { getOrganizationalEmployeeList, getBaseEmployeeAdd, getBaseEmployeeEdit, getBaseEmployeeDel, getBaseEmployeeLeave } from '@/api/employee';
 import React, { useState, useRef, useEffect } from 'react';
 import { message } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';;
+import { PlusOutlined } from '@ant-design/icons'; import { downloadByPost } from '@/shared/download';
+import { searchParentId } from '@/utils/tree';
+;
 export interface FormValues {
     personPwd: string;
     personName: string;
@@ -13,7 +15,6 @@ export interface FormValues {
     jobId: string;
     idCard: string;
     departId: string;
-    cardSn: string;
     levelId: string;
     personMobile: string;
     rangeTime: string;
@@ -40,6 +41,9 @@ export default () => {
     const initialValues = useRef<Record<string, any>>({})
     const [title, setTitle] = useState('增加');
     const [height, setHeight] = useState(0);
+    const [mode, setMode] = useState<string>('add');
+    const [isSpinning, setIsSpinning] = useState(false);
+    const [queryParams, setQueryParams] = useState({});
     const columns: ProColumns[] = [
         {
             title: '姓名',
@@ -91,6 +95,7 @@ export default () => {
             width: 150,
             valueType: 'date',
             search: false,
+            editable: false,
             formItemProps: {
                 rules: [
                     {
@@ -131,27 +136,13 @@ export default () => {
             },
         },
         {
-            title: '卡序列号',
-            dataIndex: 'cardSn',
-            ellipsis: true,
-            width: 150,
-            search: false,
-            formItemProps: {
-                rules: [
-                    {
-                        required: true,
-                        message: '此项为必填项',
-                    },
-                ],
-            },
-        },
-        {
             title: '有效结束时间',
             dataIndex: 'endTime',
             ellipsis: true,
             width: 150,
             search: false,
             valueType: 'date',
+            editable: false,
             formItemProps: {
                 rules: [
                     {
@@ -224,7 +215,8 @@ export default () => {
                 <a
                     key="editable"
                     onClick={() => {
-                        action?.startEditable?.(record.accountId);
+                        handelTableEdit(record)
+                        // action?.startEditable?.(record.accountId);
                     }}
                 >
                     编辑
@@ -249,6 +241,18 @@ export default () => {
         }
     }, [])
 
+    const handelTableEdit = (item: any) => {
+        setMode('edit')
+        setTitle('编辑');
+        setIsOpen(true);
+        const { beginTime, endTime } = item
+        const itemTemp = {
+            ...item,
+            rangeTime: [beginTime, endTime],
+        }
+        initialValues.current = itemTemp
+    }
+
     const handleResize = () => {
         const proTable = document.getElementById('proTable')
         const height = proTable?.clientHeight || document.body.clientHeight;
@@ -264,6 +268,9 @@ export default () => {
             pageSize: params.pageSize,
         }
         try {
+            setQueryParams({
+                ...params,
+            })
             const result = await getOrganizationalEmployeeList(params1);
             if (result.status === 200) {
                 return {
@@ -289,7 +296,7 @@ export default () => {
                 accountId: data.accountId
             }
             const result = await getBaseEmployeeDel(params);
-            if (result.resultCode === '1'){
+            if (result.resultCode === '1') {
                 actionRef.current?.reload();
                 message.success('删除成功')
             }
@@ -323,25 +330,45 @@ export default () => {
         initialValues.current = {}
     }
     const handleFinish = async (values: any) => {
-        const { rangeTime, ...rest } = values;
-        const params = {
-            beginTime: rangeTime[0],
-            endTime: rangeTime[1],
-            ...rest
-        }
-        try {
-            const result = await getBaseEmployeeAdd(params);
-            if (result.resultCode === '1') {
-                message.success('添加成功');
-                actionRef.current?.reload();
-                initialValues.current = {}
-                setIsOpen(false)
-                return;
+        if (mode === 'add') {
+            const { rangeTime, ...rest } = values;
+            const params = {
+                beginTime: rangeTime[0],
+                endTime: rangeTime[1],
+                ...rest
             }
-            message.warning(result.resultMsg || '添加失败！')
+            try {
+                const result = await getBaseEmployeeAdd(params);
+                if (result.resultCode === '1') {
+                    message.success('添加成功');
+                    actionRef.current?.reload();
+                    initialValues.current = {}
+                    setIsOpen(false)
+                    return;
+                }
+                message.warning(result.resultMsg || '添加失败！')
+            }
+            catch (e) {
+                message.warning('添加失败！')
+            }
         }
-        catch (e) {
-            message.warning('添加失败！')
+        else if (mode === 'edit') {
+            const { cardId, accountId } = initialValues.current;
+            const { rangeTime, ...rest } = values;
+            let data = {
+                cardId,
+                accountId,
+                beginTime: rangeTime[0],
+                endTime: rangeTime[1],
+                ...rest,
+            }
+            const result = await getBaseEmployeeEdit(data);
+            if (result.resultCode === '1') {
+                initialValues.current = {}
+                message.success('编辑成功');
+                actionRef.current?.reload();
+                setIsOpen(false)
+            }
         }
     }
 
@@ -358,9 +385,52 @@ export default () => {
     }
 
     const handleAdd = () => {
+        setMode('add');
         setIsOpen(true)
         setTitle('新建');
     }
+
+    /**
+ * 导出
+ */
+    const handleExport = async () => {
+        setIsSpinning(true);
+        try {
+            const result = downloadByPost('/api/platform/api/human/personal/person/export', queryParams, '人事档案')
+            setIsSpinning(false);
+        }
+        catch (e) {
+            setIsSpinning(false);
+            message.warning('导出失败')
+        }
+
+    }
+
+    const uploadParam: UploadProps = {
+        name: 'fileStream',
+        action: '/api/platform/api/public/dbgrid/import',
+        headers: {
+            authorization: 'authorization-text',
+        },
+        data: {
+            fileInfo: JSON.stringify({
+                tableName: "person",
+                fileName: "人事档案.xls"
+            })
+        },
+        fileList: [],
+        onChange(info) {
+            if (info.file.status !== 'uploading') {
+                console.log(info.file, info.fileList);
+            }
+            if (info.file.status === 'done') {
+                message.success(`${info.file.name} 导入成功`);
+            } else if (info.file.status === 'error') {
+                message.error(`${info.file.name} 导入失败`);
+            }
+        },
+    };
+
 
     return (
         <div className={styles.main} id='proTable'>
@@ -410,6 +480,20 @@ export default () => {
                         <PlusOutlined />
                         新建
                     </Button>,
+                    <Upload
+                        {...uploadParam}
+                    >
+                        <Button key="import" type="primary">
+                            导入
+                        </Button>
+                    </Upload>,
+                    <Popconfirm key="delete" title='导出' description="确认导出？" onConfirm={() => {
+                        handleExport()
+                    }}>
+                        <Button key="export">
+                            导出
+                        </Button>
+                    </Popconfirm>
                 ]}
             />
             <Modal title={title} open={isOpen} onCancel={handleCancel} footer={null} destroyOnClose>
@@ -484,15 +568,6 @@ export default () => {
                     </ProForm.Group>
                     <ProForm.Group>
                         <ProFormText
-                            name="cardSn"
-                            width="md"
-                            label="卡序列号"
-                            placeholder="请输入卡序列号"
-                            rules={[{ required: true, message: '这是必填项' }]}
-                        />
-                    </ProForm.Group>
-                    <ProForm.Group>
-                        <ProFormText
                             name="levelId"
                             width="md"
                             label="级别"
@@ -509,7 +584,7 @@ export default () => {
                             rules={[{ required: true, message: '这是必填项' }]}
                         />
                     </ProForm.Group>
-                    <ProForm.Group>
+                    {/* <ProForm.Group>
                         <ProFormText
                             name="personAddress"
                             width="md"
@@ -517,7 +592,7 @@ export default () => {
                             placeholder="请输入联系地址"
                             rules={[{ required: true, message: '这是必填项' }]}
                         />
-                    </ProForm.Group>
+                    </ProForm.Group> */}
                     <ProForm.Group>
                         <ProFormDateTimeRangePicker
                             width="md"

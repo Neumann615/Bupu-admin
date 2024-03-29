@@ -39,9 +39,9 @@ export interface BaseEmployeeLeaveAdd{
 }
 
 export interface BaseEmployeeLeaveEdit{
-    id: number;
-    pid: string;
-    EmployeeLeaveName: string;
+    leaveType: string;
+    leaveReason: string;
+    accountId: string;
 }
 
 export interface EmployeeLeaveEditData extends T{

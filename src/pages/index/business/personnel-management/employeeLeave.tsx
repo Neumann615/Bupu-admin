@@ -1,10 +1,11 @@
-import { ActionType, ProColumns } from '@ant-design/pro-components';
-import { Button, Popconfirm } from 'antd';
+import { ActionType, ProColumns, ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
+import { Button, Modal, Popconfirm } from 'antd';
 import { createStyles } from "antd-style"
 import { ProTable } from '@ant-design/pro-components';
 import { getPersonalEmployeeLeaveList, getBaseEmployeeLeaveEdit, getBaseEmployeeEntry } from '@/api/employeeLeave';
 import React, { useState, useRef, useEffect } from 'react';
 import { message } from 'antd';
+import { BaseEmployeeLeaveEdit } from '@/types/employeeLeave';
 export interface FormValues {
   birthDate: string;
   personPwd: string;
@@ -34,10 +35,30 @@ const useStyles = createStyles(() => ({
   },
 }))
 
+const selectOption = [
+  {
+    value: "1",
+    label: "辞职",
+  },
+  {
+    value: "2",
+    label: "自离",
+  },
+  {
+    value: "3",
+    label: "辞退",
+  },
+  {
+    value: "4",
+    label: "退休",
+  },
+]
 export default () => {
   const actionRef = useRef<ActionType>();
   const { styles } = useStyles();
   const [height, setHeight] = useState(0);
+  const initialValues = useRef<Record<string, any>>({})
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const columns: ProColumns[] = [
     {
       title: '姓名',
@@ -102,7 +123,8 @@ export default () => {
         <a
           key="editable"
           onClick={() => {
-            action?.startEditable?.(record.accountId);
+            // action?.startEditable?.(record.accountId);
+            handelTableEdit(record)
           }}
         >
           编辑
@@ -127,6 +149,11 @@ export default () => {
     }
   }, [])
 
+  const handelTableEdit = (item: any) => {
+    setIsOpen(true);
+    initialValues.current = item
+  }
+
   const handleResize = () => {
     const proTable = document.getElementById('proTable')
     const height = proTable?.clientHeight || document.body.clientHeight;
@@ -150,6 +177,7 @@ export default () => {
           total: result.data.data.total
         }
       }
+      message.warning('查询离职档案失败！')
       return {
         data: result.data.data.list,
         page: 1,
@@ -157,6 +185,7 @@ export default () => {
       }
     }
     catch (e) {
+      message.warning('查询离职档案失败！')
       return []
     }
   }
@@ -179,20 +208,45 @@ export default () => {
     }
   }
 
-  const handleSave = async (data: any) => {
+  const handleCancel = () => {
+    setIsOpen(false);
+  }
+
+  const handleFinish = async (value: BaseEmployeeLeaveEdit) => {
     try {
-      const result = await getBaseEmployeeLeaveEdit(data);
+      const { accountId } = initialValues.current;
+      const params = {
+        ...value,
+        accountId,
+      }
+      const result = await getBaseEmployeeLeaveEdit(params);
       if (result.resultCode === '1') {
         message.success('修改成功')
         actionRef.current?.reload();
+        setIsOpen(false);
         return;
       }
+      setIsOpen(false);
       message.warning('修改失败')
     }
     catch (e) {
       message.warning('修改失败')
     }
   }
+  // const handleSave = async (data: any) => {
+  //   try {
+  //     const result = await getBaseEmployeeLeaveEdit(data);
+  //     if (result.resultCode === '1') {
+  //       message.success('修改成功')
+  //       actionRef.current?.reload();
+  //       return;
+  //     }
+  //     message.warning('修改失败')
+  //   }
+  //   catch (e) {
+  //     message.warning('修改失败')
+  //   }
+  // }
 
   return (
     <div className={styles.main} id='proTable'>
@@ -231,6 +285,55 @@ export default () => {
           </Button>
         ]}
       />
+      <Modal title={'编辑'} open={isOpen} onCancel={handleCancel} footer={null} destroyOnClose>
+        <ProForm
+          onFinish={async (values) => {
+            handleFinish(values)
+          }}
+          labelCol={{ span: 4 }}
+          wrapperCol={{ span: 14 }}
+          layout="horizontal"
+          submitter={{
+            // 配置按钮文本
+            searchConfig: {
+              resetText: '重置',
+              submitText: '提交',
+            },
+            // 配置按钮的属性
+            resetButtonProps: {
+              style: {
+                // 隐藏重置按钮
+                justifyContent: 'center',
+              },
+            },
+          }}
+          initialValues={initialValues.current}
+        >
+          <ProFormText
+            name="personName"
+            width="md"
+            label="姓名"
+            placeholder="请输入姓名"
+            disabled
+            rules={[{ required: true, message: '这是必填项' }]}
+          />
+          <ProFormSelect
+            name="leaveType"
+            width="md"
+            label="离职类型"
+            placeholder="请输入离职类型"
+            options={selectOption}
+            rules={[{ required: true, message: '这是必填项' }]}
+          />
+          <ProFormText
+            name="leaveReason"
+            width="md"
+            label="离职原因"
+            placeholder="请输入离职原因"
+            rules={[{ required: true, message: '这是必填项' }]}
+          />
+        </ProForm>
+      </Modal>
     </div >
   );
 };

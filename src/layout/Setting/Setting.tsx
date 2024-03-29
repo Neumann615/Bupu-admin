@@ -275,7 +275,6 @@ export function Setting() {
     }, [defaultSetting])
 
     useEffect(() => {
-        console.log(homePageStore)
         setDefaultSetting({
             app: mergeAttribute(_defaultSetting.app, appStore),
             theme: mergeAttribute(_defaultSetting.theme, themeStore),

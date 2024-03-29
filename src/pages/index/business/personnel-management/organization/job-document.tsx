@@ -1,5 +1,5 @@
 import { ActionType, ParamsType, ProColumns, ProForm, ProFormText } from '@ant-design/pro-components';
-import { Button, Modal, Popconfirm } from 'antd';
+import { Button, Modal, Popconfirm, Spin, Upload } from 'antd';
 import { createStyles } from "antd-style"
 import { ProTable } from '@ant-design/pro-components';
 import { getJobList, getBasJobAdd, getBaseJobEdit, getBaseJobDel } from '@/api/job';
@@ -7,6 +7,7 @@ import React, { useState, useRef } from 'react';
 import { message } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useEffect } from 'react';
+import { downloadByPost } from '@/shared/download';
 
 interface OriginData {
     children: OriginData[];
@@ -21,6 +22,9 @@ const useStyles = createStyles(() => ({
         padding: "12px",
         display: "flex",
     },
+    spin: {
+        height: '100%'
+    }
 }))
 
 export default () => {
@@ -31,6 +35,9 @@ export default () => {
     const [title, setTitle] = useState('增加');
     const [mode, setMode] = useState<string>('add');
     const [height, setHeight] = useState(0);
+    const [isSpinning, setIsSpinning] = useState(false);
+    const [queryParams, setQueryParams] = useState({});
+
     const columns: ProColumns[] = [
         {
             title: '岗位名称',
@@ -113,6 +120,9 @@ export default () => {
             pageNum: params.current,
             pageSize: params.pageSize,
         }
+        setQueryParams({
+            jobName: params.jobName,
+        })
         try {
             const result = await getJobList(params1);
             if (result.status === 200) {
@@ -215,6 +225,7 @@ export default () => {
 
     return (
         <div className={styles.main} id='proTable'>
+            <Spin tip="加载中..." size="small" spinning={isSpinning} wrapperClassName={styles.spin} fullscreen />
             <ProTable
                 columns={columns}
                 actionRef={actionRef}
@@ -253,7 +264,7 @@ export default () => {
                     <Button key="3" type="primary" onClick={handleAdd}>
                         <PlusOutlined />
                         新建
-                    </Button>,
+                    </Button>
                 ]}
             />
             <Modal title={title} open={isOpen} onCancel={handleCancel} footer={null} destroyOnClose>

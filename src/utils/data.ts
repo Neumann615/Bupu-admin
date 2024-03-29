@@ -139,7 +139,7 @@ transitionTypeList.forEach((transition: any) => {
     transitionTypeSet[transition.value] = transition.classNames
 })
 
-export {transitionTypeSet}
+export { transitionTypeSet }
 
 export const menuTypeList = [
     {
@@ -347,33 +347,102 @@ export const menuData = [
             },
         ]
     },
-    // {
-    //     label: '消费',
-    //     icon: "Puzzle",
-    //     key: "/business/work",
-    //     children: [
-    //         {
-    //             label: "消费规则",
-    //             icon: "TextStyle",
-    //             key: "/business/work/card-issuecard"
-    //         },
-    //         {
-    //             label: "明细记录",
-    //             icon: "TextStyle",
-    //             key: "/business/work/consume-detail"
-    //         },
-    //         {
-    //             label: "汇总报表",
-    //             icon: "TextStyle",
-    //             key: "/business/work/namelist"
-    //         },
-    //         {
-    //             label: "财务报表",
-    //             icon: "TextStyle",
-    //             key: "/business/work/namelist"
-    //         },
-    //     ]
-    // }
+    {
+        label: '消费',
+        icon: "Puzzle",
+        key: "/business/consume",
+        children: [
+            {
+                label: "消费规则",
+                icon: "TextStyle",
+                key: "/business/consume/pay-records-list"
+            },
+            {
+                label: "人员消费规则",
+                icon: "TextStyle",
+                key: "/business/consume/person-consume-rule"
+            },
+            {
+                label: "明细记录",
+                icon: "TextStyle",
+                key: "/business/consume/detail",
+                children: [
+                    {
+                        label: "充值明细",
+                        icon: "TextStyle",
+                        key: "/business/consume/recharge-records"
+                    },
+                    {
+                        label: "消费明细",
+                        icon: "TextStyle",
+                        key: "/business/consume/pay-records"
+                    },
+                    {
+                        label: "交易流水明细",
+                        icon: "TextStyle",
+                        key: "/business/consume/person-trade"
+                    },
+                    {
+                        label: "费用明细",
+                        icon: "TextStyle",
+                        key: "/business/consume/cost-records"
+                    },
+                ]
+            },
+            {
+                label: "汇总报表",
+                icon: "TextStyle",
+                key: "/business/consume/summary",
+                children: [
+                    {
+                        label: "充值汇总",
+                        icon: "TextStyle",
+                        key: "/business/consume/recharge-summary-day"
+                    },
+                    {
+                        label: "消费汇总",
+                        icon: "TextStyle",
+                        key: "/business/consume/pay-records-day"
+                    },
+                    {
+                        label: "每月充值汇总",
+                        icon: "TextStyle",
+                        key: "/business/consume/recharge-summary-month"
+                    },
+                    {
+                        label: "每月消费汇总",
+                        icon: "TextStyle",
+                        key: "/business/consume/pay-records-month"
+                    },
+                    {
+                        label: "个人充值汇总",
+                        icon: "TextStyle",
+                        key: "/business/consume/person-recharge"
+                    },
+                    {
+                        label: "个人分餐汇总",
+                        icon: "TextStyle",
+                        key: "/business/consume/person-period"
+                    },
+                    {
+                        label: "餐厅分餐汇总",
+                        icon: "TextStyle",
+                        key: "/business/consume/canteen-period"
+                    }
+                ]
+            }
+            // {
+            //     label: "汇总报表",
+            //     icon: "TextStyle",
+            //     key: "/business/work/namelist"
+            // },
+            // {
+            //     label: "财务报表",
+            //     icon: "TextStyle",
+            //     key: "/business/work/namelist"
+            // },
+        ]
+    },
     // {
     //     id: "4",
     //     label: "业务代码",

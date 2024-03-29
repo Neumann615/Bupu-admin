@@ -25,7 +25,7 @@ export interface TreeList extends TreeDataOrigin {
 }
 
 export interface GridcolAdd {
-
+  resultCode: string;
 }
 
 export interface GridcolList {

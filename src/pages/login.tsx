@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react'
-import {message, Button, Checkbox, Dropdown, Form, Input, MenuProps, Tabs, Typography} from 'antd'
+import React, { useEffect, useState } from 'react'
+import { message, Button, Checkbox, Dropdown, Form, Input, MenuProps, Tabs, Typography } from 'antd'
 import {
     EyeInvisibleOutlined,
     EyeTwoTone,
@@ -8,15 +8,15 @@ import {
     PhoneOutlined,
     UserOutlined
 } from '@ant-design/icons'
-import {CheckboxChangeEvent} from 'antd/es/checkbox'
-import {useNavigate} from "react-router"
+import { CheckboxChangeEvent } from 'antd/es/checkbox'
+import { useNavigate } from "react-router"
 import SliderCaptch from 'rc-slider-captcha';
-import {login} from '@/api/index'
-import {useMenuStore} from "@/store";
-import {menuData} from "@/utils";
-import {createStyles} from "antd-style";
+import { login } from '@/api/index'
+import { useMenuStore } from "@/store";
+import { menuData } from "@/utils";
+import { createStyles } from "antd-style";
 
-const {Link} = Typography
+const { Link } = Typography
 const MainStyle: React.CSSProperties = {
     display: 'flex',
     flexDirection: 'column',
@@ -94,21 +94,21 @@ const items = [
     },
 ];
 
-const useStyles = createStyles(({token, css}) => ({
+const useStyles = createStyles(({ token, css }) => ({
     customSlider: {
-        "--rcsc-primary": token ["blue-5"],
-        "--rcsc-primary-light": token ['blue-2'],
-        "--rcsc-error": token ["red-5"],
-        "--rcsc-error-light": token ['red-2'],
-        "--rcsc-success": token ["purple-5"],
-        "--rcsc-success-light": token ['purple-2']
+        "--rcsc-primary": token["blue-5"],
+        "--rcsc-primary-light": token['blue-2'],
+        "--rcsc-error": token["red-5"],
+        "--rcsc-error-light": token['red-2'],
+        "--rcsc-success": token["purple-5"],
+        "--rcsc-success-light": token['purple-2']
     }
 }))
 
 export default function Login() {
     const [selectedKeys, setSelectedKeys] = useState<string[]>([items[0].key]);
     const [activeTab, setActiveTab] = useState<string>('1');
-    const {styles, theme} = useStyles()
+    const { styles, theme } = useStyles()
     const initData = JSON.parse(window.localStorage.getItem("remeber")!)
     const [form] = Form.useForm();
     const navigate = useNavigate()
@@ -123,34 +123,34 @@ export default function Login() {
                 size="large"
                 name="basic"
                 form={form}
-                wrapperCol={{span: 24}}
-                style={{maxWidth: 600}}
+                wrapperCol={{ span: 24 }}
+                style={{ maxWidth: 600 }}
                 initialValues={initData}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 autoComplete="off">
                 <Form.Item
                     name="userName"
-                    rules={[{required: true, message: '请输入用户名!'}]}>
+                    rules={[{ required: true, message: '请输入用户名!' }]}>
                     <Input
                         size="large"
                         placeholder="请输入用户名"
                         allowClear
-                        prefix={<UserOutlined/>}
+                        prefix={<UserOutlined />}
                     />
                 </Form.Item>
                 <Form.Item
                     name="userId"
-                    rules={[{required: true, message: '请输入密码!'}]}>
+                    rules={[{ required: true, message: '请输入密码!' }]}>
                     <Input.Password
                         size="large"
                         placeholder="请输入密码"
-                        prefix={<LockOutlined/>}
-                        iconRender={(visible) => (visible ? <EyeTwoTone/> : <EyeInvisibleOutlined/>)}
+                        prefix={<LockOutlined />}
+                        iconRender={(visible) => (visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />)}
                     />
                 </Form.Item>
                 <SliderCaptch
-                    bgSize={{width: 350}}
+                    bgSize={{ width: 350 }}
                     mode="slider"
                     className={styles.customSlider}
                     tipText={{
@@ -184,14 +184,14 @@ export default function Login() {
                 </Link>
             </div>
             <Form.Item>
-                <Button htmlType="submit" style={{width: "100%"}}
+                <Button htmlType="submit" style={{ width: "100%" }}
                     // onClick={() => {
                     //     window.localStorage.setItem("token", "zym-LOGIN-HAHHA")
                     //     setTimeout(() => {
                     //         navigate("/")
                     //     }, 300)
                     // }} 
-                        type='primary' size="large">登录</Button>
+                    type='primary' size="large">登录</Button>
             </Form.Item>
         </>
     }
@@ -244,33 +244,33 @@ export default function Login() {
             <Form
                 size="large"
                 name="basic"
-                wrapperCol={{span: 24}}
-                style={{maxWidth: 600}}
+                wrapperCol={{ span: 24 }}
+                style={{ maxWidth: 600 }}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 autoComplete="off"
             >
                 <Form.Item
                     name="username"
-                    rules={[{required: true, message: '请输入手机号!'}]}
+                    rules={[{ required: true, message: '请输入手机号!' }]}
                 >
                     <Input
                         size="large"
                         placeholder="请输入手机号"
                         allowClear
-                        prefix={<PhoneOutlined/>}
+                        prefix={<PhoneOutlined />}
                     />
                 </Form.Item>
 
                 <Form.Item
                     name="password"
-                    rules={[{required: true, message: '请输入验证码!'}]}
+                    rules={[{ required: true, message: '请输入验证码!' }]}
                 >
                     <div style={PassWordStyle}>
                         <Input
                             size="large"
                             placeholder="请输入验证码"
-                            prefix={<LockOutlined/>}
+                            prefix={<LockOutlined />}
                             style={PassWordValidStyle}
                         />
                         <Button size="large">
@@ -285,16 +285,17 @@ export default function Login() {
             }
         </div>
     }
-    const loginContent = [
+
+    const loginContentItems = [
         {
-            key: '1',
             label: '账户密码登录',
-            children: renderUserLogin
+            key: '1',
+            children: renderUserLogin()
         },
         {
-            key: '2',
             label: '手机号登录',
-            children: renderphoneLogin,
+            key: '2',
+            children: renderphoneLogin(),
         },
     ]
 
@@ -304,21 +305,14 @@ export default function Login() {
     const handleTabs = (key: string) => {
         setActiveTab(key)
     }
+
     return <div style={MainStyle}>
         <div>
             <div style={TitleStyle}>
-                <img src="/images/vite.svg" style={TitleImgStyle}/>
+                <img src="/images/vite.svg" style={TitleImgStyle} />
                 <div style={TitleTextStyle}>Bupu后台管理系统</div>
             </div>
         </div>
-        <Tabs activeKey={activeTab} onChange={handleTabs} centered>
-            {
-                loginContent.map(item => {
-                    return <Tabs.TabPane tab={item.label} key={item.key}>{
-                        item.children()
-                    }</Tabs.TabPane>
-                })
-            }
-        </Tabs>
+        <Tabs activeKey={activeTab} items={loginContentItems} onChange={handleTabs} centered />
     </div>
 }
