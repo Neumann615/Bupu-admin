@@ -7,7 +7,6 @@ import {visualizer} from 'rollup-plugin-visualizer'
 import monacoEditorPlugin from 'vite-plugin-monaco-editor'
 
 export default defineConfig({
-    base:"/bupu-admin/",
     plugins: [react(), Pages({
         importMode: "sync",
         extendRoute(route, parent) {
