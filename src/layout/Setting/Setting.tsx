@@ -150,8 +150,7 @@ const useStyles = createStyles(({token, css}) => {
         resetDrawer: css`
           .ant-drawer-body {
             padding: 0px;
-          }
-        `
+          } `
     }
 })
 
